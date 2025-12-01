@@ -1,0 +1,12 @@
+# Code Owners - These users will be automatically requested for review
+
+# All files
+* @seberatolmez @dogukanurker
+
+# Backend
+/services/ @seberatolmez @dogukanurker
+/scripts/ @seberatolmez @dogukanurker
+
+# Frontend
+/frontend/ @seberatolmez @dogukanurker
+
