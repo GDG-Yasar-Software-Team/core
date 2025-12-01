@@ -4,11 +4,17 @@ on:
   push:
     branches: [main]
     paths:
-      - "frontend/**"
+      - "frontend/**/*.ts"
+      - "frontend/**/*.tsx"
+      - "frontend/**/*.js"
+      - "frontend/**/*.jsx"
   pull_request:
     branches: [main]
     paths:
-      - "frontend/**"
+      - "frontend/**/*.ts"
+      - "frontend/**/*.tsx"
+      - "frontend/**/*.js"
+      - "frontend/**/*.jsx"
 
 jobs:
   lint:
@@ -24,4 +30,3 @@ jobs:
 
       - name: Run Biome Check
         run: biome check frontend/
-

@@ -4,13 +4,13 @@ on:
   push:
     branches: [main]
     paths:
-      - "services/**"
-      - "scripts/**"
+      - "services/**/*.py"
+      - "scripts/**/*.py"
   pull_request:
     branches: [main]
     paths:
-      - "services/**"
-      - "scripts/**"
+      - "services/**/*.py"
+      - "scripts/**/*.py"
 
 jobs:
   lint:
@@ -32,4 +32,3 @@ jobs:
 
       - name: Run Ruff Formatter Check
         run: ruff format services/ scripts/ --check
-
