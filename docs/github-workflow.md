@@ -1,5 +1,14 @@
 # GitHub Workflow
 
+## Sprints
+
+- We work in **2-week sprints**
+- **@seberatolmez** and **@dogukanurker** assign tasks
+- Each task has priority and effort labels
+- Check the GitHub Project board for your assigned tasks
+
+---
+
 ## Create an Issue (Ticket)
 
 1. Go to **Issues** tab in GitHub
