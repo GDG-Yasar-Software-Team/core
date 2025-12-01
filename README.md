@@ -26,6 +26,7 @@ cd core
 - [GitHub Workflow](docs/github-workflow.md) - Issues, PRs, reviews
 - [FastAPI Conventions](docs/fastapi-conventions.md) - Python backend guidelines
 - [React Conventions](docs/react-conventions.md) - Frontend guidelines
+- [AI Usage](docs/ai-usage.md) - AI tools guidelines
 
 ## Development
 
