@@ -77,11 +77,6 @@ bun run biome check .
 
 **Never commit directly to `main`.**
 
-## Team
-
-GDG on Campus Yasar University
-
 ## License
 
 Internal use only.
-
