@@ -1,0 +1,44 @@
+ci/cd:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/*
+          - .github/**/*
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.md"
+
+mail:
+  - changed-files:
+      - any-glob-to-any-file:
+          - services/mail/*
+          - services/mail/**/*
+
+form:
+  - changed-files:
+      - any-glob-to-any-file:
+          - services/form/*
+          - services/form/**/*
+          - frontend/form/*
+          - frontend/form/**/*
+
+event:
+  - changed-files:
+      - any-glob-to-any-file:
+          - services/event/*
+          - services/event/**/*
+          - frontend/event/*
+          - frontend/event/**/*
+
+backend:
+  - changed-files:
+      - any-glob-to-any-file:
+          - services/*
+          - services/**/*
+
+frontend:
+  - changed-files:
+      - any-glob-to-any-file:
+          - frontend/*
+          - frontend/**/*
