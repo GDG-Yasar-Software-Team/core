@@ -1,0 +1,27 @@
+name: Frontend Check
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "frontend/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "frontend/**"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install Biome
+        run: bun add -g @biomejs/biome
+
+      - name: Run Biome Check
+        run: biome check frontend/
+

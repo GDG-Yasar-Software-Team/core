@@ -1,0 +1,35 @@
+name: Python Check
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "services/**"
+      - "scripts/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "services/**"
+      - "scripts/**"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python
+        run: uv python install 3.14
+
+      - name: Install Ruff
+        run: uv tool install ruff
+
+      - name: Run Ruff Linter
+        run: ruff check services/ scripts/ --output-format=github
+
+      - name: Run Ruff Formatter Check
+        run: ruff format services/ scripts/ --check
+
