@@ -65,6 +65,16 @@ After pushing your branch:
 - **Both must approve** before merging
 - All checks (linting) must pass
 - Only admins can merge to `main`
+- **Always use "Squash and merge"** (not regular merge)
+
+### How to Squash and Merge
+
+1. Click the dropdown arrow on the green merge button
+2. Select **"Squash and merge"**
+3. Edit the commit message if needed
+4. Click confirm
+
+This combines all your commits into one clean commit.
 
 ## Link PR to Issue
 

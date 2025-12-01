@@ -73,10 +73,11 @@ bun run biome check .
 4. Push and create a Pull Request
 5. Add both reviewers: **@seberatolmez** and **@dogukanurker**
 6. Wait for **both** to approve
-7. Merge after both approvals
+7. **Squash and merge** (not regular merge)
 
-**Never commit directly to `main`.**
+**Never commit directly to `main`.** Always use **Squash and merge** to keep history clean.
 
 ## License
 
 Internal use only.
+
