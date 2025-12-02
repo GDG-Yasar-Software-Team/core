@@ -11,9 +11,11 @@ Monorepo for GDG on Campus Yasar University projects.
 └── docs/           # Documentation
 ```
 
-### System Design
+## System Design
 
-https://app.eraser.io/workspace/pKbd4uRkiVb5bCq2z27R
+Full system architecture and design documentation:
+
+🔗 [View System Design on Eraser](https://app.eraser.io/workspace/pKbd4uRkiVb5bCq2z27R)
 
 ## Getting Started
 
@@ -76,8 +78,8 @@ bun run biome check .
 2. Create a branch from `main`
 3. Make changes and commit
 4. Push and create a Pull Request
-5. Add both reviewers: **@seberatolmez** and **@dogukanurker**
-6. Wait for **both** to approve
+5. Add reviewers: **@seberatolmez** or **@dogukanurker**
+6. Wait for at least one approval
 7. **Squash and merge** (not regular merge)
 
 **Never commit directly to `main`.** Always use **Squash and merge** to keep history clean.
