@@ -30,7 +30,7 @@ After pushing your branch:
 3. Select your branch to merge into `main`
 4. Fill in:
    - **Title**: What this PR does
-   - **Description**: 
+   - **Description**:
      - What changed
      - Link to issue: `Closes #123`
    - **Reviewers**: Add at least 1 reviewer (admin)
@@ -41,12 +41,12 @@ After pushing your branch:
 
 1. On the PR page, find **Reviewers** on the right sidebar
 2. Click the gear icon
-3. Add both reviewers:
-   - `seberatolmez`
+3. Add reviewers (at least one admin):
+   - `seberatolmez` OR
    - `dogukanurker`
 4. They will be notified
 
-**Both reviewers must approve your PR before it can be merged.**
+**At least one admin approval is required before your PR can be merged.**
 
 ## PR Review Process
 
@@ -68,10 +68,10 @@ After pushing your branch:
 
 ## Merge Rules
 
-- PRs must be reviewed by **both**:
-  - `@seberatolmez`
+- PRs must be reviewed by **at least one admin**:
+  - `@seberatolmez` OR
   - `@dogukanurker`
-- **Both must approve** before merging
+- **At least one approval** required before merging
 - All checks (linting) must pass
 - Only admins can merge to `main`
 - **Always use "Squash and merge"** (not regular merge)
@@ -88,7 +88,7 @@ This combines all your commits into one clean commit.
 ## Link PR to Issue
 
 In PR description, use:
+
 - `Closes #123` - closes issue when PR merges
 - `Fixes #123` - same as closes
 - `Relates to #123` - links without closing
-

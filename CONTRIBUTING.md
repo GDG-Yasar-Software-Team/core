@@ -14,8 +14,8 @@ Welcome to GDG on Campus Yasar University!
 2. Create a branch: `git checkout -b feature/your-feature`
 3. Make changes
 4. Push and create a PR
-5. Add reviewers: @seberatolmez and @dogukanurker
-6. Wait for both approvals
+5. Add reviewers: @seberatolmez or @dogukanurker
+6. Wait for at least one approval
 7. Merge
 
 ## Branch Naming
@@ -27,6 +27,7 @@ Welcome to GDG on Campus Yasar University!
 ## Commit Messages
 
 Use prefixes:
+
 - `feat:` - new feature
 - `fix:` - bug fix
 - `docs:` - documentation
@@ -41,4 +42,3 @@ Use prefixes:
 ## Questions?
 
 Ask the team! We're here to help.
-
