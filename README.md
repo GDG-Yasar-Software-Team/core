@@ -11,6 +11,10 @@ Monorepo for GDG on Campus Yasar University projects.
 └── docs/           # Documentation
 ```
 
+### System Design
+
+https://app.eraser.io/workspace/pKbd4uRkiVb5bCq2z27R
+
 ## Getting Started
 
 ### Clone the repository
@@ -81,4 +85,3 @@ bun run biome check .
 ## License
 
 Internal use only.
-
