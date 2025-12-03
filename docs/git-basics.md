@@ -3,7 +3,7 @@
 ## Clone the Repository
 
 ```bash
-git clone https://github.com/GDG-on-Campus-Yasar-University/core.git
+git clone https://github.com/GDG-Yasar-Software-Team/core.git
 cd core
 ```
 
