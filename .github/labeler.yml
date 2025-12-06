@@ -42,3 +42,9 @@ frontend:
       - any-glob-to-any-file:
           - frontend/*
           - frontend/**/*
+
+scripts:
+  - changed-files:
+      - any-glob-to-any-file:
+          - scripts/*
+          - scripts/**/*
