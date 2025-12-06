@@ -22,7 +22,7 @@ Full system architecture and design documentation:
 ### Clone the repository
 
 ```bash
-git clone https://github.com/GDG-on-Campus-Yasar-University/core.git
+git clone https://github.com/GDG-Yasar-Software-Team/core.git
 cd core
 ```
 
