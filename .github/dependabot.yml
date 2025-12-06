@@ -1,24 +1,20 @@
 version: 2
 updates:
-  # python - services
   - package-ecosystem: "uv"
     directory: "/services"
     schedule:
       interval: "weekly"
 
-  # python - scripts
   - package-ecosystem: "uv"
     directory: "/scripts"
     schedule:
       interval: "weekly"
 
-  # frontend (bun uses package.json, so npm works)
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
       interval: "weekly"
 
-  # github actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
