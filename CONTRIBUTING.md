@@ -39,6 +39,17 @@ Use prefixes:
 - **Python**: Ruff (runs automatically)
 - **React/TS**: Biome (runs automatically)
 
+## Pre-commit Hooks
+
+We use pre-commit hooks to ensure code quality. Install them after cloning:
+
+```bash
+uv tool install pre-commit
+pre-commit install
+```
+
+Hooks run automatically on commit. If blocked, fix issues and commit again.
+
 ## Questions?
 
 Ask the team! We're here to help.
