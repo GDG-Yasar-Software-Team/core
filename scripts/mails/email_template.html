@@ -11,124 +11,89 @@
             margin: 0;
             padding: 0;
             font-family: 'Poppins', Arial, sans-serif;
-            background-color: #f0f2f5;
+            background-color: #f0f2f5; 
         }
 
-        table {
-            border-spacing: 0;
-        }
+        table { border-spacing: 0; }
+        td { padding: 0; }
+        img { border: 0; }
 
-        td {
-            padding: 0;
-        }
-
-        img {
-            border: 0;
-        }
-
+        /* Lila Gradient Başlık */
         .header-bg {
-            background: linear-gradient(135deg, #74a0f4 0%, #a29bfe 100%);
+            background: linear-gradient(135deg, #74a0f4 0%, #a29bfe 100%); 
         }
 
-        .container {
-            max-width: 600px;
-        }
-
-        .logo-row {
-            padding: 16px 20px 6px 20px;
-        }
-
-        .logo-box {
-            width: 120px;
-            height: 120px;
-            background-color: #ffffff;
-            display: inline-block;
-            margin: 0 10px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
-            /* kare olsun diye radius yok */
-        }
-
-        .logo-img {
-            width: 80%;
-            height: 80%;
-            object-fit: contain;
-            display: block;
-            margin: 10% auto;
-        }
+        .container { max-width: 600px; }
 
         .header-title {
             margin: 0;
             font-family: 'Poppins', sans-serif;
-            font-size: 34px;
+            font-size: 38px;
             font-weight: 700;
             color: #ffffff;
             text-transform: uppercase;
             line-height: 1.1;
-            text-shadow: 0 3px 15px rgba(0,0,0,0.3);
+            text-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+            letter-spacing: 1px;
         }
 
-        .content {
-            padding: 32px 35px 20px 35px;
+        .content { padding: 35px 40px 25px 40px; }
+
+        /* Etkinlik Detayları Kutusu */
+        .event-details-box {
+            border: none;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Buton Stili (Lila ile Uyumlu Fuşya) */
+        .button {
+            display: inline-block;
+            padding: 14px 36px;
+            background-color: #E91E63; /* Fuşya (CTA için) */
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        /* Liste Kutusu (Lila ile Uyumlu) */
+        .list-box {
+            border: 1px solid #dcd0ff; 
+            background-color: #f6f3ff; /* Açık Lila Arka Plan */
+        }
+
+        /* Konuşmacı Unvanı Stili (İstenen Siyah Renk) */
+        .speaker-title {
+            font-size: 15px; 
+            color: #000000; /* Siyah */
+            font-weight: 600;
         }
 
         @media screen and (max-width: 600px) {
-            .container {
-                width: 100% !important;
-                border-radius: 0 !important;
-            }
-
-            .content {
-                padding: 25px 20px !important;
-            }
-
-            .header-title {
-                font-size: 26px !important;
-            }
-
-            .logo-box {
-                width: 90px;
-                height: 90px;
-                margin: 0 6px;
-            }
+            .container { width: 100% !important; border-radius: 0 !important; }
+            .content { padding: 25px 20px !important; }
+            .header-title { font-size: 30px !important; }
         }
     </style>
 </head>
+
 <body style="margin: 0; padding: 0; background-color: #f0f2f5;">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
     <tr>
         <td align="center" style="padding: 20px 0;">
+            
             <table class="container" role="presentation" width="600" cellspacing="0" cellpadding="0" border="0"
-                   style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); overflow: hidden;">
-                <!-- HEADER -->
+                   style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); overflow: hidden;">
+
                 <tr>
-                    <td align="center" class="header-bg" style="padding: 18px 30px 24px 30px;">
+                    <td align="center" class="header-bg" style="padding: 30px 30px 35px 30px;">
                         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
-                            <!-- Logos -->
                             <tr>
-                                <td align="center" class="logo-row">
-                                    <div class="logo-box">
-                                        <img class="logo-img"
-                                             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReY-qM4IsOSH9mVLvyx55K8zd3FxOvhs9waQ&s"
-                                             alt="Yaşar Üniversitesi">
-                                    </div>
-                                    <div class="logo-box">
-                                        <img class="logo-img"
-                                             src="https://res.cloudinary.com/startup-grind/image/upload/c_fill,dpr_2,f_auto,g_center,q_auto:good/v1/gcs/platform-data-goog/events/gdsc-social-share.png"
-                                             alt="Google Developer Student Clubs">
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Subline -->
-                            <tr>
-                                <td align="center" style="padding: 6px 10px 10px 10px;">
-                                    <p style="margin: 0; font-size: 13px; color: #ffffff; font-weight: 600; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">
-                                        On Campus · Yaşar University
-                                    </p>
-                                </td>
-                            </tr>
-                            <!-- Title -->
-                            <tr>
-                                <td align="center" style="padding: 6px 20px 8px 20px;">
+                                <td align="center" style="padding: 10px 0;">
                                     <h2 class="header-title">
                                         BUILD YOUR<br>CIRCLE, BUILD YOURSELF
                                     </h2>
@@ -138,143 +103,144 @@
                     </td>
                 </tr>
 
-                <!-- CONTENT -->
                 <tr>
                     <td class="content">
-                        <h1 style="margin: 0 0 15px 0; font-size: 24px; font-weight: 700; color: #333333; text-align: center;">
+
+                        <h1 style="margin: 0 0 18px 0; font-size: 28px; font-weight: 700; color: #333333; text-align: center;">
                             Bağlantılarınla Kariyerini Güçlendir! 🚀
                         </h1>
 
-                        <p style="margin: 0 0 26px 0; font-size: 16px; line-height: 24px; color: #666666; text-align: center;">
+                        <p style="margin: 0 0 30px 0; font-size: 16px; line-height: 26px; color: #666666; text-align: center;">
                             Çevren ne kadar güçlü olursa, kariyer yolculuğun o kadar hızlı ve verimli olur. Bu etkinlikte,
                             doğru insanlarla tanışmanın ve profesyonel ağını oluşturmanın püf noktalarını keşfedeceksin.
                         </p>
 
-                    
                         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
-                               style="margin-bottom: 26px; border: 1px solid #e0e0e0; border-radius: 8px;">
+                               style="margin-bottom: 30px; border-radius: 10px;"
+                               class="list-box">
                             <tr>
-                                <td style="padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
-                                    <p style="margin: 0 0 10px 0; font-size: 18px; color: #4285F4; font-weight: 600;">
-                                        Bu Etkinlikte Neler Var?
+                                <td style="padding: 20px; border-radius: 10px;">
+                                    <p style="margin: 0 0 12px 0; font-size: 19px; color: #a29bfe; font-weight: 700;">
+                                        🎯 Bu Etkinlikte Neler Var?
                                     </p>
-                                    <ul style="margin: 0; padding-left: 20px; font-size: 16px; color: #333333; line-height: 26px;">
-                                        <li style="margin-bottom: 5px;">Networking'in Püf Noktaları</li>
-                                        <li style="margin-bottom: 5px;">Doğru İnsanlarla Tanışma Stratejileri</li>
-                                        <li style="margin-bottom: 5px;">Kariyerde Bağlantıların Gücünü Keşfetme</li>
+                                    <ul style="margin: 0; padding-left: 20px; font-size: 16px; color: #333333; line-height: 28px;">
+                                        <li style="margin-bottom: 6px;">Networking'in Püf Noktaları (Başarılı Bağlantı Kurma Teknikleri)</li>
+                                        <li style="margin-bottom: 6px;">Doğru İnsanlarla Tanışma Stratejileri (Hedef Odaklı Ağ Oluşturma)</li>
+                                        <li style="margin-bottom: 6px;">Kariyerde Bağlantıların Gücünü Keşfetme (Yükseliş için Stratejik Ağ)</li>
                                     </ul>
                                 </td>
                             </tr>
                         </table>
 
-                       
                         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
-                               style="background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 26px;">
+                               style="background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 10px; margin-bottom: 30px;"
+                               class="event-details-box">
                             <tr>
-                                <td class="event-details" style="padding: 22px 24px;">
-                                  
-                                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
-                                           style="margin-bottom: 14px;">
+                                <td style="padding: 25px 28px;">
+
+                                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 16px;">
                                         <tr>
-                                            <td width="30" valign="top" style="font-size: 20px; line-height: 20px;">🗣️</td>
-                                            <td style="font-size: 16px; color: #333333; line-height: 24px;">
+                                            <td width="30" valign="top" style="font-size: 22px; color: #a29bfe;">🗣️</td>
+                                            <td style="font-size: 16px; color: #333333; line-height: 24px; padding-left: 10px;">
                                                 <strong>Konuşmacı:</strong> Elif Bilge Parlak<br>
-                                                <span style="font-size: 14px; color: #666666;">iOS Developer @TurkishTechnology</span>
+                                                <span class="speaker-title">iOS Developer @TurkishTechnology</span>
                                             </td>
                                         </tr>
                                     </table>
 
-                                   
-                                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
-                                           style="margin-bottom: 14px;">
+                                    <hr style="border: none; border-top: 1px solid #eeeeee; margin: 16px 0;">
+                                    
+                                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 16px;">
                                         <tr>
-                                            <td width="30" valign="top" style="font-size: 20px; line-height: 20px;">📅</td>
-                                            <td style="font-size: 16px; color: #333333; line-height: 24px;">
+                                            <td width="30" valign="top" style="font-size: 22px; color: #a29bfe;">🗓️</td>
+                                            <td style="font-size: 16px; color: #333333; line-height: 24px; padding-left: 10px;">
                                                 <strong>Tarih:</strong> 12 Aralık 2025
                                             </td>
                                         </tr>
                                     </table>
 
-                                    
-                                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
-                                           style="margin-bottom: 14px;">
+                                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 16px;">
                                         <tr>
-                                            <td width="30" valign="top" style="font-size: 20px; line-height: 20px;">⏰</td>
-                                            <td style="font-size: 16px; color: #333333; line-height: 24px;">
+                                            <td width="30" valign="top" style="font-size: 22px; color: #a29bfe;">🕒</td>
+                                            <td style="font-size: 16px; color: #333333; line-height: 24px; padding-left: 10px;">
                                                 <strong>Saat:</strong> 19:00
                                             </td>
                                         </tr>
                                     </table>
 
-                                   
                                     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                                         <tr>
-                                            <td width="30" valign="top" style="font-size: 20px; line-height: 20px;">📍</td>
-                                            <td style="font-size: 16px; color: #333333; line-height: 24px;">
+                                            <td width="30" valign="top" style="font-size: 22px; color: #a29bfe;">📍</td>
+                                            <td style="font-size: 16px; color: #333333; line-height: 24px; padding-left: 10px;">
                                                 <strong>Konum:</strong> Y-110, Yaşar Üniversitesi
                                             </td>
                                         </tr>
                                     </table>
+
                                 </td>
                             </tr>
                         </table>
 
-                      
                         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
-                               style="background-color: #FFF8E1; border-left: 5px solid #FFC107; border-radius: 4px; margin-bottom: 26px;">
+                               style="background-color: #FFF3E0; border-left: 6px solid #FF9800; border-radius: 6px; margin-bottom: 30px;">
                             <tr>
-                                <td style="padding: 14px 16px;">
-                                    <p style="margin: 0; font-size: 14px; color: #6D4C41; line-height: 20px;">
-                                        <strong>📢 Bilgilendirme:</strong> Etkinlik dili Türkçe'dir.
+                                <td style="padding: 16px 18px;">
+                                    <p style="margin: 0; font-size: 15px; color: #E65100; line-height: 22px; font-weight: 600;">
+                                        ℹ️ Not: Etkinlik dili Türkçe'dir. Kayıt yaptırmayı unutmayın!
                                     </p>
                                 </td>
                             </tr>
                         </table>
 
-                       
                         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                             <tr>
-                                <td align="center" style="padding: 6px 0 22px 0;">
+                                <td align="center" style="padding: 8px 0 30px 0;">
                                     <a href="https://docs.google.com/forms/d/10dkGQniItpeT3E_y7ek_MzP-oWNurQsTeH7DQezZPzM/viewform?fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnzKt8_qPI-kci3ieWlvzBkNWc5BkbV9lEQwc3GrpjGLbyd0kI7GPVi1-GCag_aem_CHg1B5VoVp9OTx-zeVcMVQ&edit_requested=true"
-                                       style="display: inline-block; padding: 12px 32px; background-color: #4285F4; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 3px 8px rgba(66, 133, 244, 0.45);">
-                                        Kayıt Ol
+                                       class="button">
+                                        Hemen Kayıt Ol
                                     </a>
                                 </td>
                             </tr>
                         </table>
+
                     </td>
                 </tr>
 
-                <!-- FOOTER -->
                 <tr>
-                    <td style="padding: 24px 35px 28px 35px; background-color: #f0f2f5; border-top: 1px solid #e0e0e0;">
-                        <!-- Social -->
+                    <td style="padding: 28px 40px 32px 40px; background-color: #f0f2f5; border-top: 1px solid #dddddd;">
+
                         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
-                               style="margin-bottom: 18px;">
+                               style="margin-bottom: 20px;">
                             <tr>
                                 <td align="center">
-                                    <a href="https://instagram.com/yu.gdgoncampus"
-                                       style="display: inline-block; margin: 0 10px; font-size: 26px; text-decoration: none;">📸</a>
-                                    <a href="https://linkedin.com/company/gdgoncampus-yasar"
-                                       style="display: inline-block; margin: 0 10px; font-size: 26px; text-decoration: none;">🔗</a>
-                                    <a href="https://twitter.com/yugdgoncampus"
-                                       style="display: inline-block; margin: 0 10px; font-size: 26px; text-decoration: none;">🐦</a>
+                                    <a href="https://instagram.com/yu.gdgoncampus" style="display: inline-block; margin: 0 12px; font-size: 28px; text-decoration: none; color: #a29bfe;">
+                                        📸
+                                    </a>
+                                    <a href="https://linkedin.com/company/gdgoncampus-yasar" style="display: inline-block; margin: 0 12px; font-size: 28px; text-decoration: none; color: #a29bfe;">
+                                        🔗
+                                    </a>
+                                    <a href="https://twitter.com/yugdgoncampus" style="display: inline-block; margin: 0 12px; font-size: 28px; text-decoration: none; color: #a29bfe;">
+                                        🐦
+                                    </a>
                                 </td>
                             </tr>
                         </table>
 
-                        <!-- Contact -->
-                        <p style="margin: 0 0 12px 0; font-size: 14px; line-height: 20px; color: #666666; text-align: center;">
-                            <strong>GDG On Campus Yaşar Üniversitesi</strong><br>
+                        <p style="margin: 0 0 10px 0; font-size: 14px; line-height: 22px; color: #888888; text-align: center;">
+                            GDG on Campus · Yaşar University
+                        </p>
+                         <p style="margin: 0; font-size: 14px; line-height: 22px; color: #888888; text-align: center;">
                             Bilgi ve İletişim:
-                            <a href="mailto:gdgoncampus@yasar.edu.tr"
-                               style="color: #4285F4; text-decoration: none; font-weight: 600;">gdgoncampus@yasar.edu.tr</a>
+                            <a href="mailto:gdgoncampus@yasar.edu.tr" style="color: #a29bfe; text-decoration: none; font-weight: 600;">
+                                gdgoncampus@yasar.edu.tr
+                            </a>
                         </p>
 
-                                    
                     </td>
                 </tr>
+
             </table>
+
         </td>
     </tr>
 </table>
