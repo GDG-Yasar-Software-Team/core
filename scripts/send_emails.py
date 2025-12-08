@@ -1,11 +1,7 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-
 import logging  
-
-SERVER = "smtp.gmail.com"
-PORT = 587
 
 SENDER = "sender_mail_address@gmail.com" 
 PASSWORD = "sender_mail_password" 
@@ -14,8 +10,13 @@ def send_emails(
         mail_topic: str,
         mail_body: str,
         recievers: list[str]
-        ) :  
+        ) :
+    
+    # SMTP server to be used 
+    SMTP_SERVER = "smtp.gmail.com"
+    PORT = 587
 
+    # Logging configuration
     fmt1 = "%(asctime)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging.INFO,format= fmt1)
     logger = logging.getLogger(__name__)
@@ -28,9 +29,9 @@ def send_emails(
     fail_count = 0
 
     try : 
-        logger.info(f"{SERVER}:{PORT}'a bağlaniliyor...")
-        with  smtplib.SMTP(SERVER,PORT) as client :  
-            logger.info(f"{SERVER}:{PORT}'a bağlanildi!")
+        logger.info(f"{SMTP_SERVER}:{PORT}'a bağlaniliyor...")
+        with  smtplib.SMTP(SMTP_SERVER,PORT) as client :  
+            logger.info(f"{SMTP_SERVER}:{PORT}'a bağlanildi!")
             client.starttls()   
             logger.info(f"{SENDER}'a giris yapiliyor...")
             client.login(SENDER,PASSWORD)
