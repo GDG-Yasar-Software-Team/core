@@ -1,55 +1,65 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import logging  
 
-SENDER = "sender_mail_address@gmail.com" 
-PASSWORD = "sender_mail_password" 
+import logging
+from dotenv import load_dotenv
+import os  
 
 def send_emails(
         mail_topic: str,
         mail_body: str,
-        recievers: list[str]
+        recievers: list[str],
         ) :
+    try :     
+        # Logging configuration
+        format_info = "%(asctime)s - %(levelname)s - %(message)s"
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        logging.basicConfig(level=logging.INFO,format=format_info)
+        logger = logging.getLogger(__name__)
+        file_handler = logging.FileHandler(script_dir + "/send_mails.log")
+        file_handler.setFormatter(logging.Formatter(format_info))
+        logger.addHandler(file_handler)
+    except Exception as e :
+        print(f"Logging setup failed: {e}")
+        return
     
-    # SMTP server to be used 
-    SMTP_SERVER = "smtp.gmail.com"
-    PORT = 587
-
-    # Logging configuration
-    fmt1 = "%(asctime)s - %(levelname)s - %(message)s"
-    logging.basicConfig(level=logging.INFO,format= fmt1)
-    logger = logging.getLogger(__name__)
-
-    file_handler = logging.FileHandler("send_mails.log", encoding="utf-8")
-    file_handler.setFormatter(logging.Formatter(fmt1))
-    logger.addHandler(file_handler)
-
-    success_count = 0 
-    fail_count = 0
-
-    try : 
-        logger.info(f"{SMTP_SERVER}:{PORT}'a bağlaniliyor...")
-        with  smtplib.SMTP(SMTP_SERVER,PORT) as client :  
-            logger.info(f"{SMTP_SERVER}:{PORT}'a bağlanildi!")
-            client.starttls()   
-            logger.info(f"{SENDER}'a giris yapiliyor...")
-            client.login(SENDER,PASSWORD)
-            logger.info("Giris basarili!")
-            for r in recievers : 
-                try :
-                    msg = MIMEMultipart() 
-                    msg["From"] = SENDER 
-                    msg["To"] = r
-                    msg["Subject"] = mail_topic
-                    msg.attach(MIMEText(mail_body,"plain"))
-                    client.sendmail(SENDER,r,msg.as_string())
-                    success_count += 1
-                    logger.info(f"{r} 'a basarıyla gönderildi")
-                except ValueError as ve:
-                    logger.error(f"{r}'a gönderilemedi : {str(ve)}")
-                    fail_count +=1             
-    except ValueError as ve: 
-        logger.error(f"{str(ve)}")
-    else : 
-        logger.info(f"{len(recievers)} deneme, {success_count} basarili, {fail_count} basarisiz")
+    try :
+        # SMTP server configuration
+        env_file_path = script_dir + "/.env"
+        logger.info(f"Loading environment variables from {env_file_path}")
+        load_dotenv(dotenv_path=env_file_path)
+        SMTP_SERVER     = os.getenv("SMTP_SERVER")
+        PORT            = os.getenv("PORT")
+        SENDER_ADRESS   = os.getenv("SENDER_ADRESS") 
+        PASSWORD        = os.getenv("PASSWORD")
+        logger.info("Environment variables loaded successfully")
+    except Exception as e :
+        logger.error(f"Failed to load environment variables: {e}")
+        return
+    
+    try :
+         # Establishing connection to the SMTP server
+        logger.info(f"Connecting to {SMTP_SERVER}:{PORT}'")
+        client = smtplib.SMTP(SMTP_SERVER,PORT)  
+        logger.info(f"Success on connecting to {SMTP_SERVER}:{PORT}")
+        client.starttls()   
+        logger.info(f"Logging in to {SENDER_ADRESS}")
+        client.login(SENDER_ADRESS,PASSWORD)
+        logger.info("Logged in successfully!")
+    except smtplib.SMTPException as e : 
+        logger.error(f"SMTP error occurred: {e}")
+    else :
+        for r in recievers : 
+            try :
+                # Create and send email
+                msg = MIMEMultipart() 
+                msg["From"] = SENDER_ADRESS 
+                msg["To"] = r
+                msg["Subject"] = mail_topic
+                msg.attach(MIMEText(mail_body,"plain"))
+                client.sendmail(SENDER_ADRESS,r,msg.as_string())
+                logger.info(f"Send to {r} successfully!")
+            except smtplib.SMTPException as e : 
+                logger.error(f"Failed to send {r} : {e}")
+        return
