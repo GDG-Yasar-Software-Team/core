@@ -31,7 +31,7 @@ def send_emails(
         logger.info(f"Loading environment variables from {env_file_path}")
         load_dotenv(dotenv_path=env_file_path)
         SMTP_SERVER = os.getenv("SMTP_SERVER")
-        PORT = os.getenv("PORT")
+        PORT = int(os.getenv("PORT"))
         SENDER_ADRESS = os.getenv("SENDER_ADRESS")
         PASSWORD = os.getenv("PASSWORD")
         logger.info("Environment variables loaded successfully")
@@ -64,3 +64,6 @@ def send_emails(
             except smtplib.SMTPException as e:
                 logger.error(f"Failed to send {r} : {e}")
         return
+    finally:
+        client.quit()
+        logger.info("SMTP client connection closed.")
