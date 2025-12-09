@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abonelikten Çık - GDG On Campus Yaşar Üniversitesi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #e8eef3;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .dots {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ff5f57; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #28ca42; }
+        .dot-blue { background: #4285f4; }
+
+        .title {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        .content h2 {
+            color: #333;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .email-section {
+            margin-bottom: 20px;
+        }
+
+        .email-section label {
+            display: block;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .email-display {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .warning {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #333;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: #4285f4;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-stay {
+            background: #26a69a;
+            color: white;
+        }
+
+        .btn-stay:hover {
+            background: #229387;
+        }
+
+        .btn-unsubscribe {
+            background: #ef5350;
+            color: white;
+        }
+
+        .btn-unsubscribe:hover {
+            background: #e53935;
+        }
+
+        .success-message,
+        .error-message {
+            display: none;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .buttons {
+                flex-direction: column-reverse;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+                <div class="dot dot-blue"></div>
+            </div>
+            <div class="title">GDG on Campus · Yaşar University</div>
+        </div>
+
+        <div class="content">
+            <h2>Abonelikten Çıkmak İstediğinize Emin misiniz?</h2>
+            
+            <div class="email-section">
+                <label>E-posta adresiniz:</label>
+                <span class="email-display">example@mail.com</span>
+            </div>
+
+            <p class="warning">
+                Aboneliğinizi sonlandırırsanız, topluluk duyurularından ve etkinliklerden haberdar olamayacaksınız.
+            </p>
+
+            <form id="unsubscribeForm">
+                <div class="form-group">
+                    <label for="reason">Neden ayrılmak istiyorsunuz? (opsiyonel)</label>
+                    <select id="reason" name="reason">
+                        <option value="">Bir seçenek belirleyin</option>
+                        <option value="too-many">Çok fazla e-posta alıyorum</option>
+                        <option value="not-relevant">İçerik bana uygun değil</option>
+                        <option value="different-email">Farklı bir e-posta kullanıyorum</option>
+                        <option value="other">Diğer</option>
+                    </select>
+                </div>
+
+                <div class="buttons">
+                    <button type="button" class="btn btn-stay" id="stayBtn">
+                        Kalmak İstiyorum
+                    </button>
+                    <button type="button" class="btn btn-unsubscribe" id="unsubscribeBtn">
+                        Abonelikten Çık
+                    </button>
+                </div>
+            </form>
+
+            <div class="success-message" id="successMessage">
+                ✓ Aboneliğiniz başarıyla sonlandırıldı.
+            </div>
+            <div class="error-message" id="errorMessage">
+                ✗ Bir hata oluştu. Lütfen tekrar deneyin.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const stayBtn = document.getElementById('stayBtn');
+        const unsubscribeBtn = document.getElementById('unsubscribeBtn');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const form = document.getElementById('unsubscribeForm');
+
+        stayBtn.addEventListener('click', function() {
+            window.location.href = 'https://gdg.community.dev/';
+        });
+
+        unsubscribeBtn.addEventListener('click', function() {
+            const reason = document.getElementById('reason').value;
+            
+            setTimeout(() => {
+                form.style.display = 'none';
+                successMessage.style.display = 'block';
+                
+                setTimeout(() => {
+                    window.location.href = 'https://gdg.community.dev/';
+                }, 2000);
+            }, 500);
+        });
+    </script>
+</body>
+</html>
