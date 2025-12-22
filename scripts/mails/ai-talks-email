@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>AI TALKS'25 - GDG on Campus Yaşar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    body { margin:0; padding:0; font-family:'Poppins', Arial, sans-serif; background-color:#f0f2f5; }
+    table { border-spacing:0; }
+    td { padding:0; }
+    img { border:0; }
+
+    .container { max-width:600px; }
+    .content { padding:34px 40px 26px 40px; }
+
+    .card{
+      background-color:#ffffff;
+      border-radius:12px;
+      box-shadow:0 8px 30px rgba(0,0,0,0.10);
+      overflow:hidden;
+    }
+
+    .section-title{
+      margin:0 0 12px 0;
+      font-size:18px;
+      color:#111827;
+      font-weight:700;
+    }
+
+    .muted{ color:#6b7280; }
+
+    .list-box{
+      border:1px solid #eddee2;
+      background-color:#fff5f8;
+      border-radius:12px;
+    }
+
+    .event-details-box{
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      background-color:#ffffff;
+    }
+
+    
+    .speaker-photo{
+      display:block;
+      width:72px;
+      height:72px;
+      border-radius:50%;
+      border:4px solid #ffffff;
+      box-shadow:0 6px 18px rgba(0,0,0,0.16);
+      object-fit:cover;
+      object-position:center top;
+    }
+
+    
+    .note-cert{
+  background-color:#ffffff;
+  border:none;               
+  border-radius:12px;
+}
+   
+    .note-line{
+  font-size:14px;
+  line-height:22px;
+  color:#0f766e;   
+  font-weight:600;
+  margin:0;
+}
+
+    @media screen and (max-width:600px){
+      .container{ width:100% !important; border-radius:0 !important; }
+      .content{ padding:24px 18px !important; }
+    }
+  </style>
+</head>
+
+<body style="margin:0; padding:0; background-color:#f0f2f5;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+    <tr>
+      <td align="center" style="padding:20px 0;">
+        <table class="container card" role="presentation" width="600" cellspacing="0" cellpadding="0" border="0">
+
+      
+          <tr>
+            <td style="line-height:0; font-size:0;">
+              <img
+                src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/ai-talks-25/ai-talks-25ai-talks-email-banner.png"
+                alt="AI TALKS'25 Banner"
+                width="600"
+                style="display:block; width:100%; max-width:600px; height:auto; margin:0; padding:0;"
+              />
+            </td>
+          </tr>
+
+   
+          <tr>
+            <td class="content">
+
+              <h1 style="margin:0 0 10px 0; font-size:26px; font-weight:700; color:#111827; text-align:center;">
+                AI TALKS’25: Yapay Zeka ile Geleceği Yakala 🤖✨
+              </h1>
+
+              <p style="margin:0 0 20px 0; font-size:15.5px; line-height:26px; color:#4b5563; text-align:center;">
+                26 Aralık’ta güncel AI trendlerini ve gerçek dünya uygulamalarını sektör profesyonellerinden dinle.
+              </p>
+
+           
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+                     class="list-box" style="margin-bottom:22px;">
+                <tr>
+                  <td style="padding:18px 18px; border-radius:12px;">
+                    <p style="margin:0 0 10px 0; font-size:16px; color:#0f0808; font-weight:800;">
+                      🎯 Etkinlik Kapsamı
+                    </p>
+                    <ul style="margin:0; padding-left:18px; font-size:15px; color:#111827; line-height:26px;">
+                      <li style="margin-bottom:6px;">MLOps & Büyük Ölçekte Üretime Alma</li>
+                      <li style="margin-bottom:6px;">Gerçek Zamanlı AI Mimarileri</li>
+                      <li style="margin-bottom:6px;">Öneri Sistemleri & Kişiselleştirme</li>
+                      <li style="margin-bottom:0;">Kurumsal GenAI: RAG & Ajan Sistemleri</li>
+                    </ul>
+                  </td>
+                </tr>
+              </table>
+
+             
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+                     class="event-details-box" style="margin-bottom:14px;">
+                <tr>
+                  <td style="padding:20px 20px;">
+                    <p class="section-title" style="margin:0 0 14px 0;">📌 Etkinlik Bilgileri</p>
+
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:10px;">
+                      <tr>
+                        <td width="28" valign="top" style="font-size:20px;">🗓️</td>
+                        <td style="font-size:15px; color:#111827; line-height:24px;">
+                          <strong>Tarih:</strong> 26 Aralık 2025
+                        </td>
+                      </tr>
+                    </table>
+
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:10px;">
+                      <tr>
+                        <td width="28" valign="top" style="font-size:20px;">🕒</td>
+                        <td style="font-size:15px; color:#111827; line-height:24px;">
+                          <strong>Saat:</strong> 16:00 – 20:00
+                        </td>
+                      </tr>
+                    </table>
+
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td width="28" valign="top" style="font-size:20px;">📍</td>
+                        <td style="font-size:15px; color:#111827; line-height:24px;">
+                          <strong>Konum:</strong> Y-110, Yaşar Üniversitesi
+                        </td>
+                      </tr>
+                    </table>
+
+                  </td>
+                </tr>
+              </table>
+
+             
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+                     class="event-details-box" style="margin-bottom:14px;">
+                <tr>
+                  <td style="padding:20px 20px;">
+                    <p class="section-title" style="margin:0 0 14px 0;">🎤 Oturumlar & Konuşmacılar</p>
+
+                   
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:14px;">
+                      <tr>
+                        <td width="86" valign="top" align="center" style="padding-right:14px;">
+                          <img
+                            src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/ai-talks-25/halil_ibrahim_y%C4%B1ld%C4%B1r%C4%B1m.png"
+                            alt="Halil İbrahim Yıldırım"
+                            width="72" height="72"
+                            class="speaker-photo"
+                            style="display:block; width:72px; height:72px;"
+                          />
+                        </td>
+                        <td valign="middle" style="font-size:14.5px; color:#111827; line-height:22px;">
+                          <strong>1. Oturum:</strong> Makine Öğrenimini Büyük Ölçekte Operasyonelleştirme<br />
+                          <span class="muted">16:00–16:45 · Y-110</span><br />
+                          <span class="muted">Konuşmacı: Halil İbrahim Yıldırım</span>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <hr style="border:none; border-top:1px solid #eee; margin:12px 0;" />
+
+                   
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:14px;">
+                      <tr>
+                        <td width="86" valign="top" align="center" style="padding-right:14px;">
+                          <img
+                            src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/ai-talks-25/busra_korkmaz.png"
+                            alt="Büşra Korkmaz"
+                            width="72" height="72"
+                            class="speaker-photo"
+                            style="display:block; width:72px; height:72px;"
+                          />
+                        </td>
+                        <td valign="middle" style="font-size:14.5px; color:#111827; line-height:22px;">
+                          <strong>2. Oturum:</strong> Gerçek Zamanlı AI Mimarileri<br />
+                          <span class="muted">17:00–17:45 · Y-110</span><br />
+                          <span class="muted">Konuşmacı: Büşra Korkmaz</span>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <hr style="border:none; border-top:1px solid #eee; margin:12px 0;" />
+
+                    
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:14px;">
+                      <tr>
+                        <td width="86" valign="top" align="center" style="padding-right:14px;">
+                          <img
+                            src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/ai-talks-25/g%C3%BCrkan_y%C4%B1lmaz.png"
+                            alt="Gürkan Yılmaz"
+                            width="72" height="72"
+                            class="speaker-photo"
+                            style="display:block; width:72px; height:72px;"
+                          />
+                        </td>
+                        <td valign="middle" style="font-size:14.5px; color:#111827; line-height:22px;">
+                          <strong>3. Oturum:</strong> Kişiselleştirilmiş Öneri Sistemleri<br />
+                          <span class="muted">18:15–19:00 · Y-110</span><br />
+                          <span class="muted">Konuşmacı: Gürkan Yılmaz</span>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <hr style="border:none; border-top:1px solid #eee; margin:12px 0;" />
+
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td width="86" valign="top" align="center" style="padding-right:14px;">
+                          <img
+                            src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/ai-talks-25/oguzhan_nejat_karabas.png"
+                            alt="Oğuzhan Nejat Karabaş"
+                            width="72" height="72"
+                            class="speaker-photo"
+                            style="display:block; width:72px; height:72px;"
+                          />
+                        </td>
+                        <td valign="middle" style="font-size:14.5px; color:#111827; line-height:22px;">
+                          <strong>4. Oturum:</strong> Kurumsal GenAI: RAG, MLOps ve Ajan Sistemleri<br />
+                          <span class="muted">19:15–20:00 · Y-110</span><br />
+                          <span class="muted">Konuşmacı: Oğuzhan Nejat Karabaş</span>
+                        </td>
+                      </tr>
+                    </table>
+
+                  </td>
+                </tr>
+              </table>
+
+             
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:18px;">               
+                <tr>
+                 <td style="padding:2px 2px 0 2px;">                     
+                         <p class="note-line">🎓 Sertifikalı Etkinlik</p>
+                  </td>
+                </tr>
+              </table>
+
+              
+            
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:18px;">
+                <tr>
+                  <td style="padding:2px 2px 0 2px;">
+                    <p class="note-line">📌 Not: Etkinlik dili Türkçe’dir.</p>
+                  </td>
+                </tr>
+              </table>
+
+         
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td align="center" style="padding:6px 0 4px 0;">
+                    <a
+                      href="https://docs.google.com/forms/d/e/1FAIpQLSfWVlRu7jUv6dkuM0CABl5WBMKqDCo3-RJmkx2eVqsCJKvPBg/viewform"
+                      style="display:inline-block; padding:10px 22px; background-color:#B91C1C; color:#ffffff; text-decoration:none; border-radius:8px; font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:0.2px;"
+                    >
+                      Kayıt Ol
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          
+          <tr>
+            <td style="padding:24px 40px 28px 40px; background-color:#f0f2f5; border-top:1px solid #e5e7eb;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:14px;">
+                <tr>
+                  <td align="center">
+                    <a href="https://instagram.com/yu.gdgoncampus" style="display:inline-block; margin:0 10px; text-decoration:none;">
+                      <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"
+                        alt="Instagram"
+                        width="30" height="30"
+                        style="display:block;"
+                      />
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 8px 0; font-size:13px; line-height:20px; color:#6b7280; text-align:center;">
+                GDG on Campus · Yaşar University
+              </p>
+              <p style="margin:0; font-size:13px; line-height:20px; color:#6b7280; text-align:center;">
+                İletişim:
+                <a href="mailto:gdgoncampus.yu@gmail.com" style="color:#E91E63; text-decoration:none; font-weight:700;">
+                  gdgoncampus.yu@gmail.com
+                </a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
