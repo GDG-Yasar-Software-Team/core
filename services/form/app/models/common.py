@@ -2,6 +2,7 @@ from typing import Annotated, Any, TypeAlias
 from bson import ObjectId
 from pydantic import BeforeValidator, PlainSerializer
 
+
 def validate_object_id(obj: Any) -> ObjectId:
     """Validate and convert input to MongoDB ObjectId."""
     if isinstance(obj, ObjectId):

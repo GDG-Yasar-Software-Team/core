@@ -8,7 +8,7 @@ from services.form.app.models.common import PyObjectId
 
 class SubmissionCreate(BaseModel):
     form_id: PyObjectId
-    answers: dict[str, Any] = Field(...,min_length=1)
+    answers: dict[str, Any] = Field(..., min_length=1)
     respondent_email: EmailStr
     respondent_name: str | None = Field(default=None, max_length=100)
 
@@ -17,10 +17,7 @@ class SubmissionInDB(SubmissionCreate):
     id: PyObjectId = Field(alias="_id")
     submitted_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-    model_config = ConfigDict(
-        populate_by_name=True,
-        arbitrary_types_allowed=True
-    )
+    model_config = ConfigDict(populate_by_name=True, arbitrary_types_allowed=True)
 
 
 class SubmissionResponse(BaseModel):
@@ -34,4 +31,4 @@ class SubmissionResponse(BaseModel):
     model_config = ConfigDict(
         from_attributes=True,
         populate_by_name=True,
-        )
+    )
