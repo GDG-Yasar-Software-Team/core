@@ -14,6 +14,7 @@ class SubmissionCreate(BaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
+
 class SubmissionInDB(SubmissionCreate):
     id: PyObjectId = Field(alias="_id")
     submitted_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
