@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 
 from pydantic import BaseModel, Field, EmailStr, ConfigDict
@@ -15,7 +15,7 @@ class SubmissionCreate(BaseModel):
 
 class SubmissionInDB(SubmissionCreate):
     id: PyObjectId = Field(alias="_id")
-    submitted_at: datetime = Field(default_factory=lambda: datetime.now())
+    submitted_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     model_config = ConfigDict(
         populate_by_name=True,

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Self
 
@@ -28,7 +28,7 @@ class FormFieldSchema(BaseModel):
     field_id: str = Field(...,min_length=1,max_length=32)
     field_type: FieldType
     label: str = Field(...,min_length=1,max_length=200)
-    placeholder: str = Field(default=None, max_length=200)
+    placeholder: str | None = Field(default=None, max_length=200)
     required: bool = True # default true for now
     options: list[str] | None = None
     validation: FieldValidation | None = None
@@ -55,7 +55,7 @@ class FormCreate(BaseModel):
     def validate_dates(self) -> Self:
         if self.start_date and self.deadline:
             if not self.deadline <= self.start_date:
-                raise ValueError("Deadline must be before start date")
+                raise ValueError("Deadline must be after start date")
         return self
 
 class FormUpdate(BaseModel):
@@ -68,7 +68,7 @@ class FormUpdate(BaseModel):
 
 class FormInDB(FormCreate):
     id: PyObjectId = Field(alias="_id")  # Check the type hint
-    created_at: datetime = Field(default_factory=lambda: datetime.now()) # UTC
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime | None = None
     view_count: int = 0
     submission_count: int = 0
