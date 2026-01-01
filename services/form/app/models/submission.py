@@ -3,7 +3,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field, EmailStr, ConfigDict
 
-from services.form.app.models.common import PyObjectId
+from .common import PyObjectId
 
 
 class SubmissionCreate(BaseModel):
@@ -12,6 +12,7 @@ class SubmissionCreate(BaseModel):
     respondent_email: EmailStr
     respondent_name: str | None = Field(default=None, max_length=100)
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 class SubmissionInDB(SubmissionCreate):
     id: PyObjectId = Field(alias="_id")

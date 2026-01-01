@@ -1,10 +1,10 @@
 """Pydantic models for request/response schemas."""
 
 # Common utilities
-from services.form.app.models.common import PyObjectId, validate_object_id
+from .common import PyObjectId, validate_object_id
 
 # Form models
-from services.form.app.models.form import (
+from .form import (
     FieldType,
     FieldValidation,
     FormFieldSchema,
@@ -16,7 +16,7 @@ from services.form.app.models.form import (
 )
 
 # Submission models
-from services.form.app.models.submission import (
+from .submission import (
     SubmissionCreate,
     SubmissionInDB,
     SubmissionResponse,

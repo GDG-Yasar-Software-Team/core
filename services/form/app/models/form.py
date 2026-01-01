@@ -4,7 +4,7 @@ from typing import Self
 
 from pydantic import BaseModel, Field, model_validator, ConfigDict
 
-from services.form.app.models.common import PyObjectId
+from .common import PyObjectId
 
 
 class FieldType(str, Enum):
