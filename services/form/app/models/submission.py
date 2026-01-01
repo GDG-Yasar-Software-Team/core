@@ -7,7 +7,7 @@ from services.form.app.models.common import PyObjectId
 
 
 class SubmissionCreate(BaseModel):
-    form: PyObjectId
+    form_id: PyObjectId
     answers: dict[str, Any] = Field(...,min_length=1)
     respondent_email: EmailStr
     respondent_name: str | None = Field(default=None, max_length=100)
@@ -31,4 +31,7 @@ class SubmissionResponse(BaseModel):
     respondent_name: str | None
     submitted_at: datetime
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+        populate_by_name=True,
+        )

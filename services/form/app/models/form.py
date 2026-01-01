@@ -42,7 +42,6 @@ class FormFieldSchema(BaseModel):
         return self
 
 
-# CRUD models
 class FormCreate(BaseModel):
     title: str = Field(...,min_length=1,max_length=200)
     description: str = Field(...,min_length=1,max_length=2000)
@@ -54,17 +53,17 @@ class FormCreate(BaseModel):
     @model_validator(mode="after")
     def validate_dates(self) -> Self:
         if self.start_date and self.deadline:
-            if not self.deadline <= self.start_date:
+            if self.deadline <= self.start_date:
                 raise ValueError("Deadline must be after start date")
         return self
 
 class FormUpdate(BaseModel):
-    title: str = Field(...,min_length=1,max_length=200)
-    description: str = Field(...,min_length=1,max_length=2000)
-    questions: list[FormFieldSchema] | None = Field(default=None,min_length=1)
+    title: str | None = Field(default=None, min_length=1, max_length=200)
+    description: str | None = Field(default=None, min_length=1, max_length=2000)
+    questions: list[FormFieldSchema] | None = Field(default=None, min_length=1)
     start_date: datetime | None = None
     deadline: datetime | None = None
-    is_active: bool = True
+    is_active: bool | None = None
 
 class FormInDB(FormCreate):
     id: PyObjectId = Field(alias="_id")  # Check the type hint
