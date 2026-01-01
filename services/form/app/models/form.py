@@ -15,7 +15,7 @@ class FieldType(str, Enum):
     MULTISELECT = "multiselect"
     CHECKBOX = "checkbox"
     RADIO = "radio"
-    DATE = "date"  # ?
+    DATE = "date"
 
 
 class FieldValidation(BaseModel):
@@ -39,7 +39,7 @@ class FormFieldSchema(BaseModel):
     def validate_options_for_choice_fields(self) -> Self:
         choice_types = {FieldType.SELECT, FieldType.MULTISELECT, FieldType.RADIO}
         if self.field_type in choice_types:
-            if not self.options or len(self.options) == 0:
+            if not self.options:
                 raise ValueError(f"{self.field_type} requires non-empty options")
         return self
 
@@ -76,7 +76,7 @@ class FormInDB(FormCreate):
     view_count: int = 0
     submission_count: int = 0
 
-    model_config = ConfigDict(  #
+    model_config = ConfigDict(
         populate_by_name=True,
         arbitrary_types_allowed=True,
     )
@@ -95,7 +95,7 @@ class FormResponse(BaseModel):
     view_count: int
     submission_count: int
 
-    model_config = ConfigDict(from_attributes=True)  #
+    model_config = ConfigDict(from_attributes=True)
 
 
 class FormPreview(BaseModel):  # kept simply for now
