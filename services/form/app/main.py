@@ -6,6 +6,8 @@ from fastapi import FastAPI
 
 from app.db.mongodb import MongoDB
 
+from app.routers.submissions import router as submission_router
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -21,7 +23,7 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan,
 )
-
+app.include_router(submission_router, prefix="/submissions", tags=["submissions"])
 
 @app.get("/health", tags=["health"])
 async def health_check() -> dict[str, str]:
