@@ -25,6 +25,7 @@ app = FastAPI(
 )
 app.include_router(submission_router, prefix="/submissions", tags=["submissions"])
 
+
 @app.get("/health", tags=["health"])
 async def health_check() -> dict[str, str]:
     """Health check endpoint."""

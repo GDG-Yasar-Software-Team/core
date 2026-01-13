@@ -10,7 +10,9 @@ def validate_object_id(v: Any) -> str:
         raise ValueError("Geçersiz ObjectId")
     return str(v)
 
+
 PyObjectId = Annotated[str, AfterValidator(validate_object_id)]
+
 
 class SubmissionCreate(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -19,10 +21,12 @@ class SubmissionCreate(BaseModel):
     respondent_email: Optional[EmailStr] = None
     respondent_name: Optional[str] = None
 
+
 class SubmissionInDB(SubmissionCreate):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True)
     id: PyObjectId = Field(alias="_id")
     submitted_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 
 class SubmissionResponse(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -32,6 +36,7 @@ class SubmissionResponse(BaseModel):
     respondent_email: Optional[EmailStr] = None
     respondent_name: Optional[str] = None
     submitted_at: datetime
+
 
 class SubmissionListResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)

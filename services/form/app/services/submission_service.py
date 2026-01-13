@@ -33,45 +33,37 @@ async def get_forms_collection():
 
 
 async def create_submission(submission: SubmissionCreate) -> SubmissionResponse:
-    
-    
     forms_collection = await get_forms_collection()
     submissions_collection = await get_collection()
-    
-    
+
     try:
         f_id = ObjectId(submission.form_id)
         form_exists = await forms_collection.find_one({"_id": f_id})
     except Exception:
         raise HTTPException(status_code=400, detail="Invalid form_id format")
-        
+
     if not form_exists:
         raise HTTPException(status_code=404, detail="Form not found in database")
 
-    
     submission_data = {
-        "form_id": f_id, 
+        "form_id": f_id,
         "answers": submission.answers,
         "respondent_email": submission.respondent_email,
         "respondent_name": submission.respondent_name,
-        "submitted_at": datetime.now(timezone.utc)
+        "submitted_at": datetime.now(timezone.utc),
     }
-
 
     result = await submissions_collection.insert_one(submission_data)
 
-    
     created_doc = await submissions_collection.find_one({"_id": result.inserted_id})
 
-    
     return SubmissionResponse(
         id=str(created_doc["_id"]),
         form_id=str(created_doc["form_id"]),
         answers=created_doc["answers"],
         respondent_email=created_doc.get("respondent_email"),
         respondent_name=created_doc.get("respondent_name"),
-        submitted_at=created_doc["submitted_at"]
-    
+        submitted_at=created_doc["submitted_at"],
     )
 
 
