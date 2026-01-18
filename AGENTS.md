@@ -126,16 +126,16 @@ bun run biome format --write .    # Format code
 
 ### Branch Naming
 
-- `feature/` - New features
-- `fix/` - Bug fixes
-- `docs/` - Documentation updates
+- `feat/<issue-number>-<slug>` - New features (e.g., `feat/42-new-dashboard`)
+- `fix/<issue-number>-<slug>` - Bug fixes (e.g., `fix/55-button-overlap`)
+- `docs/<issue-number>-<slug>` - Documentation updates
 
 ### Commit Message Prefixes
 
 - `feat:` - New feature
 - `fix:` - Bug fix
 - `docs:` - Documentation
-- `refactor:` - Code refactoring
+- `ref:` - Code refactoring
 - `ci:` - CI/CD changes
 - `style:` - Formatting (no code change)
 
@@ -144,10 +144,20 @@ bun run biome format --write .    # Format code
 1. **Never commit directly to `main`**
 2. Create a branch from `main`
 3. Run formatters before opening PR (`make format`)
-4. Link issues in PR description (`Closes #123`)
-5. Request review from `@seberatolmez` or `@dogukanurker`
-6. At least one admin approval required
-7. **Always use "Squash and merge"**
+4. **PR Titles:**
+   - Must be all lowercase
+   - Must include scope (e.g., `fix(ff): ...`)
+
+   | Tag | Scope               |
+   | --- | ------------------- |
+   | fb  | **`form-backend`**  |
+   | ff  | **`form-frontend`** |
+
+5. **PR Template:** Agents must read `.github/PULL_REQUEST_TEMPLATE.md`
+6. Link issues in PR description (`Closes #123`)
+7. Request review from `@seberatolmez` or `@dogukanurker`
+8. At least one admin approval required
+9. **Always use "Squash and merge"**
 
 ## Important Files
 
