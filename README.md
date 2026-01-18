@@ -69,9 +69,9 @@ make run-form-backend       # Run form service (FastAPI) only
 make run-form-frontend      # Run form frontend dev server only
 
 # Code quality
-make lint                   # Lint & format both backend and frontend
-make lint-backend           # Lint & format backend only
-make lint-frontend          # Lint & format frontend only
+make lint                   # Lint & auto-fix both backend and frontend
+make lint-backend           # Lint & auto-fix backend only
+make lint-frontend          # Lint & auto-fix frontend only
 make format                 # Format both backend and frontend
 make format-backend         # Format backend only
 make format-frontend        # Format frontend only
