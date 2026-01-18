@@ -1,0 +1,38 @@
+name: sync-ai-prompts
+
+on:
+  pull_request:
+    paths:
+      - ".ai/**"
+      - "scripts/sync_prompts.py"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: code checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+          fetch-depth: 0
+
+      - name: setup python
+        uses: actions/setup-python@v5
+
+      - name: run sync script
+        run: make sync-prompts
+
+      - name: commit and push changes
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -m "chore: sync ai prompt files [skip ci]"
+            git push origin HEAD:${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
+          fi
