@@ -10,6 +10,7 @@ We should use this scopes in PR titles:
 | --- | ------------------- |
 | fb  | **`form-backend`**  |
 | ff  | **`form-frontend`** |
+| ma  | **`mail`**          |
 
 #### Example Usage
 

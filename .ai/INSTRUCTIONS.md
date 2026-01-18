@@ -151,6 +151,7 @@ make lint-frontend                # Lint code
    | --- | ------------------- |
    | fb  | **`form-backend`**  |
    | ff  | **`form-frontend`** |
+   | ma  | **`mail`**          |
 
 5. **PR Template:** Agents must read `.github/PULL_REQUEST_TEMPLATE.md`
 6. Link issues in PR description (`Closes #123`)
