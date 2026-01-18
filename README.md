@@ -2,6 +2,18 @@
 
 Monorepo for GDG on Campus Yasar University projects.
 
+<details>
+<summary><b>Scope legend for conventional commits</b></summary>
+<br>
+
+| Tag | Scope               |
+| --- | ------------------- |
+| fb  | **`form-backend`**  |
+| ff  | **`form-frontend`** |
+
+</details>
+</div>
+
 ## Structure
 
 ```
