@@ -2,6 +2,22 @@
 
 Monorepo for GDG on Campus Yasar University projects.
 
+## Scope Legend for Conventional Commits
+
+We should use this scopes in PR titles:
+
+| Tag | Scope               |
+| --- | ------------------- |
+| fb  | **`form-backend`**  |
+| ff  | **`form-frontend`** |
+
+#### Example Usage
+
+- feat(fb): add pagination feature to get submissions endpoint
+- ref(fb): move pagination logic to service layer
+- fix(ff): fix submit button onclick event
+- chore(ff): update dependencies
+
 ## Structure
 
 ```

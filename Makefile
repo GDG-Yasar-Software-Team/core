@@ -1,4 +1,4 @@
-.PHONY: help format-backend format-frontend format send-emails run-form-backend run-form-frontend
+.PHONY: help format-backend format-frontend format send-emails run-form-backend run-form-frontend sync-prompts
 
 help:
 	@echo "Available commands:"
@@ -8,6 +8,7 @@ help:
 	@echo "  make run-form-backend   - Run form backend (FastAPI)"
 	@echo "  make run-form-frontend  - Run form frontend development server"
 	@echo "  make send-emails        - Run email sender script"
+	@echo "  make sync-prompts       - Sync AI prompts"
 
 format-backend:
 	@echo "Formatting backend code..."
@@ -24,7 +25,7 @@ format: format-backend format-frontend
 
 send-emails:
 	@echo "Running email sender script..."
-	uv run scripts/send_email_campaign.py
+	cd scripts && uv run send_email_campaign.py
 	@echo "Email sending complete!"
 
 run-form-backend:
@@ -34,3 +35,8 @@ run-form-backend:
 run-form-frontend:
 	@echo "Starting form frontend development server..."
 	cd frontend/form && bun dev
+
+sync-prompts:
+	@echo "Syncing prompts..."
+	cd scripts && uv run sync_prompts.py
+	@echo "Prompts synced!"
