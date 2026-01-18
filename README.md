@@ -71,11 +71,7 @@ make run-form-frontend      # Run form frontend dev server only
 
 # Code quality
 make lint                   # Lint & auto-fix both backend and frontend
-make lint-backend           # Lint & auto-fix backend only
-make lint-frontend          # Lint & auto-fix frontend only
 make format                 # Format both backend and frontend
-make format-backend         # Format backend only
-make format-frontend        # Format frontend only
 
 # Utilities
 make clean                  # Remove cache and build artifacts
@@ -89,8 +85,8 @@ FastAPI service using [uv](https://docs.astral.sh/uv/) and [Ruff](https://docs.a
 ```bash
 make install            # Install dependencies
 make run-form-backend   # Run dev server
-make lint-backend       # Lint & auto-fix
-make format-backend     # Format code
+make lint               # Lint & auto-fix
+make format             # Format code
 ```
 
 ### Form Frontend
@@ -100,8 +96,8 @@ React app using [Bun](https://bun.sh/) and [Biome](https://biomejs.dev/).
 ```bash
 make install            # Install dependencies
 make run-form-frontend  # Run dev server
-make lint-frontend      # Lint & auto-fix
-make format-frontend    # Format code
+make lint               # Lint & auto-fix
+make format             # Format code
 ```
 
 ## Workflow
