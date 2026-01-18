@@ -1,4 +1,4 @@
-name: sync-ai-prompts
+name: Sync AI Prompts
 
 on:
   pull_request:
@@ -20,13 +20,16 @@ jobs:
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
           fetch-depth: 0
 
-      - name: setup python
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
 
-      - name: run sync script
+      - name: Set up Python
+        run: uv python install 3.14
+
+      - name: Run sync script
         run: make sync-prompts
 
-      - name: commit and push changes
+      - name: Commit and push changes
         if: github.event.pull_request.head.repo.full_name == github.repository
         run: |
           git config user.name "github-actions[bot]"
