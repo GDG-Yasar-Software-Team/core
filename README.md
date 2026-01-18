@@ -36,6 +36,27 @@ cd core
 
 ## Development
 
+### Quick Start with Makefile
+
+We provide a Makefile for common development tasks:
+
+```bash
+# Show all available commands
+make help
+
+# Format code
+make format                 # Format both backend and frontend
+make format-backend         # Format backend only
+make format-frontend        # Format frontend only
+
+# Run services
+make run-form-backend       # Run form service (FastAPI)
+make run-form-frontend      # Run form frontend dev server
+
+# Utilities
+make send-emails            # Run email sender script
+```
+
 ### Python (Backend)
 
 We use [uv](https://docs.astral.sh/uv/) for dependency management and [Ruff](https://docs.astral.sh/ruff/) for linting/formatting.
