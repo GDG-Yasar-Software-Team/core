@@ -48,9 +48,15 @@ This is a monorepo for GDG on Campus Yaşar University's core software infrastru
 
 ```bash
 make help               # List all commands
+make install            # Install all dependencies (backend + frontend)
+make dev                # Run both backend and frontend dev servers
+make lint               # Lint and auto-fix both backend and frontend
+make lint-backend       # Lint and auto-fix Python with Ruff
+make lint-frontend      # Lint and auto-fix JS/TS with Biome
 make format             # Format both backend and frontend
 make format-backend     # Format Python with Ruff
 make format-frontend    # Format JS/TS with Biome
+make clean              # Remove cache and build artifacts
 make run-form-backend   # Start FastAPI dev server
 make run-form-frontend  # Start Vite dev server
 make send-emails        # Run email campaign script
@@ -59,24 +65,19 @@ make send-emails        # Run email campaign script
 ### Backend (Python)
 
 ```bash
-cd services/form
-uv sync                           # Install dependencies
-uv run fastapi dev                # Run dev server
-uv run ruff format .              # Format code
-uv run ruff check .               # Lint code
-uv run ruff check --fix .         # Auto-fix issues
+make install                      # Install all dependencies
+make run-form-backend             # Run dev server
+make format-backend               # Format code
+make lint-backend                 # Lint code
 ```
 
 ### Frontend (React/TypeScript)
 
 ```bash
-cd frontend/form
-bun install                       # Install dependencies
-bun run dev                       # Run dev server
-bun run build                     # Build for production
-bun run biome check .             # Lint code
-bun run biome check --write .     # Auto-fix issues
-bun run biome format --write .    # Format code
+make install                      # Install all dependencies
+make run-form-frontend            # Run dev server
+make format-frontend              # Format code
+make lint-frontend                # Lint code
 ```
 
 ## Coding Conventions
