@@ -7,6 +7,8 @@ repos:
       - id: ruff-format
 
   - repo: https://github.com/biomejs/pre-commit
-    rev: v2.3.8
+    rev: v2.3.11
     hooks:
       - id: biome-check
+        files: ^frontend/
+        args: ["--config-path", "frontend/biome.json", "--write", "frontend/"]
