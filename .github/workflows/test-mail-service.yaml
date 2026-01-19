@@ -5,11 +5,11 @@ on:
     branches: [main]
     paths:
       - "services/mail/**"
-      - ".github/workflows/mail-service-tests.yml"
+      - ".github/workflows/test-mail-service.yaml"
   pull_request:
     paths:
       - "services/mail/**"
-      - ".github/workflows/mail-service-tests.yml"
+      - ".github/workflows/test-mail-service.yaml"
 
 jobs:
   test:
