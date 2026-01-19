@@ -16,7 +16,7 @@ help:
 
 install:
 	@echo "Installing form backend dependencies..."
-	cd services/form && uv sync
+	cd services/form && uv sync --all-extras
 	@echo "Installing mail backend dependencies..."
 	cd services/mail && uv sync --all-extras
 	@echo "Installing frontend dependencies..."
