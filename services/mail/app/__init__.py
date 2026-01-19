@@ -1,0 +1,1 @@
+"""Mail microservice package."""
