@@ -10,6 +10,7 @@ We should use this scopes in PR titles:
 | --- | ------------------- |
 | fb  | **`form-backend`**  |
 | ff  | **`form-frontend`** |
+| ma  | **`mail`**          |
 
 #### Example Usage
 
@@ -60,53 +61,43 @@ We provide a Makefile for common development tasks:
 # Show all available commands
 make help
 
-# Format code
-make format                 # Format both backend and frontend
-make format-backend         # Format backend only
-make format-frontend        # Format frontend only
+# Setup
+make install                # Install all dependencies (backend + frontend)
 
-# Run services
-make run-form-backend       # Run form service (FastAPI)
-make run-form-frontend      # Run form frontend dev server
+# Development
+make dev                    # Run both backend and frontend dev servers
+make run-form-backend       # Run form service (FastAPI) only
+make run-form-frontend      # Run form frontend dev server only
+
+# Code quality
+make lint                   # Lint & auto-fix both backend and frontend
+make format                 # Format both backend and frontend
 
 # Utilities
+make clean                  # Remove cache and build artifacts
 make send-emails            # Run email sender script
 ```
 
-### Python (Backend)
+### Form Backend
 
-We use [uv](https://docs.astral.sh/uv/) for dependency management and [Ruff](https://docs.astral.sh/ruff/) for linting/formatting.
+FastAPI service using [uv](https://docs.astral.sh/uv/) and [Ruff](https://docs.astral.sh/ruff/).
 
 ```bash
-# Install uv (if not installed)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Install dependencies (in service directory)
-cd services/form && uv sync
-
-# Format (from root)
-make format-backend
-
-# Lint (from service directory)
-cd services/form && uv run ruff check .
+make install            # Install dependencies
+make run-form-backend   # Run dev server
+make lint               # Lint & auto-fix
+make format             # Format code
 ```
 
-### React (Frontend)
+### Form Frontend
 
-We use [bun](https://bun.sh/) for package management and [Biome](https://biomejs.dev/) for linting/formatting.
+React app using [Bun](https://bun.sh/) and [Biome](https://biomejs.dev/).
 
 ```bash
-# Install bun (if not installed)
-curl -fsSL https://bun.sh/install | bash
-
-# Install dependencies (in frontend directory)
-cd frontend/form && bun install
-
-# Format (from root)
-make format-frontend
-
-# Lint (from frontend directory)
-cd frontend/form && bun run biome check .
+make install            # Install dependencies
+make run-form-frontend  # Run dev server
+make lint               # Lint & auto-fix
+make format             # Format code
 ```
 
 ## Workflow

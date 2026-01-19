@@ -50,35 +50,33 @@ This is a monorepo for GDG on Campus Yaşar University's core software infrastru
 
 ```bash
 make help               # List all commands
+make install            # Install all dependencies (backend + frontend)
+make dev                # Run both backend and frontend dev servers
+make lint               # Lint and auto-fix both backend and frontend
 make format             # Format both backend and frontend
-make format-backend     # Format Python with Ruff
-make format-frontend    # Format JS/TS with Biome
+make clean              # Remove cache and build artifacts
 make run-form-backend   # Start FastAPI dev server
 make run-form-frontend  # Start Vite dev server
 make send-emails        # Run email campaign script
+make sync-prompts       # Sync AI prompt files
 ```
 
 ### Backend (Python)
 
 ```bash
-cd services/form
-uv sync                           # Install dependencies
-uv run fastapi dev                # Run dev server
-uv run ruff format .              # Format code
-uv run ruff check .               # Lint code
-uv run ruff check --fix .         # Auto-fix issues
+make install            # Install all dependencies
+make run-form-backend   # Run dev server
+make format             # Format code
+make lint               # Lint code
 ```
 
 ### Frontend (React/TypeScript)
 
 ```bash
-cd frontend/form
-bun install                       # Install dependencies
-bun run dev                       # Run dev server
-bun run build                     # Build for production
-bun run biome check .             # Lint code
-bun run biome check --write .     # Auto-fix issues
-bun run biome format --write .    # Format code
+make install            # Install all dependencies
+make run-form-frontend  # Run dev server
+make format             # Format code
+make lint               # Lint code
 ```
 
 ## Coding Conventions
@@ -152,6 +150,7 @@ bun run biome format --write .    # Format code
    | --- | ------------------- |
    | fb  | **`form-backend`**  |
    | ff  | **`form-frontend`** |
+   | ma  | **`mail`**          |
 
 5. **PR Template:** Agents must read `.github/PULL_REQUEST_TEMPLATE.md`
 6. Link issues in PR description (`Closes #123`)
