@@ -42,12 +42,4 @@ jobs:
 
       - name: Run tests
         run: |
-          cd services/mail
-          uv run pytest -v --cov=app --cov-report=xml
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v4
-        with:
-          file: services/mail/coverage.xml
-          flags: mail-service
-          fail_ci_if_error: false
+          make test-mail-service
