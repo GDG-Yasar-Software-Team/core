@@ -8,9 +8,9 @@ We should use this scopes in PR titles:
 
 | Tag | Scope               |
 | --- | ------------------- |
-| fb  | **`form-backend`**  |
+| ma  | **`mail-service`**  |
+| fb  | **`form-service`**  |
 | ff  | **`form-frontend`** |
-| ma  | **`mail`**          |
 
 #### Example Usage
 

@@ -168,7 +168,7 @@ make lint               # Lint code
 
    | Tag | Scope               |
    | --- | ------------------- |
-   | fb  | **`form-backend`**  |
+   | fb  | **`form-service`**  |
    | ff  | **`form-frontend`** |
    | ma  | **`mail`**          |
 
