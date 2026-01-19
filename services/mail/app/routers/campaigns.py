@@ -21,8 +21,8 @@ router = APIRouter(prefix="/campaigns", tags=["campaigns"])
 @router.post("/", status_code=201)
 async def create_campaign(
     request: Request,
-    subject: Annotated[str, Form()] = None,
-    body_html: Annotated[str, Form()] = None,
+    subject: Annotated[str | None, Form()] = None,
+    body_html: Annotated[str | None, Form()] = None,
     body_file: Annotated[UploadFile | None, File()] = None,
     scheduled_sends: Annotated[str, Form()] = "[]",
     use_custom_subjects: Annotated[bool, Form()] = False,
@@ -30,7 +30,8 @@ async def create_campaign(
     """
     Create a new scheduled campaign.
 
-    Accepts either JSON body or form data with file upload.
+    For JSON requests: Send entire CampaignCreate as body
+    For form requests: subject is required, plus either body_html or body_file
     """
     # Check if this is a JSON request
     content_type = request.headers.get("content-type", "")

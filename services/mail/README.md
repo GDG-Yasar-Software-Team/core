@@ -43,10 +43,14 @@ cp .env.example .env
 | `SMTP_PORT`                        | SMTP server port               | `587`                       |
 | `SENDER_ADDRESS`                   | Sender email address           | (required)                  |
 | `SMTP_PASSWORD`                    | SMTP password/app password     | (required)                  |
+| `BASE_URL`                         | Base URL for unsubscribe links | `http://localhost:8000`     |
 | `UNSUBSCRIBE_SECRET_KEY`           | Secret for signing tokens      | `dev-secret-key`            |
 | `RATE_LIMIT_MIN_DELAY`             | Min delay between emails (sec) | `2.0`                       |
 | `RATE_LIMIT_MAX_DELAY`             | Max delay between emails (sec) | `6.0`                       |
 | `SCHEDULER_CHECK_INTERVAL_MINUTES` | Scheduler check frequency      | `1`                         |
+
+> [!WARNING]
+> **Production Deployment:** You MUST set `BASE_URL` to your production domain (e.g., `https://mail.gdg.com`) and `UNSUBSCRIBE_SECRET_KEY` to a cryptographically secure random value. The service will refuse to start in production mode with default values.
 
 ### Running
 

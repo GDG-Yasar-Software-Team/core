@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 
 from pydantic import BaseModel, Field
@@ -64,7 +64,7 @@ class CampaignInDB(BaseModel):
     status: CampaignStatus = CampaignStatus.SCHEDULED
     executions: list[ExecutionRecord] = Field(default_factory=list)
     executed_times: list[datetime] = Field(default_factory=list)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime | None = None
 
     model_config = {"populate_by_name": True, "arbitrary_types_allowed": True}

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from app.models.campaign import (
     CampaignCreate,
@@ -113,7 +113,7 @@ class CampaignService:
         # Update status to in_progress
         await CampaignRepository.update_status(campaign_id, CampaignStatus.IN_PROGRESS)
 
-        started_at = datetime.utcnow()
+        started_at = datetime.now(timezone.utc)
 
         try:
             # Fetch subscribed users
@@ -125,7 +125,7 @@ class CampaignService:
                     scheduled_time=scheduled_time,
                     subject_used=subject,
                     started_at=started_at,
-                    completed_at=datetime.utcnow(),
+                    completed_at=datetime.now(timezone.utc),
                     sent_count=0,
                     failed_count=0,
                     recipient_user_ids=[],
@@ -166,7 +166,7 @@ class CampaignService:
                 scheduled_time=scheduled_time,
                 subject_used=subject,
                 started_at=started_at,
-                completed_at=datetime.utcnow(),
+                completed_at=datetime.now(timezone.utc),
                 sent_count=sent_count,
                 failed_count=failed_count,
                 recipient_user_ids=recipient_ids,

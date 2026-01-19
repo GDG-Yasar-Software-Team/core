@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     SENDER_ADDRESS: str = ""
     SMTP_PASSWORD: str = ""
 
+    # Base URL for unsubscribe links
+    BASE_URL: str = "http://localhost:8000"
+
     # Security
     UNSUBSCRIBE_SECRET_KEY: str = "dev-secret-key"
 
@@ -45,6 +48,20 @@ class Settings(BaseSettings):
         """Load a template file by name."""
         template_path = self.templates_dir / template_name
         return template_path.read_text(encoding="utf-8")
+
+    def validate_production_config(self) -> None:
+        """Validate critical settings for production environments."""
+        if self.ENV == "production":
+            if self.UNSUBSCRIBE_SECRET_KEY == "dev-secret-key":
+                raise ValueError(
+                    "UNSUBSCRIBE_SECRET_KEY must be set to a secure value in production. "
+                    "Generate one with: python -c 'import secrets; print(secrets.token_urlsafe(32))'"
+                )
+            if not self.BASE_URL or self.BASE_URL == "http://localhost:8000":
+                raise ValueError(
+                    "BASE_URL must be set to your production domain in production. "
+                    "Example: https://mail.gdg.com"
+                )
 
 
 @lru_cache

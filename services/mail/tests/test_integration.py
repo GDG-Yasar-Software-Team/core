@@ -1,6 +1,6 @@
 """Integration tests for mail service."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from bson import ObjectId
@@ -32,7 +32,7 @@ class TestFullCampaignFlow:
                 "status": "scheduled",
                 "executions": [],
                 "executed_times": [],
-                "created_at": datetime.utcnow(),
+                "created_at": datetime.now(timezone.utc),
                 "updated_at": None,
             }
         )
@@ -95,7 +95,7 @@ class TestFullCampaignFlow:
             "status": "scheduled",
             "executions": [],
             "executed_times": [],
-            "created_at": datetime.utcnow(),
+            "created_at": datetime.now(timezone.utc),
             "updated_at": None,
         }
         updated_doc = original_doc.copy()

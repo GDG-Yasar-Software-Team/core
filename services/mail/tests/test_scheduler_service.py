@@ -1,6 +1,6 @@
 """Tests for scheduler service."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from bson import ObjectId
@@ -49,7 +49,10 @@ class TestCheckAndExecuteCampaigns:
     async def test_finds_due_campaigns(self, mock_mongodb, sample_campaign_doc):
         """Should find campaigns with due scheduled sends."""
         sample_campaign_doc["scheduled_sends"] = [
-            {"time": datetime(2025, 1, 15, 10, 0, 0), "subject": None}  # Past time
+            {
+                "time": datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+                "subject": None,
+            }  # Past time
         ]
         sample_campaign_doc["executed_times"] = []
 
@@ -71,7 +74,7 @@ class TestCheckAndExecuteCampaigns:
 
     async def test_executes_due_campaign(self, mock_mongodb, sample_campaign_doc):
         """Should execute campaigns with due times."""
-        due_time = datetime(2025, 1, 15, 10, 0, 0)
+        due_time = datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
         sample_campaign_doc["scheduled_sends"] = [{"time": due_time, "subject": None}]
         sample_campaign_doc["executed_times"] = []
 
@@ -98,14 +101,20 @@ class TestCheckAndExecuteCampaigns:
         doc1 = sample_campaign_doc.copy()
         doc1["_id"] = ObjectId("507f1f77bcf86cd799439021")
         doc1["scheduled_sends"] = [
-            {"time": datetime(2025, 1, 15, 10, 0, 0), "subject": None}
+            {
+                "time": datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+                "subject": None,
+            }
         ]
         doc1["executed_times"] = []
 
         doc2 = sample_campaign_doc.copy()
         doc2["_id"] = ObjectId("507f1f77bcf86cd799439022")
         doc2["scheduled_sends"] = [
-            {"time": datetime(2025, 1, 15, 11, 0, 0), "subject": None}
+            {
+                "time": datetime(2025, 1, 15, 11, 0, 0, tzinfo=timezone.utc),
+                "subject": None,
+            }
         ]
         doc2["executed_times"] = []
 
@@ -130,7 +139,7 @@ class TestCheckAndExecuteCampaigns:
         self, mock_mongodb, sample_campaign_doc
     ):
         """Should skip times that were already executed."""
-        executed_time = datetime(2025, 1, 15, 10, 0, 0)
+        executed_time = datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
         sample_campaign_doc["scheduled_sends"] = [
             {"time": executed_time, "subject": None}
         ]
@@ -158,14 +167,20 @@ class TestCheckAndExecuteCampaigns:
         doc1 = sample_campaign_doc.copy()
         doc1["_id"] = ObjectId("507f1f77bcf86cd799439021")
         doc1["scheduled_sends"] = [
-            {"time": datetime(2025, 1, 15, 10, 0, 0), "subject": None}
+            {
+                "time": datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+                "subject": None,
+            }
         ]
         doc1["executed_times"] = []
 
         doc2 = sample_campaign_doc.copy()
         doc2["_id"] = ObjectId("507f1f77bcf86cd799439022")
         doc2["scheduled_sends"] = [
-            {"time": datetime(2025, 1, 15, 11, 0, 0), "subject": None}
+            {
+                "time": datetime(2025, 1, 15, 11, 0, 0, tzinfo=timezone.utc),
+                "subject": None,
+            }
         ]
         doc2["executed_times"] = []
 

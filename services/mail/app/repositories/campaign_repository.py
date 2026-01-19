@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from bson import ObjectId
 
@@ -38,7 +38,7 @@ class CampaignRepository:
             "status": CampaignStatus.SCHEDULED.value,
             "executions": [],
             "executed_times": [],
-            "created_at": datetime.utcnow(),
+            "created_at": datetime.now(timezone.utc),
             "updated_at": None,
         }
 
@@ -85,7 +85,7 @@ class CampaignRepository:
                 for send in update_data["scheduled_sends"]
             ]
 
-        update_data["updated_at"] = datetime.utcnow()
+        update_data["updated_at"] = datetime.now(timezone.utc)
 
         result = await collection.update_one(
             {"_id": ObjectId(campaign_id)},
@@ -116,7 +116,7 @@ class CampaignRepository:
             {
                 "$set": {
                     "status": status.value,
-                    "updated_at": datetime.utcnow(),
+                    "updated_at": datetime.now(timezone.utc),
                 }
             },
         )
@@ -141,7 +141,7 @@ class CampaignRepository:
 
         update_ops = {
             "$push": {"executions": execution.model_dump()},
-            "$set": {"updated_at": datetime.utcnow()},
+            "$set": {"updated_at": datetime.now(timezone.utc)},
         }
 
         # Mark the scheduled time as executed if provided

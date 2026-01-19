@@ -1,6 +1,6 @@
 """Tests for campaign repository."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -207,7 +207,7 @@ class TestAddExecution:
         execution = ExecutionRecord(
             scheduled_time=datetime(2025, 1, 20, 10, 0, 0),
             subject_used="Test",
-            started_at=datetime.utcnow(),
+            started_at=datetime.now(timezone.utc),
             sent_count=5,
             failed_count=0,
         )

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
@@ -47,7 +47,7 @@ class SchedulerService:
     async def _check_and_execute_campaigns(cls) -> None:
         """Check for due campaigns and execute them."""
         try:
-            now = datetime.utcnow()
+            now = datetime.now(timezone.utc)
             campaigns = await CampaignRepository.get_due_campaigns(before_time=now)
 
             if not campaigns:

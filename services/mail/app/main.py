@@ -13,11 +13,16 @@ from app.services.scheduler_service import SchedulerService
 async def lifespan(app: FastAPI):
     """Lifespan context manager for the FastAPI application."""
     # Startup
+    from app.config import settings
+
+    # Validate production config
+    settings.validate_production_config()
+
     await MongoDB.connect()
 
-    # Configure and start scheduler
-    # The unsubscribe URL base will be set dynamically in the trigger endpoint
-    SchedulerService.configure(unsubscribe_url_base="")
+    # Configure and start scheduler with proper base URL
+    unsubscribe_url_base = f"{settings.BASE_URL.rstrip('/')}/unsubscribe"
+    SchedulerService.configure(unsubscribe_url_base=unsubscribe_url_base)
     SchedulerService.start()
 
     yield

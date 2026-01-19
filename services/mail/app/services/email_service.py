@@ -157,8 +157,10 @@ class EmailService:
             # Close connection
             try:
                 client.quit()
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(
+                    "Failed to close SMTP connection gracefully", error=str(e)
+                )
 
         except Exception as e:
             logger.error("SMTP session error", error=str(e))
