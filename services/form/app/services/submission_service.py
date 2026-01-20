@@ -32,10 +32,15 @@ class SubmissionService:
 
         Returns:
             ObjectId for MongoDB operations
+
+        Raises:
+            ValueError: If invalid ObjectId string is provided
         """
         if isinstance(obj_id, ObjectId):
             return obj_id
         if isinstance(obj_id, str):
+            if not ObjectId.is_valid(obj_id):
+                raise ValueError(f"Invalid ObjectId: {obj_id}")
             return ObjectId(obj_id)
         return obj_id
 
