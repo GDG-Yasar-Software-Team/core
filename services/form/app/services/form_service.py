@@ -86,7 +86,9 @@ class FormService:
 
         try:
             await self.collection.insert_one(form_doc)
-            logger.info(f"Successfully created form {form_doc['_id']}: {form_data.title}")
+            logger.info(
+                f"Successfully created form {form_doc['_id']}: {form_data.title}"
+            )
             return self._document_to_form(form_doc)
 
         except PyMongoError as e:
