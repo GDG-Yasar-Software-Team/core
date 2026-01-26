@@ -20,12 +20,23 @@ This is a monorepo for GDG on Campus Yaşar University's core software infrastru
 
 ```
 ├── services/           # Backend microservices (FastAPI)
-│   └── form/           # Form management service
+│   ├── form/           # Form management service
+│   │   └── app/
+│   │       ├── main.py       # Entry point
+│   │       ├── routers/      # API routes
+│   │       ├── models/       # Pydantic models
+│   │       ├── services/     # Business logic
+│   │       ├── db/           # Database (MongoDB)
+│   │       └── utils/        # Helpers
+│   └── mail/           # Email campaign service
 │       └── app/
 │           ├── main.py       # Entry point
+│           ├── config.py     # Settings (Pydantic BaseSettings)
 │           ├── routers/      # API routes
 │           ├── models/       # Pydantic models
+│           ├── repositories/ # Data access layer
 │           ├── services/     # Business logic
+│           ├── templates/    # HTML templates
 │           ├── db/           # Database (MongoDB)
 │           └── utils/        # Helpers
 ├── frontend/           # Frontend applications (React)
@@ -37,10 +48,19 @@ This is a monorepo for GDG on Campus Yaşar University's core software infrastru
 │           ├── services/     # API calls
 │           ├── types/        # TypeScript definitions
 │           └── utils/        # Helpers
-├── scripts/            # Utility scripts (email campaigns, etc.)
+├── scripts/            # Utility scripts
 ├── docs/               # Documentation & conventions
+├── .ai/                # AI agent instructions
+│   ├── INSTRUCTIONS.md      # Global instructions (this file)
+│   └── backend/mail/        # Mail service detailed docs
 └── .github/            # GitHub workflows, templates, CODEOWNERS
 ```
+
+## Service-Specific Instructions
+
+For detailed context on specific services, see:
+
+- **Mail Service**: `services/mail/{CLAUDE│AGENTS│GEMINI}.md` - Campaign scheduling, email sending, unsubscribe flow
 
 ## Development Commands
 
@@ -53,9 +73,11 @@ make dev                # Run both backend and frontend dev servers
 make lint               # Lint and auto-fix both backend and frontend
 make format             # Format both backend and frontend
 make clean              # Remove cache and build artifacts
-make run-form-backend   # Start FastAPI dev server
+make run-form-service   # Start form FastAPI dev server
 make run-form-frontend  # Start Vite dev server
-make send-emails        # Run email campaign script
+make run-mail-service   # Start mail FastAPI dev server
+make test-mail-backen   # Run mail service tests
+make run-mail-campaign  # Run email campaign CLI
 make sync-prompts       # Sync AI prompt files
 ```
 
@@ -63,7 +85,7 @@ make sync-prompts       # Sync AI prompt files
 
 ```bash
 make install            # Install all dependencies
-make run-form-backend   # Run dev server
+make run-form-service   # Run dev server
 make format             # Format code
 make lint               # Lint code
 ```
@@ -146,7 +168,7 @@ make lint               # Lint code
 
    | Tag | Scope               |
    | --- | ------------------- |
-   | fb  | **`form-backend`**  |
+   | fb  | **`form-service`**  |
    | ff  | **`form-frontend`** |
    | ma  | **`mail`**          |
 
@@ -158,15 +180,18 @@ make lint               # Lint code
 
 ## Important Files
 
-| File                           | Purpose                              |
-| ------------------------------ | ------------------------------------ |
-| `Makefile`                     | Central entry point for dev commands |
-| `services/form/pyproject.toml` | Backend dependencies                 |
-| `frontend/form/package.json`   | Frontend dependencies                |
-| `frontend/form/vite.config.ts` | Frontend build config                |
-| `frontend/biome.json`          | Biome (JS/TS linter) config          |
-| `.pre-commit-config.yaml`      | Pre-commit hooks config              |
-| `docs/*.md`                    | Detailed conventions                 |
+| File                               | Purpose                              |
+| ---------------------------------- | ------------------------------------ |
+| `Makefile`                         | Central entry point for dev commands |
+| `services/form/pyproject.toml`     | Form backend dependencies            |
+| `services/mail/pyproject.toml`     | Mail backend dependencies            |
+| `services/mail/app/config.py`      | Mail service settings                |
+| `frontend/form/package.json`       | Frontend dependencies                |
+| `frontend/form/vite.config.ts`     | Frontend build config                |
+| `frontend/biome.json`              | Biome (JS/TS linter) config          |
+| `.pre-commit-config.yaml`          | Pre-commit hooks config              |
+| `docs/*.md`                        | Detailed conventions                 |
+| `.ai/backend/mail/INSTRUCTIONS.md` | Mail service AI instructions         |
 
 ## Configuration & Secrets
 
@@ -176,6 +201,7 @@ make lint               # Lint code
 
 ## Testing Guidelines
 
-- No shared test runner at repo root yet
+- Mail service: `make test-mail-service` runs 126+ tests with pytest
+- Form service: No tests yet
 - If adding tests, include clear command in service README
-- Consider adding Makefile target (e.g., `make test-form-backend`)
+- Consider adding Makefile target (e.g., `make test-<service>`)
