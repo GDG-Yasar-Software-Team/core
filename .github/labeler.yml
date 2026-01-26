@@ -15,6 +15,12 @@ mail:
           - services/mail/*
           - services/mail/**/*
 
+user:
+  - changed-files:
+      - any-glob-to-any-file:
+          - services/user/*
+          - services/user/**/*
+
 form:
   - changed-files:
       - any-glob-to-any-file:
