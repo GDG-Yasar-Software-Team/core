@@ -22,8 +22,10 @@ def mock_settings():
     test_settings = Settings(
         MONGODB_URI="mongodb://localhost:27017",
         DATABASE_NAME="test_db",
-        USERS_COLLECTION="test_users",
         CAMPAIGNS_COLLECTION="test_mails",
+        USER_SERVICE_URL="http://localhost:8001",
+        USER_SERVICE_TOKEN="test-token",
+        USER_SERVICE_TIMEOUT=30.0,
         SMTP_SERVER="localhost",
         SMTP_PORT=587,
         SENDER_ADDRESS="test@example.com",
@@ -33,27 +35,21 @@ def mock_settings():
     )
     with patch("app.config.settings", test_settings):
         with patch("app.db.mongodb.settings", test_settings):
-            with patch("app.repositories.user_repository.settings", test_settings):
-                with patch(
-                    "app.repositories.campaign_repository.settings", test_settings
-                ):
-                    with patch("app.services.email_service.settings", test_settings):
-                        with patch(
-                            "app.services.unsubscribe_service.settings", test_settings
-                        ):
+            with patch("app.repositories.campaign_repository.settings", test_settings):
+                with patch("app.services.email_service.settings", test_settings):
+                    with patch(
+                        "app.services.unsubscribe_service.settings", test_settings
+                    ):
+                        with patch("app.clients.user_client.settings", test_settings):
                             yield test_settings
 
 
 @pytest.fixture
 def mock_mongodb():
     """Mock MongoDB collections."""
-    users_collection = MagicMock()
     campaigns_collection = MagicMock()
 
     # Set up async methods
-    users_collection.find_one = AsyncMock()
-    users_collection.insert_one = AsyncMock()
-    users_collection.update_one = AsyncMock()
     campaigns_collection.find_one = AsyncMock()
     campaigns_collection.insert_one = AsyncMock()
     campaigns_collection.update_one = AsyncMock()
@@ -61,7 +57,6 @@ def mock_mongodb():
     mock_db = MagicMock()
     mock_db.__getitem__ = MagicMock(
         side_effect=lambda x: {
-            "test_users": users_collection,
             "test_mails": campaigns_collection,
         }.get(x, MagicMock())
     )
@@ -73,7 +68,6 @@ def mock_mongodb():
         with patch("app.db.mongodb.MongoDB.get_db", return_value=mock_db):
             yield {
                 "db": mock_db,
-                "users": users_collection,
                 "campaigns": campaigns_collection,
             }
 
@@ -104,24 +98,35 @@ def mock_smtp():
 
 
 @pytest.fixture
-def sample_users() -> list[dict[str, Any]]:
-    """Sample user documents."""
+def mock_user_client():
+    """Mock UserServiceClient for tests."""
+    with patch(
+        "app.clients.user_client.UserServiceClient.get_subscribed_emails",
+        new_callable=AsyncMock,
+    ) as mock_get_emails:
+        with patch(
+            "app.clients.user_client.UserServiceClient.unsubscribe_by_email",
+            new_callable=AsyncMock,
+        ) as mock_unsubscribe:
+            with patch(
+                "app.clients.user_client.UserServiceClient.record_mail_received",
+                new_callable=AsyncMock,
+            ) as mock_record:
+                mock_get_emails.return_value = []
+                yield {
+                    "get_subscribed_emails": mock_get_emails,
+                    "unsubscribe_by_email": mock_unsubscribe,
+                    "record_mail_received": mock_record,
+                }
+
+
+@pytest.fixture
+def sample_emails() -> list[str]:
+    """Sample email addresses for testing."""
     return [
-        {
-            "_id": ObjectId("507f1f77bcf86cd799439011"),
-            "email": "user1@example.com",
-            "isSubscribed": True,
-        },
-        {
-            "_id": ObjectId("507f1f77bcf86cd799439012"),
-            "email": "user2@example.com",
-            "isSubscribed": True,
-        },
-        {
-            "_id": ObjectId("507f1f77bcf86cd799439013"),
-            "email": "user3@example.com",
-            "isSubscribed": False,
-        },
+        "user1@example.com",
+        "user2@example.com",
+        "user3@example.com",
     ]
 
 
@@ -164,13 +169,14 @@ async def async_client(mock_mongodb) -> AsyncGenerator[AsyncClient, None]:
     # Mock the lifespan events
     with patch("app.main.MongoDB.connect", new_callable=AsyncMock):
         with patch("app.main.MongoDB.close", new_callable=AsyncMock):
-            with patch("app.main.SchedulerService.start"):
-                with patch("app.main.SchedulerService.stop"):
-                    async with AsyncClient(
-                        transport=ASGITransport(app=app),
-                        base_url="http://test",
-                    ) as client:
-                        yield client
+            with patch("app.main.UserServiceClient.close", new_callable=AsyncMock):
+                with patch("app.main.SchedulerService.start"):
+                    with patch("app.main.SchedulerService.stop"):
+                        async with AsyncClient(
+                            transport=ASGITransport(app=app),
+                            base_url="http://test",
+                        ) as client:
+                            yield client
 
 
 @pytest.fixture
@@ -178,10 +184,11 @@ def sync_client(mock_mongodb) -> Generator[TestClient, None, None]:
     """Sync HTTP client for API testing."""
     with patch("app.main.MongoDB.connect", new_callable=AsyncMock):
         with patch("app.main.MongoDB.close", new_callable=AsyncMock):
-            with patch("app.main.SchedulerService.start"):
-                with patch("app.main.SchedulerService.stop"):
-                    with TestClient(app) as client:
-                        yield client
+            with patch("app.main.UserServiceClient.close", new_callable=AsyncMock):
+                with patch("app.main.SchedulerService.start"):
+                    with patch("app.main.SchedulerService.stop"):
+                        with TestClient(app) as client:
+                            yield client
 
 
 class MockAsyncCursor:

@@ -30,8 +30,8 @@ class ExecutionRecord(BaseModel):
     completed_at: datetime | None = None
     sent_count: int = 0
     failed_count: int = 0
-    recipient_user_ids: list[str] = Field(default_factory=list)
-    failed_user_ids: list[str] = Field(default_factory=list)
+    recipient_emails: list[str] = Field(default_factory=list)
+    failed_emails: list[str] = Field(default_factory=list)
     is_manual_trigger: bool = False
 
 

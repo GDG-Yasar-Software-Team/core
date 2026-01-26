@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from app.clients.user_client import UserServiceClient
 from app.db.mongodb import MongoDB
 from app.routers import campaigns, unsubscribe
 from app.services.scheduler_service import SchedulerService
@@ -29,6 +30,7 @@ async def lifespan(app: FastAPI):
 
     # Shutdown
     SchedulerService.stop()
+    await UserServiceClient.close()
     await MongoDB.close()
 
 

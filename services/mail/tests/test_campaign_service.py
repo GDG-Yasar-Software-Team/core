@@ -65,25 +65,25 @@ class TestCreateCampaign:
 class TestExecuteCampaign:
     """Tests for campaign execution."""
 
-    async def test_fetches_subscribed_users(self, mock_mongodb, sample_campaign_doc):
-        """Should fetch users with isSubscribed=true."""
+    async def test_fetches_subscribed_emails(self, mock_mongodb, sample_campaign_doc):
+        """Should fetch subscribed emails from user service."""
         mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
         mock_mongodb["campaigns"].update_one = AsyncMock(
             return_value=MagicMock(matched_count=1)
         )
 
         with patch(
-            "app.services.campaign_service.UserRepository.get_subscribed_users",
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
             new_callable=AsyncMock,
-        ) as mock_get_users:
-            mock_get_users.return_value = []
+        ) as mock_get_emails:
+            mock_get_emails.return_value = []
 
             await CampaignService.execute_campaign(
                 "507f1f77bcf86cd799439020",
                 unsubscribe_url_base="http://test.com/unsubscribe",
             )
 
-            mock_get_users.assert_called_once()
+            mock_get_emails.assert_called_once()
 
     async def test_sends_emails_to_all_users(self, mock_mongodb, sample_campaign_doc):
         """Should send emails to all subscribed users."""
@@ -92,32 +92,74 @@ class TestExecuteCampaign:
             return_value=MagicMock(matched_count=1)
         )
 
-        mock_users = [
-            MagicMock(id=ObjectId(), email="user1@example.com", is_subscribed=True),
-            MagicMock(id=ObjectId(), email="user2@example.com", is_subscribed=True),
-        ]
+        mock_emails = ["user1@example.com", "user2@example.com"]
 
         with patch(
-            "app.services.campaign_service.UserRepository.get_subscribed_users",
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
             new_callable=AsyncMock,
-            return_value=mock_users,
+            return_value=mock_emails,
         ):
             with patch(
-                "app.services.campaign_service.EmailService.send_bulk",
+                "app.services.campaign_service.UserServiceClient.record_mail_received",
                 new_callable=AsyncMock,
-            ) as mock_send:
-                mock_send.return_value = [
-                    SendResult(user_id="1", email="user1@example.com", success=True),
-                    SendResult(user_id="2", email="user2@example.com", success=True),
-                ]
+            ):
+                with patch(
+                    "app.services.campaign_service.EmailService.send_bulk",
+                    new_callable=AsyncMock,
+                ) as mock_send:
+                    mock_send.return_value = [
+                        SendResult(email="user1@example.com", success=True),
+                        SendResult(email="user2@example.com", success=True),
+                    ]
 
-                result = await CampaignService.execute_campaign(
-                    "507f1f77bcf86cd799439020",
-                    unsubscribe_url_base="http://test.com/unsubscribe",
-                )
+                    result = await CampaignService.execute_campaign(
+                        "507f1f77bcf86cd799439020",
+                        unsubscribe_url_base="http://test.com/unsubscribe",
+                    )
 
-                assert mock_send.call_count == 1
-                assert result.sent_count == 2
+                    assert mock_send.call_count == 1
+                    assert result.sent_count == 2
+
+    async def test_records_mail_received(self, mock_mongodb, sample_campaign_doc):
+        """Should record mail received for successful sends."""
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+        mock_mongodb["campaigns"].update_one = AsyncMock(
+            return_value=MagicMock(matched_count=1)
+        )
+
+        mock_emails = ["user1@example.com", "user2@example.com"]
+
+        with patch(
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
+            new_callable=AsyncMock,
+            return_value=mock_emails,
+        ):
+            with patch(
+                "app.services.campaign_service.UserServiceClient.record_mail_received",
+                new_callable=AsyncMock,
+            ) as mock_record:
+                with patch(
+                    "app.services.campaign_service.EmailService.send_bulk",
+                    new_callable=AsyncMock,
+                ) as mock_send:
+                    mock_send.return_value = [
+                        SendResult(email="user1@example.com", success=True),
+                        SendResult(email="user2@example.com", success=True),
+                    ]
+
+                    await CampaignService.execute_campaign(
+                        "507f1f77bcf86cd799439020",
+                        unsubscribe_url_base="http://test.com/unsubscribe",
+                    )
+
+                    # Should be called for each successful send
+                    assert mock_record.call_count == 2
+                    mock_record.assert_any_call(
+                        "user1@example.com", "507f1f77bcf86cd799439020"
+                    )
+                    mock_record.assert_any_call(
+                        "user2@example.com", "507f1f77bcf86cd799439020"
+                    )
 
     async def test_records_execution(self, mock_mongodb, sample_campaign_doc):
         """Should record execution in database."""
@@ -127,7 +169,7 @@ class TestExecuteCampaign:
         )
 
         with patch(
-            "app.services.campaign_service.UserRepository.get_subscribed_users",
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
             new_callable=AsyncMock,
             return_value=[],
         ):
@@ -150,7 +192,7 @@ class TestExecuteCampaign:
         )
 
         with patch(
-            "app.services.campaign_service.UserRepository.get_subscribed_users",
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
             new_callable=AsyncMock,
             return_value=[],
         ):
@@ -174,7 +216,7 @@ class TestTriggerNow:
         )
 
         with patch(
-            "app.services.campaign_service.UserRepository.get_subscribed_users",
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
             new_callable=AsyncMock,
             return_value=[],
         ):

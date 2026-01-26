@@ -13,7 +13,6 @@ from app.utils.logger import logger
 class SendResult:
     """Result of sending an email."""
 
-    user_id: str
     email: str
     success: bool
     error: str | None = None
@@ -34,7 +33,7 @@ class EmailService:
     @classmethod
     async def send_bulk(
         cls,
-        recipients: list[tuple[str, str]],  # List of (user_id, email)
+        recipients: list[str],  # List of email addresses
         subject: str,
         body_html: str,
         unsubscribe_url_base: str,
@@ -45,11 +44,11 @@ class EmailService:
         Send emails to all recipients with rate limiting.
 
         Args:
-            recipients: List of (user_id, email) tuples
+            recipients: List of email addresses
             subject: Email subject
             body_html: HTML body content
             unsubscribe_url_base: Base URL for unsubscribe links
-            generate_token_func: Function to generate unsubscribe tokens
+            generate_token_func: Function to generate unsubscribe tokens (takes email)
             rate_limit_delay: Min and max delay between sends (seconds).
                               Defaults to settings values if None.
 
@@ -84,20 +83,19 @@ class EmailService:
                 # Connection failed, mark all as failed
                 return [
                     SendResult(
-                        user_id=user_id,
                         email=email,
                         success=False,
                         error="SMTP connection failed",
                     )
-                    for user_id, email in recipients
+                    for email in recipients
                 ]
 
             logger.info("Starting email batch", total_recipients=len(recipients))
 
-            for i, (user_id, email) in enumerate(recipients):
+            for i, email in enumerate(recipients):
                 try:
-                    # Generate personalized unsubscribe URL
-                    token = generate_token_func(user_id)
+                    # Generate personalized unsubscribe URL using email
+                    token = generate_token_func(email)
                     unsubscribe_url = f"{unsubscribe_url_base}/{token}"
 
                     # Replace placeholder with actual URL
@@ -115,9 +113,7 @@ class EmailService:
                         personalized_body,
                     )
 
-                    results.append(
-                        SendResult(user_id=user_id, email=email, success=True)
-                    )
+                    results.append(SendResult(email=email, success=True))
                     logger.success("Email sent", recipient=email)
 
                     # Rate limiting delay (except for last email)
@@ -129,7 +125,6 @@ class EmailService:
                     error_msg = str(e)
                     results.append(
                         SendResult(
-                            user_id=user_id,
                             email=email,
                             success=False,
                             error=error_msg,
@@ -142,7 +137,6 @@ class EmailService:
                     error_msg = str(e)
                     results.append(
                         SendResult(
-                            user_id=user_id,
                             email=email,
                             success=False,
                             error=error_msg,
@@ -165,12 +159,11 @@ class EmailService:
         except Exception as e:
             logger.error("SMTP session error", error=str(e))
             # Mark remaining recipients as failed
-            sent_ids = {r.user_id for r in results}
-            for user_id, email in recipients:
-                if user_id not in sent_ids:
+            sent_emails = {r.email for r in results}
+            for email in recipients:
+                if email not in sent_emails:
                     results.append(
                         SendResult(
-                            user_id=user_id,
                             email=email,
                             success=False,
                             error=str(e),

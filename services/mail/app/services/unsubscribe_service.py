@@ -1,7 +1,7 @@
 from itsdangerous import BadSignature, URLSafeSerializer
 
+from app.clients.user_client import UserServiceClient
 from app.config import settings
-from app.repositories.user_repository import UserNotFoundError, UserRepository
 from app.utils.logger import logger
 
 
@@ -21,15 +21,15 @@ class UnsubscribeService:
         return cls._serializer
 
     @classmethod
-    def generate_token(cls, user_id: str) -> str:
-        """Generate a signed unsubscribe token for a user."""
+    def generate_token(cls, email: str) -> str:
+        """Generate a signed unsubscribe token for a user email."""
         serializer = cls._get_serializer()
-        return serializer.dumps({"user_id": user_id})
+        return serializer.dumps({"email": email})
 
     @classmethod
     def verify_token(cls, token: str) -> str:
         """
-        Verify an unsubscribe token and return the user ID.
+        Verify an unsubscribe token and return the email.
 
         Raises:
             InvalidTokenError: If the token is invalid or tampered with.
@@ -40,10 +40,10 @@ class UnsubscribeService:
         serializer = cls._get_serializer()
         try:
             data = serializer.loads(token)
-            user_id = data.get("user_id")
-            if not user_id:
-                raise InvalidTokenError("Token missing user_id")
-            return user_id
+            email = data.get("email")
+            if not email:
+                raise InvalidTokenError("Token missing email")
+            return email
         except BadSignature:
             raise InvalidTokenError("Invalid or tampered token")
 
@@ -59,29 +59,22 @@ class UnsubscribeService:
             InvalidTokenError: If the token is invalid.
             UserNotFoundError: If the user is not found.
         """
-        user_id = cls.verify_token(token)
+        email = cls.verify_token(token)
 
-        # Get user info before unsubscribing
-        user = await UserRepository.get_user_by_id(user_id)
-        if user is None:
-            raise UserNotFoundError(f"User not found: {user_id}")
+        await UserServiceClient.unsubscribe_by_email(email)
+        logger.info("User unsubscribed via token", email=email)
 
-        await UserRepository.unsubscribe_by_id(user_id)
-        logger.info("User unsubscribed via token", user_id=user_id, email=user.email)
-
-        return user.email
+        return email
 
     @classmethod
-    async def get_user_email_from_token(cls, token: str) -> str | None:
+    def get_user_email_from_token(cls, token: str) -> str | None:
         """
         Get the user's email from a token without unsubscribing.
 
         Returns:
-            The user's email or None if invalid/not found.
+            The user's email or None if invalid.
         """
         try:
-            user_id = cls.verify_token(token)
-            user = await UserRepository.get_user_by_id(user_id)
-            return user.email if user else None
+            return cls.verify_token(token)
         except InvalidTokenError:
             return None

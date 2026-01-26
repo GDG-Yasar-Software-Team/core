@@ -8,8 +8,12 @@ class Settings(BaseSettings):
     # MongoDB Configuration
     MONGODB_URI: str = "mongodb://localhost:27017"
     DATABASE_NAME: str = "gdg_db"
-    USERS_COLLECTION: str = "users"
     CAMPAIGNS_COLLECTION: str = "mails"
+
+    # User Service Configuration
+    USER_SERVICE_URL: str = "http://localhost:8001"
+    USER_SERVICE_TOKEN: str = ""
+    USER_SERVICE_TIMEOUT: float = 30.0
 
     # SMTP Configuration
     SMTP_SERVER: str = "smtp.gmail.com"
@@ -61,6 +65,19 @@ class Settings(BaseSettings):
                 raise ValueError(
                     "BASE_URL must be set to your production domain in production. "
                     "Example: https://mail.gdg.com"
+                )
+            if not self.USER_SERVICE_TOKEN:
+                raise ValueError(
+                    "USER_SERVICE_TOKEN must be set in production. "
+                    "This should match the MAIL_SERVICE_TOKEN in the user service."
+                )
+            if (
+                not self.USER_SERVICE_URL
+                or self.USER_SERVICE_URL == "http://localhost:8001"
+            ):
+                raise ValueError(
+                    "USER_SERVICE_URL must be set to the production user service URL. "
+                    "Example: https://user.gdg.com"
                 )
 
 

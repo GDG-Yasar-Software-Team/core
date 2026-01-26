@@ -3,7 +3,6 @@
 from datetime import datetime
 
 import pytest
-from bson import ObjectId
 from pydantic import ValidationError
 
 from app.models.campaign import (
@@ -11,7 +10,6 @@ from app.models.campaign import (
     CampaignUpdate,
     ScheduledSend,
 )
-from app.models.user import UserEmailInfo
 
 
 class TestCampaignCreate:
@@ -93,36 +91,3 @@ class TestCampaignUpdate:
         """Should validate subject if provided."""
         with pytest.raises(ValidationError):
             CampaignUpdate(subject="")
-
-
-class TestUserEmailInfo:
-    """Tests for UserEmailInfo model validation."""
-
-    def test_validates_email_format(self):
-        """Should validate email format."""
-        with pytest.raises(ValidationError):
-            UserEmailInfo(
-                _id=ObjectId(),
-                email="invalid-email",
-                isSubscribed=True,
-            )
-
-    def test_accepts_valid_user(self):
-        """Should accept valid user data."""
-        user = UserEmailInfo(
-            _id=ObjectId(),
-            email="valid@example.com",
-            isSubscribed=True,
-        )
-        assert user.email == "valid@example.com"
-
-    def test_uses_field_aliases(self):
-        """Should support field aliases."""
-        user = UserEmailInfo.model_validate(
-            {
-                "_id": ObjectId(),
-                "email": "test@example.com",
-                "isSubscribed": True,
-            }
-        )
-        assert user.is_subscribed is True
