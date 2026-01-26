@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 
+from app.clients.user_client import UserServiceClient
 from app.models.campaign import (
     CampaignCreate,
     CampaignInDB,
@@ -13,7 +14,6 @@ from app.repositories.campaign_repository import (
     CampaignNotFoundError,
     CampaignRepository,
 )
-from app.repositories.user_repository import UserRepository
 from app.services.email_service import EmailService
 from app.services.unsubscribe_service import UnsubscribeService
 from app.utils.logger import logger
@@ -116,10 +116,10 @@ class CampaignService:
         started_at = datetime.now(timezone.utc)
 
         try:
-            # Fetch subscribed users
-            users = await UserRepository.get_subscribed_users()
+            # Fetch subscribed emails from user service
+            emails = await UserServiceClient.get_subscribed_emails()
 
-            if not users:
+            if not emails:
                 logger.info("No subscribed users found", campaign_id=campaign_id)
                 execution = ExecutionRecord(
                     scheduled_time=scheduled_time,
@@ -128,8 +128,8 @@ class CampaignService:
                     completed_at=datetime.now(timezone.utc),
                     sent_count=0,
                     failed_count=0,
-                    recipient_user_ids=[],
-                    failed_user_ids=[],
+                    recipient_emails=[],
+                    failed_emails=[],
                     is_manual_trigger=scheduled_time is None,
                 )
                 await CampaignRepository.add_execution(
@@ -143,12 +143,9 @@ class CampaignService:
                     subject_used=subject,
                 )
 
-            # Prepare recipients
-            recipients = [(str(u.id), u.email) for u in users]
-
             # Send emails
             results = await EmailService.send_bulk(
-                recipients=recipients,
+                recipients=emails,
                 subject=subject,
                 body_html=campaign.body_html,
                 unsubscribe_url_base=unsubscribe_url_base,
@@ -158,8 +155,12 @@ class CampaignService:
             # Count results
             sent_count = sum(1 for r in results if r.success)
             failed_count = sum(1 for r in results if not r.success)
-            recipient_ids = [r.user_id for r in results if r.success]
-            failed_ids = [r.user_id for r in results if not r.success]
+            recipient_emails = [r.email for r in results if r.success]
+            failed_emails = [r.email for r in results if not r.success]
+
+            # Record mail received for successful sends
+            for email in recipient_emails:
+                await UserServiceClient.record_mail_received(email, campaign_id)
 
             # Record execution
             execution = ExecutionRecord(
@@ -169,8 +170,8 @@ class CampaignService:
                 completed_at=datetime.now(timezone.utc),
                 sent_count=sent_count,
                 failed_count=failed_count,
-                recipient_user_ids=recipient_ids,
-                failed_user_ids=failed_ids,
+                recipient_emails=recipient_emails,
+                failed_emails=failed_emails,
                 is_manual_trigger=scheduled_time is None,
             )
             await CampaignRepository.add_execution(

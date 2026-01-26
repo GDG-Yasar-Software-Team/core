@@ -163,7 +163,7 @@ class TestTriggerCampaign:
         )
 
         with patch(
-            "app.services.campaign_service.UserRepository.get_subscribed_users",
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
             new_callable=AsyncMock,
             return_value=[],
         ):

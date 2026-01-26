@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import HTMLResponse
 
+from app.clients.user_client import UserNotFoundError
 from app.config import settings
-from app.repositories.user_repository import UserNotFoundError
 from app.services.unsubscribe_service import InvalidTokenError, UnsubscribeService
 
 router = APIRouter(prefix="/unsubscribe", tags=["unsubscribe"])
@@ -22,7 +22,7 @@ def _get_template(template_name: str) -> str:
 async def unsubscribe_page(token: str) -> str:
     """Show unsubscribe confirmation page."""
     try:
-        email = await UnsubscribeService.get_user_email_from_token(token)
+        email = UnsubscribeService.get_user_email_from_token(token)
         if email is None:
             raise HTTPException(status_code=400, detail="Invalid or expired link")
         template = _get_template("unsubscribe_page.html")
