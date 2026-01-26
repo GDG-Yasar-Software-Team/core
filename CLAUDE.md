@@ -138,6 +138,13 @@ make lint               # Lint code
 - Separate logic: `routers/` (HTTP handling) → `services/` (business logic)
 - Follow Ruff defaults
 
+**Logging:**
+
+- **Always use [Tamga](https://pypi.org/project/tamga/)** for logging in all backend services and scripts
+- Never use Python's built-in `logging` module or `print()` for logging purposes
+- **Log everything**: API requests, database operations, errors, important state changes, and business logic events
+- Logging is critical for debugging, monitoring, and auditing - comprehensive logs are required
+
 ### React/TypeScript (Frontend)
 
 | Type             | Convention           | Example               |
