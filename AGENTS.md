@@ -30,7 +30,18 @@ This is a monorepo for GDG on Campus Yaşar University's core software infrastru
 │   │       ├── services/     # Business logic
 │   │       ├── db/           # Database (MongoDB)
 │   │       └── utils/        # Helpers
-│   └── mail/           # Email campaign service
+│   ├── mail/           # Email campaign service
+│   │   └── app/
+│   │       ├── main.py       # Entry point
+│   │       ├── config.py     # Settings (Pydantic BaseSettings)
+│   │       ├── routers/      # API routes
+│   │       ├── models/       # Pydantic models
+│   │       ├── repositories/ # Data access layer
+│   │       ├── services/     # Business logic
+│   │       ├── templates/    # HTML templates
+│   │       ├── db/           # Database (MongoDB)
+│   │       └── utils/        # Helpers
+│   └── user/           # User management service (internal)
 │       └── app/
 │           ├── main.py       # Entry point
 │           ├── config.py     # Settings (Pydantic BaseSettings)
@@ -38,7 +49,7 @@ This is a monorepo for GDG on Campus Yaşar University's core software infrastru
 │           ├── models/       # Pydantic models
 │           ├── repositories/ # Data access layer
 │           ├── services/     # Business logic
-│           ├── templates/    # HTML templates
+│           ├── auth/         # API token authentication
 │           ├── db/           # Database (MongoDB)
 │           └── utils/        # Helpers
 ├── frontend/           # Frontend applications (React)
@@ -54,7 +65,9 @@ This is a monorepo for GDG on Campus Yaşar University's core software infrastru
 ├── docs/               # Documentation & conventions
 ├── .ai/                # AI agent instructions
 │   ├── INSTRUCTIONS.md      # Global instructions (this file)
-│   └── backend/mail/        # Mail service detailed docs
+│   └── services/
+│       ├── mail/            # Mail service detailed docs
+│       └── user/            # User service detailed docs
 └── .github/            # GitHub workflows, templates, CODEOWNERS
 ```
 
@@ -62,7 +75,8 @@ This is a monorepo for GDG on Campus Yaşar University's core software infrastru
 
 For detailed context on specific services, see:
 
-- **Mail Service**: `services/mail/{CLAUDE│AGENTS│GEMINI}.md` - Campaign scheduling, email sending, unsubscribe flow
+- **Mail Service**: `.ai/services/mail/{CLAUDE│AGENTS│GEMINI}.md` - Campaign scheduling, email sending, unsubscribe flow
+- **User Service**: `.ai/services/user/{CLAUDE│AGENTS│GEMINI}.md` - User management, per-service auth, form/mail tracking
 
 ## Development Commands
 
@@ -78,8 +92,10 @@ make clean              # Remove cache and build artifacts
 make run-form-service   # Start form FastAPI dev server
 make run-form-frontend  # Start Vite dev server
 make run-mail-service   # Start mail FastAPI dev server
-make test-mail-backen   # Run mail service tests
+make test-mail-service  # Run mail service tests
 make run-mail-campaign  # Run email campaign CLI
+make run-user-service   # Start user FastAPI dev server
+make test-user-service  # Run user service tests
 make sync-prompts       # Sync AI prompt files
 ```
 
@@ -173,6 +189,7 @@ make lint               # Lint code
    | fb  | **`form-service`**  |
    | ff  | **`form-frontend`** |
    | ma  | **`mail`**          |
+   | us  | **`user`**          |
 
 5. **PR Template:** Agents must read `.github/PULL_REQUEST_TEMPLATE.md`
 6. Link issues in PR description (`Closes #123`)
@@ -182,18 +199,21 @@ make lint               # Lint code
 
 ## Important Files
 
-| File                               | Purpose                              |
-| ---------------------------------- | ------------------------------------ |
-| `Makefile`                         | Central entry point for dev commands |
-| `services/form/pyproject.toml`     | Form backend dependencies            |
-| `services/mail/pyproject.toml`     | Mail backend dependencies            |
-| `services/mail/app/config.py`      | Mail service settings                |
-| `frontend/form/package.json`       | Frontend dependencies                |
-| `frontend/form/vite.config.ts`     | Frontend build config                |
-| `frontend/biome.json`              | Biome (JS/TS linter) config          |
-| `.pre-commit-config.yaml`          | Pre-commit hooks config              |
-| `docs/*.md`                        | Detailed conventions                 |
-| `.ai/backend/mail/INSTRUCTIONS.md` | Mail service AI instructions         |
+| File                                | Purpose                              |
+| ----------------------------------- | ------------------------------------ |
+| `Makefile`                          | Central entry point for dev commands |
+| `services/form/pyproject.toml`      | Form backend dependencies            |
+| `services/mail/pyproject.toml`      | Mail backend dependencies            |
+| `services/mail/app/config.py`       | Mail service settings                |
+| `services/user/pyproject.toml`      | User backend dependencies            |
+| `services/user/app/config.py`       | User service settings                |
+| `frontend/form/package.json`        | Frontend dependencies                |
+| `frontend/form/vite.config.ts`      | Frontend build config                |
+| `frontend/biome.json`               | Biome (JS/TS linter) config          |
+| `.pre-commit-config.yaml`           | Pre-commit hooks config              |
+| `docs/*.md`                         | Detailed conventions                 |
+| `.ai/services/mail/INSTRUCTIONS.md` | Mail service AI instructions         |
+| `.ai/services/user/INSTRUCTIONS.md` | User service AI instructions         |
 
 ## Configuration & Secrets
 
@@ -204,6 +224,7 @@ make lint               # Lint code
 ## Testing Guidelines
 
 - Mail service: `make test-mail-service` runs 126+ tests with pytest
+- User service: `make test-user-service` runs 61 tests with pytest
 - Form service: No tests yet
 - If adding tests, include clear command in service README
 - Consider adding Makefile target (e.g., `make test-<service>`)
