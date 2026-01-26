@@ -1,4 +1,4 @@
-.PHONY: help install lint format clean dev run-form-service run-form-frontend run-mail-service run-mail-campaign test-mail-service sync-prompts
+.PHONY: help install lint format clean dev run-form-service run-form-frontend run-mail-service run-mail-campaign test-mail-service run-user-service test-user-service sync-prompts
 
 help:
 	@echo "Available commands:"
@@ -12,6 +12,8 @@ help:
 	@echo "  make run-mail-service   - Run mail backend (FastAPI)"
 	@echo "  make run-mail-campaign  - Run mail campaign CLI script"
 	@echo "  make test-mail-service  - Run mail service tests"
+	@echo "  make run-user-service   - Run user backend (FastAPI)"
+	@echo "  make test-user-service  - Run user service tests"
 	@echo "  make sync-prompts       - Sync AI prompts"
 
 install:
@@ -19,6 +21,8 @@ install:
 	cd services/form && uv sync --all-extras
 	@echo "Installing mail backend dependencies..."
 	cd services/mail && uv sync --all-extras
+	@echo "Installing user backend dependencies..."
+	cd services/user && uv sync --all-extras
 	@echo "Installing frontend dependencies..."
 	cd frontend/form && bun install
 	@echo "All dependencies installed!"
@@ -28,6 +32,8 @@ lint:
 	cd services/form && uv run ruff check --fix .
 	@echo "Linting and fixing mail backend code..."
 	cd services/mail && uv run ruff check --fix .
+	@echo "Linting and fixing user backend code..."
+	cd services/user && uv run ruff check --fix .
 	@echo "Linting and fixing frontend code..."
 	cd frontend/form && bun run biome check --write .
 	@echo "All linting complete!"
@@ -37,6 +43,8 @@ format:
 	cd services/form && uv run ruff format .
 	@echo "Formatting mail backend code..."
 	cd services/mail && uv run ruff format .
+	@echo "Formatting user backend code..."
+	cd services/user && uv run ruff format .
 	@echo "Formatting frontend code..."
 	cd frontend/form && bun run biome check --write .
 	@echo "All code formatted!"
@@ -77,6 +85,15 @@ run-mail-campaign:
 test-mail-service:
 	@echo "Running mail service tests..."
 	cd services/mail && uv run pytest -v --cov=app
+	@echo "Tests complete!"
+
+run-user-service:
+	@echo "Starting user service..."
+	cd services/user && uv run fastapi dev
+
+test-user-service:
+	@echo "Running user service tests..."
+	cd services/user && uv run pytest -v --cov=app
 	@echo "Tests complete!"
 
 sync-prompts:

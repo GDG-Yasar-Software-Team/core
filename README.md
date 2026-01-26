@@ -8,6 +8,7 @@ We should use this scopes in PR titles:
 
 | Tag | Scope               |
 | --- | ------------------- |
+| us  | **`user-service`**  |
 | ma  | **`mail-service`**  |
 | fb  | **`form-service`**  |
 | ff  | **`form-frontend`** |
