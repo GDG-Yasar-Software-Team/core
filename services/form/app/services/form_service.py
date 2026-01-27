@@ -41,9 +41,7 @@ class FormService:
             if not ObjectId.is_valid(obj_id):
                 raise ValueError(f"Invalid ObjectId: {obj_id}")
             return ObjectId(obj_id)
-        raise TypeError(
-            f"Expected ObjectId or str, got {type(obj_id).__name__}"
-        )
+        raise TypeError(f"Expected ObjectId or str, got {type(obj_id).__name__}")
 
     def _document_to_form(self, doc: dict | None) -> FormInDB | None:
         """
