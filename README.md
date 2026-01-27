@@ -76,7 +76,7 @@ make lint                   # Lint & auto-fix both backend and frontend
 make format                 # Format both backend and frontend
 
 # Testing
-make test-mail-service              # Run mail service tests
+make test-mail-service      # Run mail service tests
 
 # Utilities
 make clean                  # Remove cache and build artifacts
