@@ -33,6 +33,7 @@ class FormService:
 
         Raises:
             ValueError: If invalid ObjectId string is provided
+            TypeError: If obj_id is not ObjectId or str
         """
         if isinstance(obj_id, ObjectId):
             return obj_id
@@ -40,7 +41,9 @@ class FormService:
             if not ObjectId.is_valid(obj_id):
                 raise ValueError(f"Invalid ObjectId: {obj_id}")
             return ObjectId(obj_id)
-        return obj_id
+        raise TypeError(
+            f"Expected ObjectId or str, got {type(obj_id).__name__}"
+        )
 
     def _document_to_form(self, doc: dict | None) -> FormInDB | None:
         """
@@ -192,7 +195,7 @@ class FormService:
         object_id = self._to_object_id(form_id)
 
         # Only include fields that are not None
-        update_data = form_data.model_dump(exclude_unset=True, exclude_none=True)
+        update_data = form_data.model_dump(exclude_unset=True)
 
         if not update_data:
             logger.warning(f"No fields to update for form {form_id}")
