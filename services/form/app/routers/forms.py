@@ -131,7 +131,9 @@ async def list_forms(
     Returns:
         Dictionary with forms list and pagination info
     """
-    logger.info(f"Received request to list forms: skip={skip}, limit={limit}, active_only={active_only}")
+    logger.info(
+        f"Received request to list forms: skip={skip}, limit={limit}, active_only={active_only}"
+    )
 
     try:
         forms, total_count = await service.get_all_forms(
