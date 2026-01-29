@@ -69,19 +69,6 @@ class FormUpdate(BaseModel):
     is_active: bool | None = None
 
 
-class FormInDB(FormCreate):
-    id: PyObjectId = Field(alias="_id")
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    updated_at: datetime | None = None
-    view_count: int = 0
-    submission_count: int = 0
-
-    model_config = ConfigDict(
-        populate_by_name=True,
-        arbitrary_types_allowed=True,
-    )
-
-
 class FormResponse(BaseModel):
     id: str
     title: str
@@ -98,7 +85,7 @@ class FormResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class FormPreview(BaseModel):  # kept simply for now
+class FormPreview(BaseModel):
     id: str
     title: str
     description: str | None
@@ -107,3 +94,50 @@ class FormPreview(BaseModel):  # kept simply for now
     is_active: bool
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class FormListResponse(BaseModel):
+    forms: list[FormPreview]
+    total: int
+    skip: int
+    limit: int
+
+
+class FormInDB(FormCreate):
+    id: PyObjectId = Field(alias="_id")
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime | None = None
+    view_count: int = 0
+    submission_count: int = 0
+
+    model_config = ConfigDict(
+        populate_by_name=True,
+        arbitrary_types_allowed=True,
+    )
+
+    def to_response(self) -> FormResponse:
+        """Convert FormInDB to FormResponse."""
+        return FormResponse(
+            id=str(self.id),
+            title=self.title,
+            description=self.description,
+            questions=self.questions,
+            start_date=self.start_date,
+            deadline=self.deadline,
+            is_active=self.is_active,
+            created_at=self.created_at,
+            updated_at=self.updated_at,
+            view_count=self.view_count,
+            submission_count=self.submission_count,
+        )
+
+    def to_preview(self) -> FormPreview:
+        """Convert FormInDB to FormPreview."""
+        return FormPreview(
+            id=str(self.id),
+            title=self.title,
+            description=self.description,
+            start_date=self.start_date,
+            deadline=self.deadline,
+            is_active=self.is_active,
+        )

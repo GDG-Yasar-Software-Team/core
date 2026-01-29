@@ -10,7 +10,7 @@ from pymongo.errors import PyMongoError
 from app.db.mongodb import get_database
 from app.models.form import (
     FormCreate,
-    FormPreview,
+    FormListResponse,
     FormResponse,
     FormUpdate,
 )
@@ -30,7 +30,7 @@ async def get_form_service(
 @router.post("/", status_code=201)
 async def create_form(
     form_data: FormCreate,
-    service: FormService = Depends(get_form_service),
+    service: Annotated[FormService, Depends(get_form_service)],
 ) -> FormResponse:
     """
     Create a new form.
@@ -46,20 +46,7 @@ async def create_form(
     try:
         form = await service.create_form(form_data)
         logger.success(f"Form created successfully: {form.id}")
-
-        return FormResponse(
-            id=str(form.id),
-            title=form.title,
-            description=form.description,
-            questions=form.questions,
-            start_date=form.start_date,
-            deadline=form.deadline,
-            is_active=form.is_active,
-            created_at=form.created_at,
-            updated_at=form.updated_at,
-            view_count=form.view_count,
-            submission_count=form.submission_count,
-        )
+        return form.to_response()
 
     except PyMongoError as e:
         logger.error(f"Database error while creating form: {e}")
@@ -69,7 +56,7 @@ async def create_form(
 @router.get("/{form_id}")
 async def get_form(
     form_id: str,
-    service: FormService = Depends(get_form_service),
+    service: Annotated[FormService, Depends(get_form_service)],
 ) -> FormResponse:
     """
     Get a form by ID.
@@ -90,20 +77,7 @@ async def get_form(
             raise HTTPException(status_code=404, detail="Form not found")
 
         logger.debug(f"Form retrieved successfully: {form_id}")
-
-        return FormResponse(
-            id=str(form.id),
-            title=form.title,
-            description=form.description,
-            questions=form.questions,
-            start_date=form.start_date,
-            deadline=form.deadline,
-            is_active=form.is_active,
-            created_at=form.created_at,
-            updated_at=form.updated_at,
-            view_count=form.view_count,
-            submission_count=form.submission_count,
-        )
+        return form.to_response()
 
     except (ValueError, InvalidId) as e:
         logger.warning(f"Invalid form ID format: {form_id} - {e}")
@@ -118,8 +92,8 @@ async def list_forms(
     skip: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(ge=1, le=100)] = 10,
     active_only: Annotated[bool, Query()] = False,
-    service: FormService = Depends(get_form_service),
-) -> dict:
+    service: Annotated[FormService, Depends(get_form_service)] = None,
+) -> FormListResponse:
     """
     List all forms with pagination.
 
@@ -129,7 +103,7 @@ async def list_forms(
         active_only: If True, only return active forms
 
     Returns:
-        Dictionary with forms list and pagination info
+        FormListResponse with forms list and pagination info
     """
     logger.info(
         f"Received request to list forms: skip={skip}, limit={limit}, active_only={active_only}"
@@ -142,24 +116,12 @@ async def list_forms(
 
         logger.debug(f"Retrieved {len(forms)} forms out of {total_count} total")
 
-        form_previews = [
-            FormPreview(
-                id=str(form.id),
-                title=form.title,
-                description=form.description,
-                start_date=form.start_date,
-                deadline=form.deadline,
-                is_active=form.is_active,
-            )
-            for form in forms
-        ]
-
-        return {
-            "forms": form_previews,
-            "total": total_count,
-            "skip": skip,
-            "limit": limit,
-        }
+        return FormListResponse(
+            forms=[form.to_preview() for form in forms],
+            total=total_count,
+            skip=skip,
+            limit=limit,
+        )
 
     except ValueError as e:
         logger.warning(f"Invalid pagination parameters: {e}")
@@ -173,7 +135,7 @@ async def list_forms(
 async def update_form(
     form_id: str,
     form_data: FormUpdate,
-    service: FormService = Depends(get_form_service),
+    service: Annotated[FormService, Depends(get_form_service)],
 ) -> FormResponse:
     """
     Update an existing form.
@@ -195,20 +157,7 @@ async def update_form(
             raise HTTPException(status_code=404, detail="Form not found")
 
         logger.success(f"Form updated successfully: {form_id}")
-
-        return FormResponse(
-            id=str(form.id),
-            title=form.title,
-            description=form.description,
-            questions=form.questions,
-            start_date=form.start_date,
-            deadline=form.deadline,
-            is_active=form.is_active,
-            created_at=form.created_at,
-            updated_at=form.updated_at,
-            view_count=form.view_count,
-            submission_count=form.submission_count,
-        )
+        return form.to_response()
 
     except (ValueError, InvalidId) as e:
         logger.warning(f"Invalid form ID format: {form_id} - {e}")
@@ -221,7 +170,7 @@ async def update_form(
 @router.delete("/{form_id}", status_code=204)
 async def delete_form(
     form_id: str,
-    service: FormService = Depends(get_form_service),
+    service: Annotated[FormService, Depends(get_form_service)],
 ) -> None:
     """
     Delete a form by ID.
