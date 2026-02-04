@@ -8,9 +8,10 @@ We should use this scopes in PR titles:
 
 | Tag | Scope               |
 | --- | ------------------- |
-| fb  | **`form-backend`**  |
+| us  | **`user-service`**  |
+| ma  | **`mail-service`**  |
+| fb  | **`form-service`**  |
 | ff  | **`form-frontend`** |
-| ma  | **`mail`**          |
 
 #### Example Usage
 
@@ -66,16 +67,20 @@ make install                # Install all dependencies (backend + frontend)
 
 # Development
 make dev                    # Run both backend and frontend dev servers
-make run-form-backend       # Run form service (FastAPI) only
+make run-form-service       # Run form service (FastAPI) only
 make run-form-frontend      # Run form frontend dev server only
+make run-mail-service       # Run mail service (FastAPI) only
 
 # Code quality
 make lint                   # Lint & auto-fix both backend and frontend
 make format                 # Format both backend and frontend
 
+# Testing
+make test-mail-service      # Run mail service tests
+
 # Utilities
 make clean                  # Remove cache and build artifacts
-make send-emails            # Run email sender script
+make run-mail-campaign      # Run email campaign CLI
 ```
 
 ### Form Backend
@@ -84,7 +89,7 @@ FastAPI service using [uv](https://docs.astral.sh/uv/) and [Ruff](https://docs.a
 
 ```bash
 make install            # Install dependencies
-make run-form-backend   # Run dev server
+make run-form-service   # Run dev server
 make lint               # Lint & auto-fix
 make format             # Format code
 ```
@@ -99,6 +104,19 @@ make run-form-frontend  # Run dev server
 make lint               # Lint & auto-fix
 make format             # Format code
 ```
+
+### Mail Service
+
+Email campaign microservice using [uv](https://docs.astral.sh/uv/) and [Ruff](https://docs.astral.sh/ruff/).
+
+```bash
+make install            # Install dependencies
+make run-mail-service   # Run dev server
+make test-mail-service  # Run tests
+make lint               # Lint & auto-fix
+```
+
+See [services/mail/README.md](services/mail/README.md) for detailed documentation.
 
 ## Workflow
 

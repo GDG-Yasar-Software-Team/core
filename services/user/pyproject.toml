@@ -1,0 +1,30 @@
+[project]
+name = "user"
+version = "0.1.0"
+description = "Internal user microservice"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "email-validator>=2.2.0",
+    "fastapi[standard]>=0.128.0",
+    "motor>=3.7.1",
+    "pydantic-settings>=2.12.0",
+    "python-dotenv>=1.2.1",
+    "tamga>=1.4.0",
+    "uvicorn>=0.40.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "httpx>=0.28.0",
+    "mongomock-motor>=0.0.34",
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.25.0",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.11.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+asyncio_default_fixture_loop_scope = "function"
