@@ -34,3 +34,24 @@ class SubmissionResponse(BaseModel):
         from_attributes=True,
         populate_by_name=True,
     )
+
+    @classmethod
+    def from_db(cls, submission: "SubmissionInDB") -> "SubmissionResponse":
+        """Convert SubmissionInDB to SubmissionResponse."""
+        return cls(
+            id=str(submission.id),
+            form_id=str(submission.form_id),
+            answers=submission.answers,
+            respondent_email=submission.respondent_email,
+            respondent_name=submission.respondent_name,
+            submitted_at=submission.submitted_at,
+        )
+
+
+class PaginatedSubmissionsResponse(BaseModel):
+    """Paginated response for submissions list."""
+
+    submissions: list[SubmissionResponse]
+    total: int
+    skip: int
+    limit: int
