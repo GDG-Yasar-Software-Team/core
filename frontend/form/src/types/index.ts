@@ -11,16 +11,16 @@ export type FieldType =
   | 'date';
 
 export interface FieldValidation {
-  min_length?: number;
-  max_length?: number;
-  min_value?: number;
-  max_value?: number;
+  minLength?: number;
+  maxLength?: number;
+  minValue?: number;
+  maxValue?: number;
   pattern?: string;
 }
 
 export interface FormFieldSchema {
-  field_id: string;
-  field_type: FieldType;
+  fieldId: string;
+  fieldType: FieldType;
   label: string;
   placeholder?: string;
   required: boolean;
@@ -32,26 +32,26 @@ export interface FormCreate {
   title: string;
   description: string;
   questions: FormFieldSchema[];
-  start_date?: string;
+  startDate?: string;
   deadline?: string;
-  is_active: boolean;
+  isActive: boolean;
 }
 
 export interface FormUpdate {
   title?: string;
   description?: string;
   questions?: FormFieldSchema[];
-  start_date?: string;
+  startDate?: string;
   deadline?: string;
-  is_active?: boolean;
+  isActive?: boolean;
 }
 
 export interface FormInDB extends FormCreate {
   id: ObjectId;
-  created_at: string;
-  updated_at?: string;
-  view_count: number;
-  submission_count: number;
+  createdAt: string;
+  updatedAt?: string;
+  viewCount: number;
+  submissionCount: number;
 }
 
 export interface FormResponse {
@@ -59,51 +59,46 @@ export interface FormResponse {
   title: string;
   description?: string;
   questions: FormFieldSchema[];
-  start_date?: string;
+  startDate?: string;
   deadline?: string;
-  is_active: boolean;
-  created_at: string;
-  updated_at?: string;
-  view_count: number;
-  submission_count: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string;
+  viewCount: number;
+  submissionCount: number;
 }
 
 export interface FormPreview {
   id: string;
   title: string;
   description?: string;
-  start_date?: string;
+  startDate?: string;
   deadline?: string;
-  is_active: boolean;
+  isActive: boolean;
 }
 
 export interface SubmissionCreate {
-  form_id: ObjectId;
+  formId: ObjectId;
+
+  /** must contain at least one answer */
   answers: Record<string, unknown>;
-  respondent_email: string;
-  respondent_name?: string;
+
+  /** must be a valid email address - validated by backend */
+  respondentEmail: string;
+
+  respondentName?: string;
 }
 
 export interface SubmissionInDB extends SubmissionCreate {
   id: ObjectId;
-  submitted_at: string;
+  submittedAt: string;
 }
 
 export interface SubmissionResponse {
   id: string;
-  form_id: string;
+  formId: string;
   answers: Record<string, unknown>;
-  respondent_email?: string;
-  respondent_name?: string;
-  submitted_at: string;
-}
-
-export interface ApiResponse<T> {
-  data: T;
-  message?: string;
-}
-
-export interface ApiErrorResponse {
-  error: string;
-  details?: Record<string, unknown>;
+  respondentEmail?: string;
+  respondentName?: string;
+  submittedAt: string;
 }
