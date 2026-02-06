@@ -1,63 +1,72 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+:root {
+	--primary: #673ab7;
+	--danger: #d93025;
+	--bg: #f4f7fc;
+	--text-main: #1f2937;
+	--text-muted: #4b5563;
+	--radius-lg: 16px;
+	--radius-md: 12px;
+	--shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
 
 .form-submission-page {
 	min-height: 100vh;
 	font-family: "Roboto", sans-serif;
+	background: var(--bg);
 	padding-bottom: 64px;
-	background-color: #f4f7fc;
 }
+
 
 .form-container {
 	max-width: 640px;
-	width: 100%;
 	margin: 0 auto;
-	padding-top: 12px;
-	position: relative;
-	z-index: 1;
-	padding-left: 16px;
-	padding-right: 16px;
+	padding: 12px 16px 0;
 }
 
+
+
 .form-header-card {
-	background: white;
-	border: 1px solid transparent;
-	border-radius: 16px;
-	margin-bottom: 24px;
-	box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-	border-left: 6px solid #673ab7;
 	position: relative;
-	overflow: hidden;
+	background: #fff;
+	border-radius: var(--radius-lg);
 	padding: 32px;
+	margin-bottom: 24px;
+	box-shadow: var(--shadow-soft);
+	border-left: 6px solid var(--primary);
 }
 
 .gdg-logo {
 	position: absolute;
 	top: 24px;
 	right: 24px;
-	margin-bottom: 0;
 }
 
 .logo-image {
 	height: 40px;
-	width: auto;
 }
 
+
 .form-title {
-	font-family: "Google Sans", "Roboto", sans-serif;
 	font-size: 32px;
-	font-weight: 400;
-	line-height: 1.2;
-	color: #1f2937;
-	margin: 0 0 16px 0;
+	font-weight: 500;
+	margin-bottom: 16px;
 	padding-right: 80px;
+	color: var(--text-main);
 }
 
 .form-description {
 	font-size: 15px;
-	color: #4b5563;
+	color: var(--text-muted);
 	line-height: 1.6;
-	margin-bottom: 16px;
 	white-space: pre-wrap;
+	margin-bottom: 16px;
+}
+
+.required-text {
+	font-size: 13px;
+	color: var(--danger);
+	font-weight: 500;
 }
 
 .required-indicator {
@@ -66,11 +75,6 @@
 	margin-top: 16px;
 }
 
-.required-text {
-	font-size: 13px;
-	color: #d93025;
-	font-weight: 500;
-}
 
 .form-fields {
 	display: flex;
@@ -79,75 +83,51 @@
 }
 
 .form-field-wrapper {
-	background: white;
-	border: 1px solid transparent;
+	background: #fff;
+	border-radius: var(--radius-lg);
 	padding: 32px;
-	border-radius: 16px;
-	box-shadow:
-		0 4px 6px rgba(0, 0, 0, 0.02),
-		0 10px 15px rgba(0, 0, 0, 0.03);
-	transition:
-		transform 0.2s ease,
-		box-shadow 0.2s ease;
-	border-left-width: 6px;
-	border-left-style: solid; 
+	border-left: 6px solid;
+	box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-field-wrapper:hover {
 	transform: translateY(-2px);
-	box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
-	background: rgba(255, 255, 255, 0.85);
+	box-shadow: 0 12px 20px rgba(0, 0, 0, 0.08);
 }
 
 .form-label {
-	display: block;
-	font-family: "Google Sans", "Roboto", sans-serif;
 	font-size: 17px;
 	font-weight: 500;
-	color: #111827;
 	margin-bottom: 20px;
-	letter-spacing: -0.01em;
 }
 
 .required-asterisk {
-	color: #d93025;
+	color: var(--danger);
 	margin-left: 4px;
 }
 
+
 .form-input,
-.form-textarea {
+.form-textarea,
+.form-select {
 	width: 100%;
 	padding: 14px 18px;
-	border: 1px solid #dadce0;
-	background-color: #f8f9fa;
-	border-radius: 24px;
-	font-family: "Roboto", sans-serif;
 	font-size: 15px;
-	color: #1f2937;
-	transition: all 0.2s ease-in-out;
-	margin-bottom: 8px;
+	border-radius: 24px;
+	border: 1px solid #dadce0;
+	background: #f8f9fa;
 	box-sizing: border-box;
-	box-shadow: none;
-}
-
-.form-input:hover,
-.form-textarea:hover {
-	background-color: #f1f3f4;
-	border-color: #202124;
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-input:focus,
-.form-textarea:focus {
+.form-textarea:focus,
+.form-select:focus {
 	outline: none;
-	background-color: white;
-	border-color: #673ab7;
-	box-shadow: 0 1px 4px rgba(103, 58, 183, 0.2);
-}
-
-.form-input::placeholder,
-.form-textarea::placeholder {
-	color: #9ca3af;
+	background: #fff;
+	border-color: var(--primary);
+	box-shadow: 0 0 0 3px rgba(103, 58, 183, 0.15);
 }
 
 .form-textarea {
@@ -155,34 +135,14 @@
 	resize: vertical;
 }
 
+
+
 .form-select {
-	width: 100%;
-	padding: 14px 18px;
-	border: 2px solid transparent;
-	background-color: #f3f4f6;
-	border-radius: 12px;
-	font-family: "Roboto", sans-serif;
-	font-size: 15px;
-	color: #1f2937;
 	appearance: none;
+	-webkit-appearance: none;
 	cursor: pointer;
-	background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-	background-repeat: no-repeat;
-	background-position: right 16px center;
-	background-size: 24px;
-	transition: all 0.25s ease;
 }
 
-.form-select:hover {
-	background-color: #ebedef;
-}
-
-.form-select:focus {
-	outline: none;
-	background-color: white;
-	border-color: #673ab7;
-	box-shadow: 0 0 0 4px rgba(103, 58, 183, 0.15);
-}
 
 .radio-group,
 .checkbox-group {
@@ -196,148 +156,47 @@
 .checkbox-label {
 	display: flex;
 	align-items: center;
-	cursor: pointer;
-	font-size: 15px;
-	color: #374151;
+	gap: 12px;
 	padding: 10px 14px;
 	border-radius: 8px;
+	cursor: pointer;
 	transition: background-color 0.2s;
 }
 
 .radio-label:hover,
 .checkbox-label:hover {
-	background-color: rgba(0, 0, 0, 0.03);
-}
-
-.radio-label input[type="radio"] {
-	appearance: none;
-	width: 22px;
-	height: 22px;
-	border: 2px solid #9ca3af;
-	border-radius: 50%;
-	margin-right: 16px;
-	position: relative;
-	transition: all 0.2s;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-shrink: 0;
-	background-color: white;
-}
-
-.radio-label input[type="radio"]:checked {
-	border-color: #673ab7;
-	background-color: white;
-	box-shadow: 0 0 0 4px rgba(103, 58, 183, 0.15);
-}
-
-.radio-label input[type="radio"]:checked::after {
-	content: "";
-	width: 12px;
-	height: 12px;
-	background: #673ab7;
-	border-radius: 50%;
-}
-
-.checkbox-label input[type="checkbox"] {
-	appearance: none;
-	width: 22px;
-	height: 22px;
-	border: 2px solid #9ca3af;
-	border-radius: 6px;
-	margin-right: 16px;
-	position: relative;
-	transition: all 0.2s;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-shrink: 0;
-	background-color: white;
-}
-
-.checkbox-label input[type="checkbox"]:checked {
-	background-color: #673ab7;
-	border-color: #673ab7;
-	box-shadow: 0 0 0 4px rgba(103, 58, 183, 0.15);
-}
-
-.checkbox-label input[type="checkbox"]:checked::after {
-	content: "";
-	width: 14px;
-	height: 14px;
-	background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3e%3c/svg%3e");
-	background-size: contain;
-	background-repeat: no-repeat;
-}
-
-.radio-label span,
-.checkbox-label span {
-	user-select: none;
+	background: rgba(0, 0, 0, 0.03);
 }
 
 .form-actions {
 	display: flex;
 	justify-content: space-between;
-	align-items: center;
 	margin-top: 32px;
-	padding-bottom: 24px;
 }
 
 .btn {
-	border: none;
-	border-radius: 12px;
-	padding: 0 32px;
 	height: 48px;
-	font-family: "Google Sans", "Roboto", sans-serif;
-	font-size: 15px;
+	padding: 0 32px;
+	border-radius: var(--radius-md);
 	font-weight: 500;
 	cursor: pointer;
-	transition: all 0.2s ease;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
+	border: none;
 }
 
 .btn-primary {
-	background-color: #673ab7;
-	color: white;
-	box-shadow: 0 4px 6px rgba(103, 58, 183, 0.25);
-}
-
-.btn-primary:hover {
-	background-color: #5e35b1;
-	transform: translateY(-1px);
-	box-shadow: 0 6px 12px rgba(103, 58, 183, 0.35);
+	background: var(--primary);
+	color: #fff;
 }
 
 .btn-secondary {
-	background-color: rgba(255, 255, 255, 0.4);
-	color: #673ab7;
-	padding: 0 24px;
-}
-
-.btn-secondary:hover {
-	background-color: rgba(103, 58, 183, 0.1);
-}
-
-.google-footer {
-	text-align: center;
-	margin-top: 40px;
-	color: #6b7280;
-	font-size: 12px;
-	padding-bottom: 24px;
-	position: relative;
-	z-index: 1;
+	background: #eee;
+	color: var(--primary);
 }
 
 @media (max-width: 768px) {
-	.form-container {
-		padding-left: 12px;
-		padding-right: 12px;
-	}
 
 	.form-header-card,
 	.form-field-wrapper {
-		padding: 24px;
+		padding: 20px;
 	}
 }
