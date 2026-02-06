@@ -90,7 +90,7 @@
 		transform 0.2s ease,
 		box-shadow 0.2s ease;
 	border-left-width: 6px;
-	border-left-style: solid;
+	border-left-style: solid; 
 }
 
 .form-field-wrapper:hover {
