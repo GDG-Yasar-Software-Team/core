@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import type { FormResponse, FormFieldSchema } from "../types";
+import type React from "react";
+import { useState } from "react";
+import type { FormFieldSchema, FormResponse } from "../types";
 import "./FormSubmissionPage.css";
 
 interface FormFieldInputProps {
@@ -191,10 +192,10 @@ const FormSubmissionPage: React.FC<FormSubmissionPageProps> = ({ form }) => {
 								borderLeftColor: getFieldBorderColor(index),
 							}}
 						>
-							<label className="form-label">
+							<div className="form-label">
 								{field.label}
 								{field.required && <span className="required-asterisk">*</span>}
-							</label>
+							</div>
 							<FormFieldInput
 								field={field}
 								value={
