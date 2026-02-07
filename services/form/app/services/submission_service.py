@@ -3,13 +3,36 @@
 from datetime import datetime, timezone
 
 from bson import ObjectId
-from motor.motor_asyncio import AsyncIOMotorDatabase
-from pymongo.errors import PyMongoError
 
+from app.db.mongodb import MongoDB
 from app.models.common import PyObjectId
 from app.models.form import FormInDB
 from app.models.submission import SubmissionCreate, SubmissionInDB
 from app.utils.logger import logger
+
+
+class SubmissionNotFoundError(Exception):
+    """Raised when a submission is not found."""
+
+    pass
+
+
+class FormNotFoundError(Exception):
+    """Raised when a form is not found."""
+
+    pass
+
+
+class FormValidationError(Exception):
+    """Raised when form validation fails (inactive, not started, deadline passed)."""
+
+    pass
+
+
+class InvalidObjectIdError(Exception):
+    """Raised when an invalid ObjectId string is provided."""
+
+    pass
 
 
 class SubmissionService:
@@ -18,12 +41,16 @@ class SubmissionService:
     Handles business logic and database interactions for submissions.
     """
 
-    def __init__(self, db: AsyncIOMotorDatabase):
-        self.db = db
-        self.collection = db["submissions"]
-        self.forms_collection = db["forms"]
+    @classmethod
+    def _get_submissions_collection(cls):
+        return MongoDB.get_db()["submissions"]
 
-    def _to_object_id(self, obj_id: PyObjectId) -> ObjectId:
+    @classmethod
+    def _get_forms_collection(cls):
+        return MongoDB.get_db()["forms"]
+
+    @classmethod
+    def _to_object_id(cls, obj_id: PyObjectId) -> ObjectId:
         """
         Convert PyObjectId to ObjectId for MongoDB queries.
 
@@ -34,17 +61,18 @@ class SubmissionService:
             ObjectId for MongoDB operations
 
         Raises:
-            ValueError: If invalid ObjectId string is provided
+            InvalidObjectIdError: If invalid ObjectId string is provided
         """
         if isinstance(obj_id, ObjectId):
             return obj_id
         if isinstance(obj_id, str):
             if not ObjectId.is_valid(obj_id):
-                raise ValueError(f"Invalid ObjectId: {obj_id}")
+                raise InvalidObjectIdError(f"Invalid ObjectId: {obj_id}")
             return ObjectId(obj_id)
         return obj_id
 
-    def _document_to_submission(self, doc: dict | None) -> SubmissionInDB | None:
+    @classmethod
+    def _document_to_submission(cls, doc: dict | None) -> SubmissionInDB | None:
         """
         Convert MongoDB document to SubmissionInDB model.
 
@@ -63,7 +91,8 @@ class SubmissionService:
             logger.error(f"Error converting document to SubmissionInDB: {e}")
             raise
 
-    async def _validate_form(self, form_id: PyObjectId) -> FormInDB:
+    @classmethod
+    async def _validate_form(cls, form_id: PyObjectId) -> FormInDB:
         """
         Validate form exists, is active, and within date range.
 
@@ -76,25 +105,22 @@ class SubmissionService:
         Raises:
             ValueError: If form not found, inactive, not started yet, or deadline passed
         """
-        object_id = self._to_object_id(form_id)
+        object_id = cls._to_object_id(form_id)
+        forms_collection = cls._get_forms_collection()
 
-        try:
-            form_doc = await self.forms_collection.find_one({"_id": object_id})
-        except PyMongoError as e:
-            logger.error(f"Database error while validating form {form_id}: {e}")
-            raise
+        form_doc = await forms_collection.find_one({"_id": object_id})
 
         if form_doc is None:
-            raise ValueError(f"Form not found with id: {form_id}")
+            raise FormNotFoundError(f"Form not found with id: {form_id}")
 
         try:
             form = FormInDB.model_validate(form_doc)
         except Exception as e:
             logger.error(f"Error converting form document to FormInDB: {e}")
-            raise ValueError(f"Invalid form data for id: {form_id}")
+            raise FormValidationError(f"Invalid form data for id: {form_id}")
 
         if not form.is_active:
-            raise ValueError("Form is not active")
+            raise FormValidationError("Form is not active")
 
         now = datetime.now(timezone.utc)
 
@@ -104,19 +130,20 @@ class SubmissionService:
             if start_date.tzinfo is None:
                 start_date = start_date.replace(tzinfo=timezone.utc)
             if start_date > now:
-                raise ValueError("Form has not started yet")
+                raise FormValidationError("Form has not started yet")
 
         if form.deadline is not None:
             deadline = form.deadline
             if deadline.tzinfo is None:
                 deadline = deadline.replace(tzinfo=timezone.utc)
             if deadline < now:
-                raise ValueError("Form deadline has passed")
+                raise FormValidationError("Form deadline has passed")
 
         return form
 
+    @classmethod
     async def create_submission(
-        self, submission_data: SubmissionCreate
+        cls, submission_data: SubmissionCreate
     ) -> SubmissionInDB:
         """
         Create a new submission.
@@ -131,42 +158,39 @@ class SubmissionService:
             ValueError: For validation errors (form not found, inactive, not started, deadline passed)
             PyMongoError: For database errors
         """
-        logger.info(f"Creating submission for form {submission_data.form_id}")
-
         # Validate form
-        await self._validate_form(submission_data.form_id)
+        await cls._validate_form(submission_data.form_id)
 
         # Prepare submission document
         submission_doc = submission_data.model_dump(by_alias=True, exclude={"id"})
         submission_doc["_id"] = ObjectId()
         submission_doc["submitted_at"] = datetime.now(timezone.utc)
         # Ensure form_id is stored as ObjectId, not string
-        submission_doc["form_id"] = self._to_object_id(submission_data.form_id)
+        submission_doc["form_id"] = cls._to_object_id(submission_data.form_id)
 
-        object_id = self._to_object_id(submission_data.form_id)
+        object_id = cls._to_object_id(submission_data.form_id)
+        submissions_collection = cls._get_submissions_collection()
+        forms_collection = cls._get_forms_collection()
 
-        try:
-            # Insert submission
-            await self.collection.insert_one(submission_doc)
+        # Insert submission
+        await submissions_collection.insert_one(submission_doc)
 
-            # Atomically increment form's submission_count
-            await self.forms_collection.update_one(
-                {"_id": object_id}, {"$inc": {"submission_count": 1}}
-            )
+        # Atomically increment form's submission_count
+        await forms_collection.update_one(
+            {"_id": object_id}, {"$inc": {"submission_count": 1}}
+        )
 
-            logger.info(
-                f"Successfully created submission {submission_doc['_id']} "
-                f"for form {submission_data.form_id}"
-            )
+        logger.info(
+            "Submission created",
+            submission_id=str(submission_doc["_id"]),
+            form_id=str(submission_data.form_id),
+        )
 
-            return self._document_to_submission(submission_doc)
+        return cls._document_to_submission(submission_doc)
 
-        except PyMongoError as e:
-            logger.error(f"Database error while creating submission: {e}")
-            raise
-
+    @classmethod
     async def get_submission_by_id(
-        self, submission_id: PyObjectId
+        cls, submission_id: PyObjectId
     ) -> SubmissionInDB | None:
         """
         Get submission by ID.
@@ -180,19 +204,15 @@ class SubmissionService:
         Raises:
             PyMongoError: For database errors
         """
-        object_id = self._to_object_id(submission_id)
+        object_id = cls._to_object_id(submission_id)
+        submissions_collection = cls._get_submissions_collection()
 
-        try:
-            doc = await self.collection.find_one({"_id": object_id})
-            return self._document_to_submission(doc)
-        except PyMongoError as e:
-            logger.error(
-                f"Database error while getting submission {submission_id}: {e}"
-            )
-            raise
+        doc = await submissions_collection.find_one({"_id": object_id})
+        return cls._document_to_submission(doc)
 
+    @classmethod
     async def get_submissions_by_form_id(
-        self, form_id: PyObjectId, skip: int = 0, limit: int = 10
+        cls, form_id: PyObjectId, skip: int = 0, limit: int = 10
     ) -> tuple[list[SubmissionInDB], int]:
         """
         Get submissions by form ID with pagination.
@@ -215,33 +235,29 @@ class SubmissionService:
         if limit < 1 or limit > 100:
             raise ValueError("limit must be between 1 and 100")
 
-        object_id = self._to_object_id(form_id)
+        object_id = cls._to_object_id(form_id)
+        submissions_collection = cls._get_submissions_collection()
 
-        try:
-            # Count total submissions
-            total_count = await self.collection.count_documents({"form_id": object_id})
+        # Count total submissions
+        total_count = await submissions_collection.count_documents(
+            {"form_id": object_id}
+        )
 
-            # Query with pagination
-            cursor = (
-                self.collection.find({"form_id": object_id})
-                .sort("submitted_at", -1)
-                .skip(skip)
-                .limit(limit)
-            )
+        # Query with pagination
+        cursor = (
+            submissions_collection.find({"form_id": object_id})
+            .sort("submitted_at", -1)
+            .skip(skip)
+            .limit(limit)
+        )
 
-            docs = await cursor.to_list(length=limit)
+        docs = await cursor.to_list(length=limit)
 
-            submissions = []
-            for doc in docs:
-                if doc is not None:
-                    submission = self._document_to_submission(doc)
-                    if submission is not None:
-                        submissions.append(submission)
+        submissions = []
+        for doc in docs:
+            if doc is not None:
+                submission = cls._document_to_submission(doc)
+                if submission is not None:
+                    submissions.append(submission)
 
-            return submissions, total_count
-
-        except PyMongoError as e:
-            logger.error(
-                f"Database error while getting submissions for form {form_id}: {e}"
-            )
-            raise
+        return submissions, total_count
