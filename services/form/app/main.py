@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.db.mongodb import MongoDB
+from app.routers import forms_router
 
 
 @asynccontextmanager
@@ -21,6 +22,9 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan,
 )
+
+# Register routers
+app.include_router(forms_router)
 
 
 @app.get("/health", tags=["health"])
