@@ -6,6 +6,7 @@ from fastapi import FastAPI
 
 from app.db.mongodb import MongoDB
 from app.routers import submissions
+from app.routers import forms_router
 
 
 @asynccontextmanager
@@ -25,6 +26,7 @@ app = FastAPI(
 
 # Include routers
 app.include_router(submissions.router)
+app.include_router(forms_router)
 
 
 @app.get("/health", tags=["health"])
