@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.db.mongodb import MongoDB
+from app.routers import submissions
 from app.routers import forms_router
 
 
@@ -23,7 +24,8 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Register routers
+# Include routers
+app.include_router(submissions.router)
 app.include_router(forms_router)
 
 
