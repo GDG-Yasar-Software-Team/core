@@ -1,0 +1,34 @@
+<mjml>
+  <mj-head>
+    <mj-font name="Source Sans 3" href="https://fonts.googleapis.com/css?family=Source+Sans+3"></mj-font>
+    <mj-attributes>
+      <mj-all font-family="'Source Sans 3', Helvetica, Arial, sans-serif"></mj-all>
+      <mj-text font-weight="400" font-size="18px" color="#000000" line-height="26px" align="center" padding="0px"></mj-text>
+    </mj-attributes>
+    <mj-style>
+      .aa-text a { text-decoration: underline; color: unset; }
+      .aa-info { border-radius: 14px; }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#ffffff">
+    <!-- Date Card Component -->
+    <mj-section background-color="#F4F9FF" padding="30px 40px">
+      <mj-column width="100%">
+        <!-- Appointment Info -->
+        <mj-text css-class="aa-text" align="center">
+          <b>Date:</b> 12 Şubat 2026, Perşembe
+        </mj-text>
+        <mj-spacer height="14px"></mj-spacer>
+        
+        <mj-text css-class="aa-text" align="center">
+          <b>Time:</b> 19:00 – 21:00
+        </mj-text>
+        <mj-spacer height="14px"></mj-spacer>
+        
+        <mj-text css-class="aa-text" align="center">
+          <b>Location:</b> Y-110
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
