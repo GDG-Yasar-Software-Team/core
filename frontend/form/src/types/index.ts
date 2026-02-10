@@ -102,3 +102,30 @@ export interface SubmissionResponse {
 	respondentName?: string;
 	submittedAt: string;
 }
+
+export interface UserPayload {
+	email: string;
+	name?: string;
+	is_yasar_student?: boolean;
+	section?: string;
+	is_subscribed?: boolean;
+}
+
+export interface UserCreateResponse {
+	id: string;
+	email: string;
+}
+
+export interface UserResponse {
+	id: string;
+	email: string;
+	name: string | null;
+	is_yasar_student: boolean;
+	section: string | null;
+	submitted_form_count: number;
+	received_mail_count: number;
+	is_subscribed: boolean;
+	unsubscribed_at: string | null;
+	created_at: string;
+	updated_at: string | null;
+}
