@@ -39,6 +39,8 @@ cp .env.example .env
 | `DATABASE_NAME`                    | Database name                  | `gdg_db`                    |
 | `USERS_COLLECTION`                 | Users collection name          | `users`                     |
 | `CAMPAIGNS_COLLECTION`             | Campaigns collection name      | `mails`                     |
+| `HOST`                             | Bind host                      | `0.0.0.0`                   |
+| `PORT`                             | Service port                   | `8000`                      |
 | `SMTP_SERVER`                      | SMTP server hostname           | `smtp.gmail.com`            |
 | `SMTP_PORT`                        | SMTP server port               | `587`                       |
 | `SENDER_ADDRESS`                   | Sender email address           | (required)                  |
@@ -61,6 +63,8 @@ uv run fastapi dev
 # Or via Makefile from repo root
 make run-mail-service
 ```
+
+Service runs at `http://localhost:8000` by default.
 
 ## Project Structure
 

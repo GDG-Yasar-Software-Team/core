@@ -54,6 +54,13 @@ cd core
 
 ## Development
 
+### Default Local Ports
+
+- Mail service: `http://localhost:8000`
+- User service: `http://localhost:8001`
+- Form service: `http://localhost:8002`
+- Form frontend: `http://localhost:3000`
+
 ### Quick Start with Makefile
 
 We provide a Makefile for common development tasks:
