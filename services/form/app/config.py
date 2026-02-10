@@ -4,6 +4,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     MONGODB_URI: str
     DATABASE_NAME: str = "form_db"
+    HOST: str = "0.0.0.0"
+    PORT: int = 8002
     ENV: str = "development"
 
     model_config = SettingsConfigDict(

@@ -1,7 +1,9 @@
 from contextlib import asynccontextmanager
 
+import uvicorn
 from fastapi import FastAPI
 
+from app.config import settings
 from app.db.mongodb import MongoDB
 from app.routers import users
 
@@ -28,3 +30,17 @@ app.include_router(users.router)
 async def health_check() -> dict[str, str]:
     """Health check endpoint."""
     return {"status": "ok"}
+
+
+def run() -> None:
+    """Run the application with service-level host and port settings."""
+    uvicorn.run(
+        "app.main:app",
+        host=settings.HOST,
+        port=settings.PORT,
+        reload=settings.ENV == "development",
+    )
+
+
+if __name__ == "__main__":
+    run()

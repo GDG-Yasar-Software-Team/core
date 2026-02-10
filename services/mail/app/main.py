@@ -2,9 +2,11 @@
 
 from contextlib import asynccontextmanager
 
+import uvicorn
 from fastapi import FastAPI
 
 from app.clients.user_client import UserServiceClient
+from app.config import settings
 from app.db.mongodb import MongoDB
 from app.routers import campaigns, unsubscribe
 from app.services.scheduler_service import SchedulerService
@@ -13,9 +15,6 @@ from app.services.scheduler_service import SchedulerService
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan context manager for the FastAPI application."""
-    # Startup
-    from app.config import settings
-
     # Validate production config
     settings.validate_production_config()
 
@@ -50,3 +49,17 @@ app.include_router(unsubscribe.router)
 async def health_check() -> dict[str, str]:
     """Health check endpoint."""
     return {"status": "ok"}
+
+
+def run() -> None:
+    """Run the application with service-level host and port settings."""
+    uvicorn.run(
+        "app.main:app",
+        host=settings.HOST,
+        port=settings.PORT,
+        reload=settings.ENV == "development",
+    )
+
+
+if __name__ == "__main__":
+    run()

@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     MONGODB_URI: str = "mongodb://localhost:27017"
     DATABASE_NAME: str = "gdg_db"
     CAMPAIGNS_COLLECTION: str = "mails"
+    HOST: str = "0.0.0.0"
+    PORT: int = 8000
 
     # User Service Configuration
     USER_SERVICE_URL: str = "http://localhost:8001"
