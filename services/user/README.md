@@ -14,15 +14,15 @@ Internal user microservice for GDG on Campus Yasar. Manages user data and provid
 
 All endpoints except `/health` require authentication via `X-API-Token` header.
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/health` | Health check (public) |
-| POST | `/users/` | Create a new user |
-| GET | `/users/by-email/{email}` | Get user by email |
-| PUT | `/users/by-email/{email}` | Update user by email |
-| GET | `/users/subscribed-emails` | Get all subscribed emails |
-| POST | `/users/by-email/{email}/forms/{form_id}` | Record form submission |
-| POST | `/users/by-email/{email}/mails/{mail_id}` | Record mail received |
+| Method | Endpoint                                  | Description               |
+| ------ | ----------------------------------------- | ------------------------- |
+| GET    | `/health`                                 | Health check (public)     |
+| POST   | `/users/`                                 | Create a new user         |
+| GET    | `/users/by-email/{email}`                 | Get user by email         |
+| PUT    | `/users/by-email/{email}`                 | Update user by email      |
+| GET    | `/users/subscribed-emails`                | Get all subscribed emails |
+| POST   | `/users/by-email/{email}/forms/{form_id}` | Record form submission    |
+| POST   | `/users/by-email/{email}/mails/{mail_id}` | Record mail received      |
 
 ## Authentication
 
@@ -35,7 +35,7 @@ The service uses per-service API tokens for authentication. Configure the follow
 Include the token in requests:
 
 ```bash
-curl -H "X-API-Token: your-token" http://localhost:8000/users/subscribed-emails
+curl -H "X-API-Token: your-token" http://localhost:8001/users/subscribed-emails
 ```
 
 ## User Model
@@ -53,6 +53,7 @@ The `User` model is flexible with only `email` required:
 ```
 
 Fields tracked automatically:
+
 - `submitted_form_ids` / `submitted_form_count`
 - `received_mail_ids` / `received_mail_count`
 - `created_at` / `updated_at`
@@ -93,6 +94,8 @@ USERS_COLLECTION=users
 FORM_SERVICE_TOKEN=your-form-service-token
 MAIL_SERVICE_TOKEN=your-mail-service-token
 FORM_FRONTEND_TOKEN=your-frontend-token
+HOST=0.0.0.0
+PORT=8001
 ENV=development
 ```
 
@@ -106,7 +109,7 @@ make run-user-service
 cd services/user && uv run fastapi dev
 ```
 
-Service runs at `http://localhost:8000` by default.
+Service runs at `http://localhost:8001` by default.
 
 ## Testing
 
@@ -123,28 +126,29 @@ cd services/user && uv run pytest -v --cov=app
 ### Create User
 
 ```bash
-curl -X POST http://localhost:8000/users/ \
+curl -X POST http://localhost:8001/users/ \
   -H "X-API-Token: $FORM_SERVICE_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"email": "user@example.com", "name": "John Doe"}'
 ```
 
 Response:
+
 ```json
-{"id": "...", "email": "user@example.com"}
+{ "id": "...", "email": "user@example.com" }
 ```
 
 ### Get User
 
 ```bash
-curl http://localhost:8000/users/by-email/user@example.com \
+curl http://localhost:8001/users/by-email/user@example.com \
   -H "X-API-Token: $FORM_SERVICE_TOKEN"
 ```
 
 ### Update User
 
 ```bash
-curl -X PUT http://localhost:8000/users/by-email/user@example.com \
+curl -X PUT http://localhost:8001/users/by-email/user@example.com \
   -H "X-API-Token: $FORM_SERVICE_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"email": "user@example.com", "name": "Jane Doe", "is_subscribed": false}'
@@ -153,25 +157,26 @@ curl -X PUT http://localhost:8000/users/by-email/user@example.com \
 ### Get Subscribed Emails
 
 ```bash
-curl http://localhost:8000/users/subscribed-emails \
+curl http://localhost:8001/users/subscribed-emails \
   -H "X-API-Token: $MAIL_SERVICE_TOKEN"
 ```
 
 Response:
+
 ```json
-{"emails": ["user1@example.com", "user2@example.com"], "count": 2}
+{ "emails": ["user1@example.com", "user2@example.com"], "count": 2 }
 ```
 
 ### Record Form Submission
 
 ```bash
-curl -X POST http://localhost:8000/users/by-email/user@example.com/forms/507f1f77bcf86cd799439030 \
+curl -X POST http://localhost:8001/users/by-email/user@example.com/forms/507f1f77bcf86cd799439030 \
   -H "X-API-Token: $FORM_SERVICE_TOKEN"
 ```
 
 ### Record Mail Received
 
 ```bash
-curl -X POST http://localhost:8000/users/by-email/user@example.com/mails/507f1f77bcf86cd799439040 \
+curl -X POST http://localhost:8001/users/by-email/user@example.com/mails/507f1f77bcf86cd799439040 \
   -H "X-API-Token: $MAIL_SERVICE_TOKEN"
 ```

@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     MONGODB_URI: str = "mongodb://localhost:27017"
     DATABASE_NAME: str = "gdg_db"
     USERS_COLLECTION: str = "users"
+    HOST: str = "0.0.0.0"
+    PORT: int = 8001
 
     # Service API Tokens (for internal service authentication)
     FORM_SERVICE_TOKEN: str = ""

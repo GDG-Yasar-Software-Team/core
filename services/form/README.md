@@ -9,8 +9,10 @@ Form microservice for the GDG Core platform.
 uv sync
 
 # Run development server
-uv run uvicorn app.main:app --reload
+uv run fastapi dev
 ```
+
+Service runs at `http://localhost:8002` by default.
 
 ## Project Structure
 
