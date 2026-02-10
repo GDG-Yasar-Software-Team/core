@@ -8,8 +8,19 @@ React frontend for the GDG Form Service.
 # Install dependencies
 bun install
 
+# Create local env
+cp .env.example .env.local
+
 # Run development server
 bun run dev
+```
+
+## Environment
+
+```bash
+VITE_FORM_SERVICE_URL=http://localhost:8002
+VITE_USER_SERVICE_URL=http://localhost:8001
+VITE_USER_SERVICE_TOKEN=dev-frontend-token
 ```
 
 ## Project Structure

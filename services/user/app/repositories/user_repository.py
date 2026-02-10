@@ -135,36 +135,56 @@ class UserRepository:
 
     @classmethod
     async def add_submitted_form(cls, email: str, form_id: str) -> None:
-        """Add a form ID to user's submitted_form_ids."""
+        """Add a form ID to user's submitted_form_ids idempotently."""
         collection = cls._get_collection()
+        form_object_id = ObjectId(form_id)
 
         result = await collection.update_one(
-            {"email": email},
+            {"email": email, "submitted_form_ids": {"$ne": form_object_id}},
             {
-                "$push": {"submitted_form_ids": ObjectId(form_id)},
+                "$push": {"submitted_form_ids": form_object_id},
                 "$inc": {"submitted_form_count": 1},
+                "$set": {"updated_at": datetime.now()},
             },
         )
 
         if result.matched_count == 0:
-            raise UserNotFoundError(f"User not found with email: {email}")
+            user = await collection.find_one({"email": email}, {"_id": 1})
+            if user is None:
+                raise UserNotFoundError(f"User not found with email: {email}")
+            logger.info(
+                "Form submission already recorded",
+                email=email,
+                form_id=form_id,
+            )
+            return
 
         logger.info("Form submission recorded", email=email, form_id=form_id)
 
     @classmethod
     async def add_received_mail(cls, email: str, mail_id: str) -> None:
-        """Add a mail ID to user's received_mail_ids."""
+        """Add a mail ID to user's received_mail_ids idempotently."""
         collection = cls._get_collection()
+        mail_object_id = ObjectId(mail_id)
 
         result = await collection.update_one(
-            {"email": email},
+            {"email": email, "received_mail_ids": {"$ne": mail_object_id}},
             {
-                "$push": {"received_mail_ids": ObjectId(mail_id)},
+                "$push": {"received_mail_ids": mail_object_id},
                 "$inc": {"received_mail_count": 1},
+                "$set": {"updated_at": datetime.now()},
             },
         )
 
         if result.matched_count == 0:
-            raise UserNotFoundError(f"User not found with email: {email}")
+            user = await collection.find_one({"email": email}, {"_id": 1})
+            if user is None:
+                raise UserNotFoundError(f"User not found with email: {email}")
+            logger.info(
+                "Mail receipt already recorded",
+                email=email,
+                mail_id=mail_id,
+            )
+            return
 
         logger.info("Mail received recorded", email=email, mail_id=mail_id)

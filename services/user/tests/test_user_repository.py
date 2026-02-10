@@ -229,27 +229,48 @@ class TestAddSubmittedForm:
     async def test_appends_form_id(self, mock_mongodb):
         """add_submitted_form appends form ID to submitted_form_ids."""
         mock_mongodb["users"].update_one.return_value = MagicMock(matched_count=1)
+        form_id = "507f1f77bcf86cd799439030"
 
-        await UserRepository.add_submitted_form(
-            "user1@example.com", "507f1f77bcf86cd799439030"
-        )
+        await UserRepository.add_submitted_form("user1@example.com", form_id)
 
         call_args = mock_mongodb["users"].update_one.call_args
-        assert call_args[0][0] == {"email": "user1@example.com"}
+        assert call_args[0][0] == {
+            "email": "user1@example.com",
+            "submitted_form_ids": {"$ne": ObjectId(form_id)},
+        }
         update_doc = call_args[0][1]
         assert "$push" in update_doc
         assert "submitted_form_ids" in update_doc["$push"]
         assert "$inc" in update_doc
+        assert "$set" in update_doc
+        assert "updated_at" in update_doc["$set"]
         assert update_doc["$inc"]["submitted_form_count"] == 1
 
     async def test_raises_not_found_for_missing_user(self, mock_mongodb):
         """add_submitted_form raises UserNotFoundError for non-existent user."""
         mock_mongodb["users"].update_one.return_value = MagicMock(matched_count=0)
+        mock_mongodb["users"].find_one.return_value = None
 
         with pytest.raises(UserNotFoundError):
             await UserRepository.add_submitted_form(
                 "nonexistent@example.com", "507f1f77bcf86cd799439030"
             )
+
+    async def test_noops_when_form_already_recorded(self, mock_mongodb):
+        """add_submitted_form is idempotent for existing form IDs."""
+        mock_mongodb["users"].update_one.return_value = MagicMock(matched_count=0)
+        mock_mongodb["users"].find_one.return_value = {
+            "_id": ObjectId("507f1f77bcf86cd799439011")
+        }
+
+        await UserRepository.add_submitted_form(
+            "user1@example.com", "507f1f77bcf86cd799439030"
+        )
+
+        mock_mongodb["users"].find_one.assert_called_once_with(
+            {"email": "user1@example.com"},
+            {"_id": 1},
+        )
 
 
 class TestAddReceivedMail:
@@ -258,27 +279,48 @@ class TestAddReceivedMail:
     async def test_appends_mail_id(self, mock_mongodb):
         """add_received_mail appends mail ID to received_mail_ids."""
         mock_mongodb["users"].update_one.return_value = MagicMock(matched_count=1)
+        mail_id = "507f1f77bcf86cd799439040"
 
-        await UserRepository.add_received_mail(
-            "user1@example.com", "507f1f77bcf86cd799439040"
-        )
+        await UserRepository.add_received_mail("user1@example.com", mail_id)
 
         call_args = mock_mongodb["users"].update_one.call_args
-        assert call_args[0][0] == {"email": "user1@example.com"}
+        assert call_args[0][0] == {
+            "email": "user1@example.com",
+            "received_mail_ids": {"$ne": ObjectId(mail_id)},
+        }
         update_doc = call_args[0][1]
         assert "$push" in update_doc
         assert "received_mail_ids" in update_doc["$push"]
         assert "$inc" in update_doc
+        assert "$set" in update_doc
+        assert "updated_at" in update_doc["$set"]
         assert update_doc["$inc"]["received_mail_count"] == 1
 
     async def test_raises_not_found_for_missing_user(self, mock_mongodb):
         """add_received_mail raises UserNotFoundError for non-existent user."""
         mock_mongodb["users"].update_one.return_value = MagicMock(matched_count=0)
+        mock_mongodb["users"].find_one.return_value = None
 
         with pytest.raises(UserNotFoundError):
             await UserRepository.add_received_mail(
                 "nonexistent@example.com", "507f1f77bcf86cd799439040"
             )
+
+    async def test_noops_when_mail_already_recorded(self, mock_mongodb):
+        """add_received_mail is idempotent for existing mail IDs."""
+        mock_mongodb["users"].update_one.return_value = MagicMock(matched_count=0)
+        mock_mongodb["users"].find_one.return_value = {
+            "_id": ObjectId("507f1f77bcf86cd799439011")
+        }
+
+        await UserRepository.add_received_mail(
+            "user1@example.com", "507f1f77bcf86cd799439040"
+        )
+
+        mock_mongodb["users"].find_one.assert_called_once_with(
+            {"email": "user1@example.com"},
+            {"_id": 1},
+        )
 
 
 class TestGetById:
