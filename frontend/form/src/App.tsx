@@ -1,52 +1,61 @@
 import FormSubmissionPage from "./pages/FormSubmissionPage";
-import type { FormResponse } from "./types";
 
-const sampleForm: FormResponse = {
-	id: "form-001",
-	title: "GDG Etkinlik Kayıt Formu",
+import type { FormCreate } from "./types";
+
+const sampleForm: FormCreate = {
+	title: "GDG on Campus Formu",
 	description:
-		"Lütfen formu eksiksiz doldurunuz. Tüm bilgileriniz gizli tutulacaktır.",
+		"Topluluğumuza katılmak ve etkinliklerimizden haberdar olmak için lütfen aşağıdaki bilgileri eksiksiz doldurunuz.",
 	questions: [
 		{
-			fieldId: "q1",
+			fieldId: "fullname",
 			fieldType: "text",
-			label: "İsim Soyisim",
+			label: "Ad Soyad",
 			required: true,
 		},
 		{
-			fieldId: "q2",
+			fieldId: "studentid",
 			fieldType: "text",
-			label: "E-posta Adresi",
+			label: "Öğrenci No",
 			required: true,
 		},
 		{
-			fieldId: "q3",
-			fieldType: "text",
+			fieldId: "department",
+			fieldType: "select",
 			label: "Bölüm",
 			required: true,
+			options: [
+				"Bilgisayar Mühendisliği",
+				"Yazılım Mühendisliği",
+				"Elektrik-Elektronik Mühendisliği",
+				"Diğer",
+			],
 		},
 		{
-			fieldId: "q4",
+			fieldId: "grade",
 			fieldType: "select",
 			label: "Sınıf",
 			required: true,
-			options: ["Hazırlık", "1. Sınıf", "2. Sınıf", "3. Sınıf", "4. Sınıf"],
-		},
-		{
-			fieldId: "q5",
-			fieldType: "text",
-			label: "Öğrenci Numarası",
-			required: true,
+			options: [
+				"Hazırlık",
+				"1. Sınıf",
+				"2. Sınıf",
+				"3. Sınıf",
+				"4. Sınıf",
+				"Yüksek Lisans / Mezun",
+			],
 		},
 	],
 	isActive: true,
-	createdAt: "2025-01-15T10:00:00Z",
-	viewCount: 150,
-	submissionCount: 45,
 };
 
+
 function App() {
-	return <FormSubmissionPage form={sampleForm} />;
+	return (
+		<div className="min-h-screen flex items-center justify-center bg-white">
+			<FormSubmissionPage />
+		</div>
+	);
 }
 
 export default App;
