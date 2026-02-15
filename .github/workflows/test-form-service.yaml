@@ -1,0 +1,45 @@
+name: Test Form Service
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "services/form/**"
+      - ".github/workflows/test-form-service.yaml"
+  pull_request:
+    paths:
+      - "services/form/**"
+      - ".github/workflows/test-form-service.yaml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          allow-prereleases: true
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "latest"
+
+      - name: Install dependencies
+        run: |
+          cd services/form
+          uv sync --all-extras
+
+      - name: Lint
+        run: |
+          cd services/form
+          uv run ruff check .
+
+      - name: Run tests
+        run: |
+          make test-form-service
