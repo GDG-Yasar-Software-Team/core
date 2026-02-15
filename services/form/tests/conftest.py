@@ -7,7 +7,7 @@ import os
 os.environ.setdefault("MONGODB_URI", "mongodb://localhost:27017")
 
 from collections.abc import AsyncGenerator, Generator
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 

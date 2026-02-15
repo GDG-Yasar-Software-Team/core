@@ -1,10 +1,8 @@
 """Tests for submissions API endpoints."""
 
-from datetime import datetime, timezone
+from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
-import pytest
-from bson import ObjectId
 
 from tests.helpers import SAMPLE_FORM_ID, SAMPLE_SUBMISSION_ID, create_async_cursor
 
