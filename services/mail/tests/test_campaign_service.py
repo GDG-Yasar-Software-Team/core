@@ -1,13 +1,12 @@
 """Tests for campaign service."""
 
+from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from bson import ObjectId
 
-from app.models.campaign import (
-    CampaignUpdate,
-)
+from app.models.campaign import CampaignUpdate
 from app.repositories.campaign_repository import CampaignNotFoundError
 from app.services.campaign_service import CampaignService
 from app.services.email_service import SendResult
@@ -203,6 +202,246 @@ class TestExecuteCampaign:
 
             assert result.sent_count == 0
             assert result.failed_count == 0
+
+    async def test_scheduled_time_already_executed_returns_zero_and_does_not_send(
+        self, mock_mongodb, sample_campaign_doc
+    ):
+        """Should return zero counts and not send when scheduled time already executed."""
+        scheduled_time = datetime(2025, 1, 20, 10, 0, 0, tzinfo=timezone.utc)
+        sample_campaign_doc["scheduled_sends"] = [
+            {"time": scheduled_time, "subject": None},
+        ]
+        sample_campaign_doc["executed_times"] = [scheduled_time]
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+
+        with patch(
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
+            new_callable=AsyncMock,
+        ) as mock_get_emails:
+            with patch(
+                "app.services.campaign_service.EmailService.send_bulk",
+                new_callable=AsyncMock,
+            ) as mock_send:
+                result = await CampaignService.execute_campaign(
+                    "507f1f77bcf86cd799439020",
+                    scheduled_time=scheduled_time,
+                    unsubscribe_url_base="http://test.com/unsubscribe",
+                )
+
+                assert result.sent_count == 0
+                assert result.failed_count == 0
+                mock_get_emails.assert_not_called()
+                mock_send.assert_not_called()
+
+    async def test_custom_subject_selection_when_matching_send_exists(
+        self, mock_mongodb, sample_campaign_doc
+    ):
+        """Should use custom subject when use_custom_subjects=True and matching send exists."""
+        scheduled_time = datetime(2025, 1, 20, 10, 0, 0, tzinfo=timezone.utc)
+        custom_subject = "Custom Subject for This Send"
+        sample_campaign_doc["scheduled_sends"] = [
+            {"time": scheduled_time, "subject": custom_subject},
+        ]
+        sample_campaign_doc["use_custom_subjects"] = True
+        sample_campaign_doc["executed_times"] = []
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+        mock_mongodb["campaigns"].update_one = AsyncMock(
+            return_value=MagicMock(matched_count=1)
+        )
+
+        with patch(
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
+            new_callable=AsyncMock,
+            return_value=["user@example.com"],
+        ):
+            with patch(
+                "app.services.campaign_service.UserServiceClient.record_mail_received",
+                new_callable=AsyncMock,
+            ):
+                with patch(
+                    "app.services.campaign_service.EmailService.send_bulk",
+                    new_callable=AsyncMock,
+                ) as mock_send:
+                    mock_send.return_value = [
+                        SendResult(email="user@example.com", success=True),
+                    ]
+
+                    result = await CampaignService.execute_campaign(
+                        "507f1f77bcf86cd799439020",
+                        scheduled_time=scheduled_time,
+                        unsubscribe_url_base="http://test.com/unsubscribe",
+                    )
+
+                    assert result.subject_used == custom_subject
+                    mock_send.assert_called_once()
+                    call_kwargs = mock_send.call_args[1]
+                    assert call_kwargs["subject"] == custom_subject
+
+    async def test_default_subject_fallback_when_custom_missing_or_non_matching(
+        self, mock_mongodb, sample_campaign_doc
+    ):
+        """Should fall back to default subject when custom subject missing or non-matching."""
+        scheduled_time = datetime(2025, 1, 20, 10, 0, 0, tzinfo=timezone.utc)
+        default_subject = "Default Campaign Subject"
+        sample_campaign_doc["subject"] = default_subject
+        sample_campaign_doc["scheduled_sends"] = [
+            {"time": scheduled_time, "subject": None},
+        ]
+        sample_campaign_doc["use_custom_subjects"] = True
+        sample_campaign_doc["executed_times"] = []
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+        mock_mongodb["campaigns"].update_one = AsyncMock(
+            return_value=MagicMock(matched_count=1)
+        )
+
+        with patch(
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
+            new_callable=AsyncMock,
+            return_value=["user@example.com"],
+        ):
+            with patch(
+                "app.services.campaign_service.UserServiceClient.record_mail_received",
+                new_callable=AsyncMock,
+            ):
+                with patch(
+                    "app.services.campaign_service.EmailService.send_bulk",
+                    new_callable=AsyncMock,
+                ) as mock_send:
+                    mock_send.return_value = [
+                        SendResult(email="user@example.com", success=True),
+                    ]
+
+                    result = await CampaignService.execute_campaign(
+                        "507f1f77bcf86cd799439020",
+                        scheduled_time=scheduled_time,
+                        unsubscribe_url_base="http://test.com/unsubscribe",
+                    )
+
+                    assert result.subject_used == default_subject
+                    call_kwargs = mock_send.call_args[1]
+                    assert call_kwargs["subject"] == default_subject
+
+    async def test_exception_path_sets_status_failed_and_re_raises(
+        self, mock_mongodb, sample_campaign_doc
+    ):
+        """Should set campaign status to FAILED and re-raise on exception."""
+        sample_campaign_doc["executed_times"] = []
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+        mock_mongodb["campaigns"].update_one = AsyncMock(
+            return_value=MagicMock(matched_count=1)
+        )
+
+        with patch(
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
+            new_callable=AsyncMock,
+            side_effect=RuntimeError("User service unavailable"),
+        ):
+            with pytest.raises(RuntimeError, match="User service unavailable"):
+                await CampaignService.execute_campaign(
+                    "507f1f77bcf86cd799439020",
+                    unsubscribe_url_base="http://test.com/unsubscribe",
+                )
+
+            update_calls = mock_mongodb["campaigns"].update_one.call_args_list
+            status_updates = [
+                c for c in update_calls if "$set" in str(c) and "status" in str(c)
+            ]
+            assert len(status_updates) >= 1
+            failed_calls = [
+                c for c in status_updates if c[0][1]["$set"]["status"] == "failed"
+            ]
+            assert len(failed_calls) >= 1
+
+    async def test_partial_failures_produce_expected_counts_and_status_flow(
+        self, mock_mongodb, sample_campaign_doc
+    ):
+        """Should produce expected sent/failed counts and final status on partial failures."""
+        sample_campaign_doc["scheduled_sends"] = [
+            {
+                "time": datetime(2025, 1, 20, 10, 0, 0, tzinfo=timezone.utc),
+                "subject": None,
+            },
+        ]
+        sample_campaign_doc["executed_times"] = []
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+        mock_mongodb["campaigns"].update_one = AsyncMock(
+            return_value=MagicMock(matched_count=1)
+        )
+
+        with patch(
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
+            new_callable=AsyncMock,
+            return_value=["ok@example.com", "fail@example.com"],
+        ):
+            with patch(
+                "app.services.campaign_service.UserServiceClient.record_mail_received",
+                new_callable=AsyncMock,
+            ):
+                with patch(
+                    "app.services.campaign_service.EmailService.send_bulk",
+                    new_callable=AsyncMock,
+                ) as mock_send:
+                    mock_send.return_value = [
+                        SendResult(email="ok@example.com", success=True),
+                        SendResult(email="fail@example.com", success=False),
+                    ]
+
+                    result = await CampaignService.execute_campaign(
+                        "507f1f77bcf86cd799439020",
+                        unsubscribe_url_base="http://test.com/unsubscribe",
+                    )
+
+                    assert result.sent_count == 1
+                    assert result.failed_count == 1
+
+    async def test_add_execution_invoked_with_expected_record_data(
+        self, mock_mongodb, sample_campaign_doc
+    ):
+        """Should invoke add_execution with expected execution record for successful send."""
+        sample_campaign_doc["executed_times"] = []
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+        mock_mongodb["campaigns"].update_one = AsyncMock(
+            return_value=MagicMock(matched_count=1)
+        )
+
+        with patch(
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
+            new_callable=AsyncMock,
+            return_value=["user@example.com"],
+        ):
+            with patch(
+                "app.services.campaign_service.UserServiceClient.record_mail_received",
+                new_callable=AsyncMock,
+            ):
+                with patch(
+                    "app.services.campaign_service.EmailService.send_bulk",
+                    new_callable=AsyncMock,
+                ) as mock_send:
+                    mock_send.return_value = [
+                        SendResult(email="user@example.com", success=True),
+                    ]
+
+                    with patch(
+                        "app.services.campaign_service.CampaignRepository.add_execution",
+                        new_callable=AsyncMock,
+                    ) as mock_add_exec:
+                        await CampaignService.execute_campaign(
+                            "507f1f77bcf86cd799439020",
+                            scheduled_time=datetime(
+                                2025, 1, 20, 10, 0, 0, tzinfo=timezone.utc
+                            ),
+                            unsubscribe_url_base="http://test.com/unsubscribe",
+                        )
+
+                        mock_add_exec.assert_called()
+                        call_args = mock_add_exec.call_args
+                        execution = call_args[0][1]
+                        assert execution.sent_count == 1
+                        assert execution.failed_count == 0
+                        assert execution.recipient_emails == ["user@example.com"]
+                        assert call_args[0][2] == datetime(
+                            2025, 1, 20, 10, 0, 0, tzinfo=timezone.utc
+                        )
 
 
 class TestTriggerNow:
