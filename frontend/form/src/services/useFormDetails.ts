@@ -117,7 +117,9 @@ const mockFormData: Record<string, FormResponse> = {
 	},
 };
 
-export function useFormDetails(formId: string | undefined): UseFormDetailsReturn {
+export function useFormDetails(
+	formId: string | undefined,
+): UseFormDetailsReturn {
 	const [form, setForm] = useState<FormResponse | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);

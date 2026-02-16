@@ -1,7 +1,9 @@
 import { z } from "zod";
 import type { FormFieldSchema } from "../types";
 
-export function buildFormSchema(questions: FormFieldSchema[]): z.ZodObject<Record<string, z.ZodTypeAny>> {
+export function buildFormSchema(
+	questions: FormFieldSchema[],
+): z.ZodObject<Record<string, z.ZodTypeAny>> {
 	const shape: Record<string, z.ZodTypeAny> = {};
 
 	for (const field of questions) {
@@ -56,7 +58,9 @@ export function buildFormSchema(questions: FormFieldSchema[]): z.ZodObject<Recor
 						message: `${field.label} geçerli bir formatta olmalıdır.`,
 					});
 				}
-				fieldSchema = field.required ? strSchema : strSchema.optional().or(z.literal(""));
+				fieldSchema = field.required
+					? strSchema
+					: strSchema.optional().or(z.literal(""));
 				break;
 			}
 		}

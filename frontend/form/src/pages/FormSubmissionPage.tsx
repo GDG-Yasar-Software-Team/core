@@ -71,21 +71,17 @@ const FormSubmissionPage = () => {
 		<div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12 font-sans">
 			<div className="w-full max-w-2xl">
 				<div className="rounded-2xl shadow-lg border border-gray-200 overflow-hidden bg-white">
-						<Banner />
+					<Banner />
 
 					{/* Form Header */}
 					<div className="px-8 pt-6 pb-4 border-b border-gray-100">
-						<h1 className="text-2xl font-bold text-gray-900">
-							{form.title}
-						</h1>
+						<h1 className="text-2xl font-bold text-gray-900">{form.title}</h1>
 						{form.description && (
-							<p className="mt-2 text-sm text-gray-500">
-								{form.description}
-							</p>
+							<p className="mt-2 text-sm text-gray-500">{form.description}</p>
 						)}
 						<p className="mt-3 text-xs text-gray-400">
-							<span className="text-red-500">*</span> ile
-							işaretli alanlar zorunludur.
+							<span className="text-red-500">*</span> ile işaretli alanlar
+							zorunludur.
 						</p>
 					</div>
 
@@ -102,9 +98,7 @@ const FormSubmissionPage = () => {
 									field={field}
 									registration={register(field.fieldId)}
 									error={
-										(errors as FieldErrors)[
-											field.fieldId
-										] as
+										(errors as FieldErrors)[field.fieldId] as
 											| import("react-hook-form").FieldError
 											| undefined
 									}
@@ -117,9 +111,7 @@ const FormSubmissionPage = () => {
 									disabled={isSubmitting}
 									className="flex-1 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
 								>
-									{isSubmitting
-										? "Gönderiliyor..."
-										: "Gönder"}
+									{isSubmitting ? "Gönderiliyor..." : "Gönder"}
 								</button>
 								<button
 									type="button"

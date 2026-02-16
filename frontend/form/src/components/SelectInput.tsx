@@ -46,9 +46,7 @@ const SelectInput = ({
 				</option>
 			))}
 		</select>
-		{error && (
-			<p className="mt-1 text-xs text-red-500">{error.message}</p>
-		)}
+		{error && <p className="mt-1 text-xs text-red-500">{error.message}</p>}
 	</div>
 );
 
