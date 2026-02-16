@@ -20,7 +20,7 @@ const TextArea = ({
 	<div>
 		<label
 			htmlFor={id}
-			className="block text-sm font-medium text-gray-700 mb-1"
+			className="block text-sm font-medium text-gray-700 mb-1 font-display"
 		>
 			{label}
 			{required && <span className="text-red-500 ml-1">*</span>}

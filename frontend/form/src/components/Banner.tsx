@@ -7,7 +7,7 @@ const Banner: React.FC = () => (
 			alt="GDG on Campus"
 			className="h-10 object-contain"
 		/>
-		<h2 className="text-white font-bold text-2xl tracking-wide drop-shadow-md">
+		<h2 className="text-white font-bold text-2xl tracking-wide drop-shadow-md font-display">
 			GDG on Campus
 		</h2>
 		<img

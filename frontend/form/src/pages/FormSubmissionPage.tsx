@@ -75,7 +75,9 @@ const FormSubmissionPage = () => {
 
 					{/* Form Header */}
 					<div className="px-8 pt-6 pb-4 border-b border-gray-100">
-						<h1 className="text-2xl font-bold text-gray-900">{form.title}</h1>
+						<h1 className="text-2xl font-bold text-gray-900 font-display tracking-tight">
+							{form.title}
+						</h1>
 						{form.description && (
 							<p className="mt-2 text-sm text-gray-500">{form.description}</p>
 						)}
@@ -109,7 +111,7 @@ const FormSubmissionPage = () => {
 								<button
 									type="submit"
 									disabled={isSubmitting}
-									className="flex-1 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+									className="flex-1 py-3 bg-[#4285F4] text-white font-semibold rounded-lg hover:bg-[#3367D6] transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
 								>
 									{isSubmitting ? "Gönderiliyor..." : "Gönder"}
 								</button>
@@ -126,11 +128,11 @@ const FormSubmissionPage = () => {
 				</div>
 
 				{/* GDG Color Dots */}
-				<div className="flex justify-center space-x-2 mt-6 opacity-40">
-					<div className="w-2 h-2 bg-blue-500 rounded-full" />
-					<div className="w-2 h-2 bg-red-500 rounded-full" />
-					<div className="w-2 h-2 bg-yellow-400 rounded-full" />
-					<div className="w-2 h-2 bg-green-500 rounded-full" />
+				<div className="flex justify-center space-x-2 mt-6">
+					<div className="w-2 h-2 rounded-full bg-[#4285F4]" />
+					<div className="w-2 h-2 rounded-full bg-[#DB4437]" />
+					<div className="w-2 h-2 rounded-full bg-[#F4B400]" />
+					<div className="w-2 h-2 rounded-full bg-[#0F9D58]" />
 				</div>
 			</div>
 		</div>

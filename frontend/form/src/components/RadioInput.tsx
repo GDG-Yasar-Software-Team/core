@@ -18,7 +18,7 @@ const RadioInput = ({
 }: RadioInputProps) => (
 	<div>
 		<fieldset>
-			<legend className="block text-sm font-medium text-gray-700 mb-2">
+			<legend className="block text-sm font-medium text-gray-700 mb-2 font-display">
 				{label}
 				{required && <span className="text-red-500 ml-1">*</span>}
 			</legend>

@@ -2,7 +2,13 @@
 export default {
 	content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
 	theme: {
-		extend: {},
+		extend: {
+			fontFamily: {
+				display: ["Inter", "Noto Sans", "sans-serif"],
+				body: ["Roboto", "Noto Sans", "sans-serif"],
+				sans: ["Roboto", "Noto Sans", "sans-serif"],
+			},
+		},
 	},
 	plugins: [],
 };
