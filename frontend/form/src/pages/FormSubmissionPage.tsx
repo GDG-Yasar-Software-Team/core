@@ -4,7 +4,7 @@ import { type FieldErrors, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import Banner from "../components/Banner";
 import FieldRenderer from "../components/FieldRenderer";
-import { useFormDetails } from "../services/useFormDetails";
+import { useFormDetails } from "../hooks/useFormDetails";
 import type { SubmissionCreate } from "../types";
 import { buildFormSchema } from "../utils/buildFormSchema";
 
