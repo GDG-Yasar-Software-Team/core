@@ -1,10 +1,15 @@
+import { Navigate, Route, Routes } from "react-router-dom";
 import FormSubmissionPage from "./pages/FormSubmissionPage";
 
 function App() {
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-white">
-			<FormSubmissionPage />
-		</div>
+		<Routes>
+			<Route path="/forms/:formId" element={<FormSubmissionPage />} />
+			<Route
+				path="*"
+				element={<Navigate to="/forms/mock-form-1" replace />}
+			/>
+		</Routes>
 	);
 }
 
