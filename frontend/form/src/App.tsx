@@ -1,9 +1,12 @@
+import { Navigate, Route, Routes } from "react-router-dom";
+import FormSubmissionPage from "./pages/FormSubmissionPage";
+
 function App() {
 	return (
-		<div>
-			<h1>GDG Form Service</h1>
-			<p>Form frontend coming soon...</p>
-		</div>
+		<Routes>
+			<Route path="/forms/:formId" element={<FormSubmissionPage />} />
+			<Route path="*" element={<Navigate to="/forms/mock-form-1" replace />} />
+		</Routes>
 	);
 }
 
