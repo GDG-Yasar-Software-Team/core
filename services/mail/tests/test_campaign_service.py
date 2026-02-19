@@ -277,10 +277,10 @@ class TestExecuteCampaign:
                     call_kwargs = mock_send.call_args[1]
                     assert call_kwargs["subject"] == custom_subject
 
-    async def test_default_subject_fallback_when_custom_missing_or_non_matching(
+    async def test_default_subject_fallback_when_custom_subject_is_none(
         self, mock_mongodb, sample_campaign_doc
     ):
-        """Should fall back to default subject when custom subject missing or non-matching."""
+        """Should fall back to default subject when matching send has subject=None."""
         scheduled_time = datetime(2025, 1, 20, 10, 0, 0, tzinfo=timezone.utc)
         default_subject = "Default Campaign Subject"
         sample_campaign_doc["subject"] = default_subject
@@ -314,6 +314,52 @@ class TestExecuteCampaign:
                     result = await CampaignService.execute_campaign(
                         "507f1f77bcf86cd799439020",
                         scheduled_time=scheduled_time,
+                        unsubscribe_url_base="http://test.com/unsubscribe",
+                    )
+
+                    assert result.subject_used == default_subject
+                    call_kwargs = mock_send.call_args[1]
+                    assert call_kwargs["subject"] == default_subject
+
+    async def test_default_subject_fallback_when_custom_on_different_send(
+        self, mock_mongodb, sample_campaign_doc
+    ):
+        """Should fall back to default subject when a different send has the custom subject."""
+        executed_time = datetime(2025, 1, 20, 10, 0, 0, tzinfo=timezone.utc)
+        other_time = datetime(2025, 1, 25, 14, 0, 0, tzinfo=timezone.utc)
+        default_subject = "Default Campaign Subject"
+        sample_campaign_doc["subject"] = default_subject
+        sample_campaign_doc["scheduled_sends"] = [
+            {"time": executed_time, "subject": None},
+            {"time": other_time, "subject": "Custom For Other Send"},
+        ]
+        sample_campaign_doc["use_custom_subjects"] = True
+        sample_campaign_doc["executed_times"] = []
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+        mock_mongodb["campaigns"].update_one = AsyncMock(
+            return_value=MagicMock(matched_count=1)
+        )
+
+        with patch(
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
+            new_callable=AsyncMock,
+            return_value=["user@example.com"],
+        ):
+            with patch(
+                "app.services.campaign_service.UserServiceClient.record_mail_received",
+                new_callable=AsyncMock,
+            ):
+                with patch(
+                    "app.services.campaign_service.EmailService.send_bulk",
+                    new_callable=AsyncMock,
+                ) as mock_send:
+                    mock_send.return_value = [
+                        SendResult(email="user@example.com", success=True),
+                    ]
+
+                    result = await CampaignService.execute_campaign(
+                        "507f1f77bcf86cd799439020",
+                        scheduled_time=executed_time,
                         unsubscribe_url_base="http://test.com/unsubscribe",
                     )
 
@@ -355,12 +401,10 @@ class TestExecuteCampaign:
     async def test_partial_failures_produce_expected_counts_and_status_flow(
         self, mock_mongodb, sample_campaign_doc
     ):
-        """Should produce expected sent/failed counts and final status on partial failures."""
+        """Should produce expected sent/failed counts and transition through in_progress to partially_completed."""
+        scheduled_time = datetime(2025, 1, 20, 10, 0, 0, tzinfo=timezone.utc)
         sample_campaign_doc["scheduled_sends"] = [
-            {
-                "time": datetime(2025, 1, 20, 10, 0, 0, tzinfo=timezone.utc),
-                "subject": None,
-            },
+            {"time": scheduled_time, "subject": None},
         ]
         sample_campaign_doc["executed_times"] = []
         mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
@@ -393,6 +437,19 @@ class TestExecuteCampaign:
 
                     assert result.sent_count == 1
                     assert result.failed_count == 1
+
+                    update_calls = mock_mongodb["campaigns"].update_one.call_args_list
+                    status_values = [
+                        c[0][1]["$set"]["status"]
+                        for c in update_calls
+                        if "$set" in c[0][1] and "status" in c[0][1]["$set"]
+                    ]
+                    assert "in_progress" in status_values
+                    assert status_values[-1] in (
+                        "partially_completed",
+                        "completed",
+                        "scheduled",
+                    )
 
     async def test_add_execution_invoked_with_expected_record_data(
         self, mock_mongodb, sample_campaign_doc

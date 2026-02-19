@@ -284,27 +284,27 @@ class TestGetDueCampaigns:
         }
 
     async def test_returns_only_scheduled_campaigns(self, mock_mongodb):
-        """Should query for status == scheduled."""
+        """Should only return campaigns with status == scheduled, filtering out others."""
         before_time = datetime(2025, 1, 25, 12, 0, 0, tzinfo=timezone.utc)
         due_send = {
             "time": datetime(2025, 1, 20, 10, 0, 0, tzinfo=timezone.utc),
             "subject": None,
         }
-        doc = self._make_campaign_doc(
+        scheduled_doc = self._make_campaign_doc(
             status="scheduled",
             scheduled_sends=[due_send],
             executed_times=[],
+            campaign_id="507f1f77bcf86cd799439011",
         )
-        mock_cursor = create_async_cursor([doc])
+        mock_cursor = create_async_cursor([scheduled_doc])
         mock_mongodb["campaigns"].find = MagicMock(return_value=mock_cursor)
 
-        await CampaignRepository.get_due_campaigns(before_time)
+        campaigns = await CampaignRepository.get_due_campaigns(before_time)
 
+        assert len(campaigns) == 1
+        assert str(campaigns[0].id) == "507f1f77bcf86cd799439011"
         call_args = mock_mongodb["campaigns"].find.call_args[0][0]
         assert call_args["status"] == CampaignStatus.SCHEDULED.value
-        assert "scheduled_sends" in call_args
-        assert "$elemMatch" in call_args["scheduled_sends"]
-        assert call_args["scheduled_sends"]["$elemMatch"]["time"]["$lte"] == before_time
 
     async def test_includes_campaigns_with_due_times(self, mock_mongodb):
         """Should include campaigns with send.time <= before_time."""
@@ -374,10 +374,8 @@ class TestGetDueCampaigns:
 
         assert campaigns == []
 
-    async def test_preserves_query_intent_scheduled_and_due_criteria(
-        self, mock_mongodb
-    ):
-        """Should use both status and due-time criteria in query."""
+    async def test_query_combines_status_and_elemMatch_criteria(self, mock_mongodb):
+        """Should build query with both status filter and $elemMatch on scheduled_sends.time."""
         before_time = datetime(2025, 1, 25, 12, 0, 0, tzinfo=timezone.utc)
         mock_cursor = create_async_cursor([])
         mock_mongodb["campaigns"].find = MagicMock(return_value=mock_cursor)
@@ -385,5 +383,7 @@ class TestGetDueCampaigns:
         await CampaignRepository.get_due_campaigns(before_time)
 
         call_args = mock_mongodb["campaigns"].find.call_args[0][0]
+        assert set(call_args.keys()) == {"status", "scheduled_sends"}
         assert call_args["status"] == "scheduled"
-        assert call_args["scheduled_sends"]["$elemMatch"]["time"]["$lte"] == before_time
+        elem_match = call_args["scheduled_sends"]["$elemMatch"]
+        assert elem_match["time"]["$lte"] == before_time
