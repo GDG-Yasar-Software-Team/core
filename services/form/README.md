@@ -9,7 +9,7 @@ Form microservice for the GDG Core platform.
 uv sync
 
 # Run development server
-uv run fastapi dev
+uv run python -m app.main
 ```
 
 Service runs at `http://localhost:8002` by default.

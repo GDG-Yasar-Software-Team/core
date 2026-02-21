@@ -15,11 +15,11 @@ interface FieldRendererProps {
 }
 
 const FieldRenderer = ({ field, registration, error }: FieldRendererProps) => {
-	switch (field.fieldType) {
+	switch (field.field_type) {
 		case "text":
 			return (
 				<TextInput
-					id={field.fieldId}
+					id={field.field_id}
 					label={field.label}
 					placeholder={field.placeholder}
 					required={field.required}
@@ -30,7 +30,7 @@ const FieldRenderer = ({ field, registration, error }: FieldRendererProps) => {
 		case "textarea":
 			return (
 				<TextArea
-					id={field.fieldId}
+					id={field.field_id}
 					label={field.label}
 					placeholder={field.placeholder}
 					required={field.required}
@@ -41,7 +41,7 @@ const FieldRenderer = ({ field, registration, error }: FieldRendererProps) => {
 		case "number":
 			return (
 				<NumberInput
-					id={field.fieldId}
+					id={field.field_id}
 					label={field.label}
 					placeholder={field.placeholder}
 					required={field.required}
@@ -50,10 +50,9 @@ const FieldRenderer = ({ field, registration, error }: FieldRendererProps) => {
 				/>
 			);
 		case "select":
-		case "multiselect":
 			return (
 				<SelectInput
-					id={field.fieldId}
+					id={field.field_id}
 					label={field.label}
 					placeholder={field.placeholder}
 					required={field.required}
@@ -62,10 +61,22 @@ const FieldRenderer = ({ field, registration, error }: FieldRendererProps) => {
 					error={error}
 				/>
 			);
+		case "multiselect":
+			return (
+				<SelectInput
+					id={field.field_id}
+					label={field.label}
+					required={field.required}
+					options={field.options || []}
+					registration={registration}
+					error={error}
+					multiple
+				/>
+			);
 		case "radio":
 			return (
 				<RadioInput
-					id={field.fieldId}
+					id={field.field_id}
 					label={field.label}
 					required={field.required}
 					options={field.options || []}
@@ -76,6 +87,7 @@ const FieldRenderer = ({ field, registration, error }: FieldRendererProps) => {
 		case "checkbox":
 			return (
 				<CheckboxInput
+					id={field.field_id}
 					label={field.label}
 					required={field.required}
 					options={field.options || []}
@@ -86,7 +98,7 @@ const FieldRenderer = ({ field, registration, error }: FieldRendererProps) => {
 		case "date":
 			return (
 				<DateInput
-					id={field.fieldId}
+					id={field.field_id}
 					label={field.label}
 					required={field.required}
 					registration={registration}

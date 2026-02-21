@@ -62,13 +62,13 @@ clean:
 dev:
 	@echo "Starting backend and frontend dev servers..."
 	@trap 'kill 0' INT; \
-	(cd services/form && uv run fastapi dev) & \
+	(cd services/form && uv run python -m app.main) & \
 	(cd frontend/form && bun dev) & \
 	wait
 
 run-form-service:
 	@echo "Starting form service..."
-	cd services/form && uv run fastapi dev
+	cd services/form && uv run python -m app.main
 
 run-form-frontend:
 	@echo "Starting form frontend development server..."
@@ -89,7 +89,7 @@ test-mail-service:
 
 run-user-service:
 	@echo "Starting user service..."
-	cd services/user && uv run fastapi dev
+	cd services/user && uv run python -m app.main
 
 test-user-service:
 	@echo "Running user service tests..."
