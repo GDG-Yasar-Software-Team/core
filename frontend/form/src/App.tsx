@@ -6,7 +6,9 @@ function Home() {
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
 			<div className="text-center">
-				<p className="text-sm text-gray-600">This is form app.</p>
+				<p className="text-sm text-gray-600">
+					GDG on Campus Yaşar Üniversitesi Form Uygulaması
+				</p>
 			</div>
 		</div>
 	);
