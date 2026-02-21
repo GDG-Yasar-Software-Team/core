@@ -18,6 +18,8 @@ class Settings(BaseSettings):
 
     # Environment
     ENV: str = "development"
+    CORS_ALLOW_ORIGINS: str = "http://localhost:3000,http://127.0.0.1:3000"
+    CORS_ALLOW_ORIGIN_REGEX: str | None = r"https?://(localhost|127\.0\.0\.1)(:\d+)?$"
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -35,6 +37,14 @@ class Settings(BaseSettings):
         if self.FORM_FRONTEND_TOKEN:
             tokens.add(self.FORM_FRONTEND_TOKEN)
         return tokens
+
+    @property
+    def cors_allow_origins(self) -> list[str]:
+        return [
+            origin.strip()
+            for origin in self.CORS_ALLOW_ORIGINS.split(",")
+            if origin.strip()
+        ]
 
 
 @lru_cache
