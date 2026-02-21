@@ -298,9 +298,6 @@ const AdminFormViewsPage = () => {
 											<th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">
 												E-posta
 											</th>
-											<th className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">
-												İsim
-											</th>
 											{visibleQuestions.map((question: FormFieldSchema) => (
 												<th
 													key={question.field_id}
@@ -315,7 +312,7 @@ const AdminFormViewsPage = () => {
 										{submissions.length === 0 ? (
 											<tr>
 												<td
-													colSpan={visibleQuestions.length + 3}
+													colSpan={visibleQuestions.length + 2}
 													className="px-4 py-8 text-center text-sm text-slate-500"
 												>
 													Bu form için henüz gönderim yok.
@@ -329,9 +326,6 @@ const AdminFormViewsPage = () => {
 													</td>
 													<td className="whitespace-nowrap px-4 py-3 text-sm text-slate-700">
 														{submission.respondent_email ?? "-"}
-													</td>
-													<td className="whitespace-nowrap px-4 py-3 text-sm text-slate-700">
-														{submission.respondent_name ?? "-"}
 													</td>
 													{visibleQuestions.map((question) => (
 														<td
