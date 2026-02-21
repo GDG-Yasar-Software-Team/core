@@ -17,6 +17,7 @@ class UserService:
                 name=data.name,
                 is_yasar_student=True,
                 section=data.section,
+                grade=data.grade,
                 is_subscribed=data.is_subscribed,
             )
             logger.info("Auto-detected Yasar student", email=data.email)

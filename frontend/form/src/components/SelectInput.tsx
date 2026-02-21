@@ -8,6 +8,7 @@ interface SelectInputProps {
 	options: string[];
 	registration: UseFormRegisterReturn;
 	error?: FieldError;
+	multiple?: boolean;
 }
 
 const SelectInput = ({
@@ -18,6 +19,7 @@ const SelectInput = ({
 	options,
 	registration,
 	error,
+	multiple = false,
 }: SelectInputProps) => (
 	<div>
 		<label
@@ -29,23 +31,33 @@ const SelectInput = ({
 		</label>
 		<select
 			id={id}
-			defaultValue=""
-			className={`w-full rounded-lg border px-4 py-2.5 text-sm transition focus:outline-none focus:ring-2 appearance-none bg-white ${
+			multiple={multiple}
+			defaultValue={multiple ? [] : ""}
+			className={`w-full rounded-lg border px-4 py-2.5 text-sm transition focus:outline-none focus:ring-2 bg-white ${
+				multiple ? "min-h-[120px]" : "appearance-none"
+			} ${
 				error
 					? "border-red-400 focus:ring-red-200"
 					: "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
 			}`}
 			{...registration}
 		>
-			<option value="" disabled>
-				{placeholder || "Seçiniz..."}
-			</option>
+			{!multiple && (
+				<option value="" disabled>
+					{placeholder || "Seçiniz..."}
+				</option>
+			)}
 			{options.map((option) => (
 				<option key={option} value={option}>
 					{option}
 				</option>
 			))}
 		</select>
+		{multiple && (
+			<p className="mt-1 text-xs text-gray-500">
+				Birden fazla seçenek için Ctrl/Cmd tuşunu kullanın.
+			</p>
+		)}
 		{error && <p className="mt-1 text-xs text-red-500">{error.message}</p>}
 	</div>
 );

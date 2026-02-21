@@ -1,44 +1,433 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMemo } from "react";
-import { type FieldErrors, useForm } from "react-hook-form";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+	type FieldError,
+	type FieldErrors,
+	type SubmitHandler,
+	type UseFormSetValue,
+	useForm,
+} from "react-hook-form";
 import { useParams } from "react-router-dom";
 import Banner from "../components/Banner";
 import FieldRenderer from "../components/FieldRenderer";
 import { useFormDetails } from "../hooks/useFormDetails";
-import type { SubmissionCreate } from "../types";
+import { createSubmission } from "../services/formService";
+import {
+	createUser,
+	getUserByEmail,
+	recordFormSubmission,
+	updateUser,
+} from "../services/userService";
+import type {
+	FormFieldSchema,
+	FormResponse,
+	SubmissionCreate,
+	UserPayload,
+	UserResponse,
+} from "../types";
 import { buildFormSchema } from "../utils/buildFormSchema";
+
+type FormValues = Record<string, unknown>;
+
+const EMAIL_FIELD_KEYS = ["email", "e_mail", "mail"];
+const NAME_FIELD_KEYS = [
+	"name",
+	"full_name",
+	"fullname",
+	"ad_soyad",
+	"adsoyad",
+];
+const SECTION_FIELD_KEYS = ["section", "department", "dept", "bolum", "bölüm"];
+const GRADE_FIELD_KEYS = ["grade", "class", "sinif", "sınıf", "year"];
+const STUDENT_FIELD_KEYS = [
+	"is_yasar_student",
+	"yasar_student",
+	"student",
+	"ogrenci",
+	"öğrenci",
+];
+const TRUE_ALIASES = ["true", "yes", "evet", "1"];
+const FALSE_ALIASES = ["false", "no", "hayir", "hayır", "0"];
+
+function normalizeKey(value: string): string {
+	return value.trim().toLowerCase().replaceAll("-", "_").replaceAll(" ", "_");
+}
+
+function hasEmailShape(value: string): boolean {
+	return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function matchesAnyKey(fieldId: string, keys: string[]): boolean {
+	return keys.includes(normalizeKey(fieldId));
+}
+
+function toNonEmptyString(value: unknown): string | undefined {
+	if (typeof value !== "string") {
+		return undefined;
+	}
+	const trimmed = value.trim();
+	return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function parseBooleanLike(value: unknown): boolean | undefined {
+	if (typeof value === "boolean") {
+		return value;
+	}
+	if (typeof value === "number") {
+		if (value === 1) return true;
+		if (value === 0) return false;
+		return undefined;
+	}
+	if (typeof value !== "string") {
+		return undefined;
+	}
+
+	const normalized = value.trim().toLowerCase();
+	if (TRUE_ALIASES.includes(normalized)) {
+		return true;
+	}
+	if (FALSE_ALIASES.includes(normalized)) {
+		return false;
+	}
+	return undefined;
+}
+
+function findStringByKeys(
+	values: FormValues,
+	keys: string[],
+): string | undefined {
+	for (const [fieldId, value] of Object.entries(values)) {
+		if (!matchesAnyKey(fieldId, keys)) {
+			continue;
+		}
+		const parsed = toNonEmptyString(value);
+		if (parsed) {
+			return parsed;
+		}
+	}
+	return undefined;
+}
+
+function findBooleanByKeys(
+	values: FormValues,
+	keys: string[],
+): boolean | undefined {
+	for (const [fieldId, value] of Object.entries(values)) {
+		if (!matchesAnyKey(fieldId, keys)) {
+			continue;
+		}
+		const parsed = parseBooleanLike(value);
+		if (parsed !== undefined) {
+			return parsed;
+		}
+	}
+	return undefined;
+}
+
+function selectStudentOption(
+	options: string[] | undefined,
+	isYasarStudent: boolean,
+): string | undefined {
+	if (!options || options.length === 0) {
+		return undefined;
+	}
+
+	const normalizedAliases = isYasarStudent ? TRUE_ALIASES : FALSE_ALIASES;
+
+	for (const option of options) {
+		if (normalizedAliases.includes(option.trim().toLowerCase())) {
+			return option;
+		}
+	}
+
+	return undefined;
+}
+
+function selectOptionByValue(
+	options: string[] | undefined,
+	value: string,
+): string | undefined {
+	if (!options || options.length === 0) {
+		return undefined;
+	}
+
+	const normalized = value.trim().toLowerCase();
+	for (const option of options) {
+		if (option.trim().toLowerCase() === normalized) {
+			return option;
+		}
+	}
+
+	return undefined;
+}
+
+function getDefaultFieldValue(field: FormFieldSchema): unknown {
+	if (field.field_type === "multiselect") {
+		return [];
+	}
+	if (field.field_type === "checkbox") {
+		return field.options && field.options.length > 0 ? [] : false;
+	}
+	return "";
+}
+
+function formatError(error: unknown): string {
+	if (error instanceof Error) {
+		return error.message;
+	}
+	return "Beklenmeyen bir hata oluştu.";
+}
+
+function buildUserPayload(
+	email: string,
+	values: FormValues,
+	existingUser: UserResponse | null,
+): UserPayload {
+	const name = findStringByKeys(values, NAME_FIELD_KEYS);
+	const section = findStringByKeys(values, SECTION_FIELD_KEYS);
+	const grade = findStringByKeys(values, GRADE_FIELD_KEYS);
+	const isYasarStudent = findBooleanByKeys(values, STUDENT_FIELD_KEYS);
+
+	return {
+		email,
+		name: name ?? existingUser?.name ?? null,
+		section: section ?? existingUser?.section ?? null,
+		grade: grade ?? existingUser?.grade ?? null,
+		is_yasar_student: isYasarStudent ?? existingUser?.is_yasar_student ?? null,
+		is_subscribed: existingUser?.is_subscribed ?? true,
+	};
+}
+
+function buildSubmissionAnswers(
+	form: FormResponse,
+	values: FormValues,
+	respondentEmail: string,
+): Record<string, unknown> {
+	const answers: Record<string, unknown> = { ...values };
+
+	for (const field of form.questions) {
+		if (matchesAnyKey(field.field_id, EMAIL_FIELD_KEYS)) {
+			answers[field.field_id] = respondentEmail;
+		}
+	}
+
+	return answers;
+}
+
+function applyUserAutofill(
+	form: FormResponse,
+	user: UserResponse,
+	setValue: UseFormSetValue<FormValues>,
+): void {
+	for (const field of form.questions) {
+		if (matchesAnyKey(field.field_id, EMAIL_FIELD_KEYS)) {
+			setValue(field.field_id, user.email);
+			continue;
+		}
+
+		if (matchesAnyKey(field.field_id, NAME_FIELD_KEYS) && user.name) {
+			setValue(field.field_id, user.name);
+			continue;
+		}
+
+		if (matchesAnyKey(field.field_id, SECTION_FIELD_KEYS) && user.section) {
+			setValue(field.field_id, user.section);
+			continue;
+		}
+
+		if (matchesAnyKey(field.field_id, GRADE_FIELD_KEYS) && user.grade) {
+			if (field.field_type === "select" || field.field_type === "radio") {
+				const matchedOption = selectOptionByValue(field.options, user.grade);
+				setValue(field.field_id, matchedOption ?? user.grade);
+				continue;
+			}
+			setValue(field.field_id, user.grade);
+			continue;
+		}
+
+		if (matchesAnyKey(field.field_id, STUDENT_FIELD_KEYS)) {
+			if (
+				field.field_type === "checkbox" &&
+				(!field.options || field.options.length === 0)
+			) {
+				setValue(field.field_id, user.is_yasar_student);
+				continue;
+			}
+
+			if (field.field_type === "select" || field.field_type === "radio") {
+				const matchedOption = selectStudentOption(
+					field.options,
+					user.is_yasar_student,
+				);
+				if (matchedOption) {
+					setValue(field.field_id, matchedOption);
+				}
+			}
+		}
+	}
+}
 
 const FormSubmissionPage = () => {
 	const { formId } = useParams<{ formId: string }>();
 	const { form, isLoading, error } = useFormDetails(formId);
+	const [respondentEmail, setRespondentEmail] = useState("");
+	const [submissionError, setSubmissionError] = useState<string | null>(null);
+	const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+	const [, setExistingUser] = useState<UserResponse | null>(null);
+	const lookupRequestRef = useRef(0);
+	const visibleQuestions = useMemo(
+		() =>
+			form?.questions.filter(
+				(question) => !matchesAnyKey(question.field_id, EMAIL_FIELD_KEYS),
+			) ?? [],
+		[form],
+	);
 
 	const schema = useMemo(
-		() => (form ? buildFormSchema(form.questions) : null),
-		[form],
+		() => (form ? buildFormSchema(visibleQuestions) : null),
+		[form, visibleQuestions],
 	);
 
 	const {
 		register,
 		handleSubmit,
 		reset,
+		setValue,
 		formState: { errors, isSubmitting },
-	} = useForm({
+	} = useForm<FormValues>({
 		resolver: schema ? zodResolver(schema) : undefined,
 	});
 
-	const onSubmit = (data: Record<string, unknown>) => {
-		if (!form) return;
+	useEffect(() => {
+		if (!form) {
+			return;
+		}
 
-		const submission: SubmissionCreate = {
-			formId: form.id,
-			answers: data,
-			respondentEmail: (data.email as string) || "",
-			respondentName: (data.fullname as string) || undefined,
+		const defaults = form.questions.reduce<FormValues>((acc, field) => {
+			acc[field.field_id] = getDefaultFieldValue(field);
+			return acc;
+		}, {});
+
+		reset(defaults);
+		setSubmissionError(null);
+		setShowSuccessAlert(false);
+		setExistingUser(null);
+	}, [form, reset]);
+
+	useEffect(() => {
+		if (!form) {
+			return;
+		}
+
+		const normalizedEmail = respondentEmail.trim().toLowerCase();
+		for (const field of form.questions) {
+			if (matchesAnyKey(field.field_id, EMAIL_FIELD_KEYS)) {
+				setValue(field.field_id, normalizedEmail, {
+					shouldDirty: true,
+				});
+			}
+		}
+	}, [form, respondentEmail, setValue]);
+
+	useEffect(() => {
+		if (!form) {
+			return;
+		}
+
+		const normalizedEmail = respondentEmail.trim().toLowerCase();
+		if (!hasEmailShape(normalizedEmail)) {
+			setExistingUser(null);
+			return;
+		}
+
+		const requestId = lookupRequestRef.current + 1;
+		lookupRequestRef.current = requestId;
+
+		const timeoutId = window.setTimeout(async () => {
+			try {
+				const user = await getUserByEmail(normalizedEmail);
+				if (lookupRequestRef.current !== requestId) {
+					return;
+				}
+
+				if (!user) {
+					setExistingUser(null);
+					return;
+				}
+
+				setExistingUser(user);
+				applyUserAutofill(form, user, setValue);
+			} catch {
+				if (lookupRequestRef.current !== requestId) {
+					return;
+				}
+				setExistingUser(null);
+			}
+		}, 400);
+
+		return () => {
+			window.clearTimeout(timeoutId);
 		};
+	}, [form, respondentEmail, setValue]);
 
-		// TODO: Replace with actual API call
-		console.log("Form submitted:", submission);
-		alert("Form başarıyla gönderildi!");
+	const canFillForm = hasEmailShape(respondentEmail.trim().toLowerCase());
+
+	const onSubmit: SubmitHandler<FormValues> = async (values) => {
+		if (!form) {
+			return;
+		}
+
+		const normalizedEmail = respondentEmail.trim().toLowerCase();
+		if (!hasEmailShape(normalizedEmail)) {
+			setSubmissionError("Lütfen göndermeden önce geçerli bir e-posta girin.");
+			return;
+		}
+
+		setSubmissionError(null);
+
+		try {
+			const currentUser = await getUserByEmail(normalizedEmail);
+			const submissionAnswers = buildSubmissionAnswers(
+				form,
+				values,
+				normalizedEmail,
+			);
+			const payload = buildUserPayload(
+				normalizedEmail,
+				submissionAnswers,
+				currentUser,
+			);
+
+			if (currentUser) {
+				await updateUser(normalizedEmail, payload);
+			} else {
+				try {
+					await createUser(payload);
+				} catch (createError) {
+					const message = formatError(createError);
+					if (!message.includes("409")) {
+						throw createError;
+					}
+					await updateUser(normalizedEmail, payload);
+				}
+			}
+
+			const submissionPayload: SubmissionCreate = {
+				form_id: form.id,
+				answers: submissionAnswers,
+				respondent_email: normalizedEmail,
+				respondent_name: payload.name ?? undefined,
+			};
+
+			await createSubmission(submissionPayload);
+			await recordFormSubmission(normalizedEmail, form.id);
+
+			setExistingUser(await getUserByEmail(normalizedEmail));
+			setShowSuccessAlert(true);
+			setSubmissionError(null);
+		} catch (submitError) {
+			setSubmissionError(formatError(submitError));
+		}
 	};
 
 	if (isLoading) {
@@ -60,7 +449,8 @@ const FormSubmissionPage = () => {
 						{error || "Form bulunamadı."}
 					</p>
 					<p className="mt-2 text-gray-400 text-sm">
-						Lütfen URL'yi kontrol edip tekrar deneyin.
+						Lütfen URL&apos;yi kontrol edin ve form servisinin çalıştığından
+						emin olun.
 					</p>
 				</div>
 			</div>
@@ -73,35 +463,58 @@ const FormSubmissionPage = () => {
 				<div className="rounded-2xl shadow-lg border border-gray-200 overflow-hidden bg-white">
 					<Banner />
 
-					{/* Form Header */}
 					<div className="px-8 pt-6 pb-4 border-b border-gray-100">
 						<h1 className="text-2xl font-bold text-gray-900 font-display tracking-tight">
 							{form.title}
 						</h1>
 						{form.description && (
-							<p className="mt-2 text-sm text-gray-500">{form.description}</p>
+							<p className="mt-2 text-sm text-gray-500 whitespace-pre-wrap leading-relaxed">
+								{form.description}
+							</p>
 						)}
 						<p className="mt-3 text-xs text-gray-400">
-							<span className="text-red-500">*</span> ile işaretli alanlar
-							zorunludur.
+							Lütfen önce e-posta adresinizi girin.
 						</p>
 					</div>
 
-					{/* Form Content */}
 					<div className="px-8 py-6">
+						<div className="mb-6">
+							<label
+								htmlFor="respondent-email"
+								className="block text-sm font-medium text-gray-700 mb-1 font-display"
+							>
+								E-posta <span className="text-red-500 ml-1">*</span>
+							</label>
+							<div className="flex flex-col sm:flex-row gap-3">
+								<input
+									id="respondent-email"
+									type="email"
+									value={respondentEmail}
+									onChange={(event) => setRespondentEmail(event.target.value)}
+									placeholder="E-posta adresiniz"
+									className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm transition focus:outline-none focus:ring-2 focus:border-blue-500 focus:ring-blue-200"
+								/>
+							</div>
+							{!canFillForm && (
+								<p className="mt-2 text-xs text-gray-500">
+									Devam etmek için geçerli bir e-posta girin.
+								</p>
+							)}
+						</div>
+
 						<form
 							onSubmit={handleSubmit(onSubmit)}
-							className="space-y-6"
+							className={`space-y-6 ${canFillForm ? "" : "pointer-events-none opacity-60"}`}
 							noValidate
 						>
-							{form.questions.map((field) => (
+							{visibleQuestions.map((field) => (
 								<FieldRenderer
-									key={field.fieldId}
+									key={field.field_id}
 									field={field}
-									registration={register(field.fieldId)}
+									registration={register(field.field_id)}
 									error={
-										(errors as FieldErrors)[field.fieldId] as
-											| import("react-hook-form").FieldError
+										(errors as FieldErrors<FormValues>)[field.field_id] as
+											| FieldError
 											| undefined
 									}
 								/>
@@ -110,7 +523,7 @@ const FormSubmissionPage = () => {
 							<div className="pt-4 flex flex-col sm:flex-row gap-3">
 								<button
 									type="submit"
-									disabled={isSubmitting}
+									disabled={isSubmitting || !canFillForm}
 									className="flex-1 py-3 bg-[#4285F4] text-white font-semibold rounded-lg hover:bg-[#3367D6] transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
 								>
 									{isSubmitting ? "Gönderiliyor..." : "Gönder"}
@@ -124,17 +537,25 @@ const FormSubmissionPage = () => {
 								</button>
 							</div>
 						</form>
+
+						{submissionError && (
+							<p className="mt-4 text-sm text-red-600">{submissionError}</p>
+						)}
 					</div>
 				</div>
-
-				{/* GDG Color Dots */}
-				<div className="flex justify-center space-x-2 mt-6">
-					<div className="w-2 h-2 rounded-full bg-[#4285F4]" />
-					<div className="w-2 h-2 rounded-full bg-[#DB4437]" />
-					<div className="w-2 h-2 rounded-full bg-[#F4B400]" />
-					<div className="w-2 h-2 rounded-full bg-[#0F9D58]" />
-				</div>
 			</div>
+			{showSuccessAlert && (
+				<div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4">
+					<div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-2xl">
+						<h2 className="text-xl font-semibold text-gray-900">
+							Başvurunuz Alındı
+						</h2>
+						<p className="mt-3 text-sm text-gray-600">
+							Formunuz başarıyla gönderildi. Katılımınız için teşekkür ederiz.
+						</p>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };
