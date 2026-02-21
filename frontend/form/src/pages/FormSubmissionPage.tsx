@@ -544,7 +544,8 @@ const FormSubmissionPage = () => {
 					</div>
 				</div>
 				<p className="mt-8 text-center text-xs text-gray-500">
-					GDG on Campus Yaşar Üniversitesi tarafından geliştirilmiştir.
+					<span className="font-medium">GDG on Campus Yaşar Üniversitesi</span>{" "}
+					tarafından geliştirilmiştir.
 				</p>
 			</div>
 			{showSuccessAlert && (
