@@ -543,6 +543,9 @@ const FormSubmissionPage = () => {
 						)}
 					</div>
 				</div>
+				<p className="mt-8 text-center text-xs text-gray-500">
+					GDG on Campus Yaşar Üniversitesi tarafından geliştirilmiştir.
+				</p>
 			</div>
 			{showSuccessAlert && (
 				<div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4">
