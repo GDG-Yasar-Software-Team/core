@@ -1,4 +1,4 @@
-.PHONY: help install lint format clean dev run-form-service run-form-frontend run-mail-service run-mail-campaign test-mail-service run-user-service test-user-service sync-prompts
+.PHONY: help install lint format clean dev run-form-service run-form-frontend run-mail-service run-mail-campaign test-mail-service run-user-service test-user-service run-event-service test-event-service sync-prompts
 
 help:
 	@echo "Available commands:"
@@ -14,6 +14,8 @@ help:
 	@echo "  make test-mail-service  - Run mail service tests"
 	@echo "  make run-user-service   - Run user backend (FastAPI)"
 	@echo "  make test-user-service  - Run user service tests"
+	@echo "  make run-event-service  - Run event backend (FastAPI)"
+	@echo "  make test-event-service - Run event service tests"
 	@echo "  make sync-prompts       - Sync AI prompts"
 
 install:
@@ -23,6 +25,8 @@ install:
 	cd services/mail && uv sync --all-extras
 	@echo "Installing user backend dependencies..."
 	cd services/user && uv sync --all-extras
+	@echo "Installing event backend dependencies..."
+	cd services/event && uv sync --all-extras
 	@echo "Installing frontend dependencies..."
 	cd frontend/form && bun install
 	@echo "All dependencies installed!"
@@ -34,6 +38,8 @@ lint:
 	cd services/mail && uv run ruff check --fix .
 	@echo "Linting and fixing user backend code..."
 	cd services/user && uv run ruff check --fix .
+	@echo "Linting and fixing event backend code..."
+	cd services/event && uv run ruff check --fix .
 	@echo "Linting and fixing frontend code..."
 	cd frontend/form && bun run biome check --write .
 	@echo "All linting complete!"
@@ -45,6 +51,8 @@ format:
 	cd services/mail && uv run ruff format .
 	@echo "Formatting user backend code..."
 	cd services/user && uv run ruff format .
+	@echo "Formatting event backend code..."
+	cd services/event && uv run ruff format .
 	@echo "Formatting frontend code..."
 	cd frontend/form && bun run biome check --write .
 	@echo "All code formatted!"
@@ -94,6 +102,15 @@ run-user-service:
 test-user-service:
 	@echo "Running user service tests..."
 	cd services/user && uv run pytest -v --cov=app
+	@echo "Tests complete!"
+
+run-event-service:
+	@echo "Starting event service..."
+	cd services/event && uv run fastapi dev
+
+test-event-service:
+	@echo "Running event service tests..."
+	cd services/event && uv run pytest -v --cov=app
 	@echo "Tests complete!"
 
 sync-prompts:
