@@ -18,6 +18,8 @@ help:
 	@echo "  make sync-prompts       - Sync AI prompts"
 
 install:
+	@echo "Installing astral-uv..."
+	sudo snap install astral-uv --classic
 	@echo "Installing form backend dependencies..."
 	cd services/form && uv sync --all-extras
 	@echo "Installing mail backend dependencies..."
