@@ -29,12 +29,6 @@ We should use this scopes in PR titles:
 └── docs/           # Documentation
 ```
 
-## System Design
-
-Full system architecture and design documentation:
-
-🔗 [View System Design on Eraser](https://app.eraser.io/workspace/pKbd4uRkiVb5bCq2z27R)
-
 ## Getting Started
 
 ### Clone the repository
