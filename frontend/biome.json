@@ -16,29 +16,12 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true,
-			"suspicious": {
-				"noUnknownAtRules": {
-					"level": "error",
-					"options": {
-						"ignore": ["tailwind"]
-					}
-				}
-			}
+			"recommended": true
 		}
 	},
 	"javascript": {
 		"formatter": {
 			"quoteStyle": "double"
-		}
-	},
-	"css": {
-		"parser": {
-			"cssModules": true,
-			"tailwindDirectives": true
-		},
-		"linter": {
-			"enabled": true
 		}
 	},
 	"assist": {

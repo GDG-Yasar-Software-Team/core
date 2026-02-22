@@ -106,7 +106,7 @@ ENV=development
 make run-user-service
 
 # Or directly
-cd services/user && uv run python -m app.main
+cd services/user && uv run fastapi dev
 ```
 
 Service runs at `http://localhost:8001` by default.
