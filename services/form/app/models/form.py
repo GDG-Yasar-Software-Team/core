@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import Self
 
-from pydantic import BaseModel, Field, model_validator, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from .common import PyObjectId
 
@@ -26,6 +26,11 @@ class FieldValidation(BaseModel):
     pattern: str | None = None  # Regex pattern
 
 
+class FieldCondition(BaseModel):
+    depends_on: str = Field(..., min_length=1, max_length=32)
+    values: list[str | int | float | bool] = Field(..., min_length=1)
+
+
 class FormFieldSchema(BaseModel):
     field_id: str = Field(..., min_length=1, max_length=32)
     field_type: FieldType
@@ -34,6 +39,7 @@ class FormFieldSchema(BaseModel):
     required: bool = True  # default true for now
     options: list[str] | None = None
     validation: FieldValidation | None = None
+    condition: FieldCondition | None = None
 
     @model_validator(mode="after")
     def validate_options_for_choice_fields(self) -> Self:
@@ -41,6 +47,8 @@ class FormFieldSchema(BaseModel):
         if self.field_type in choice_types:
             if not self.options:
                 raise ValueError(f"{self.field_type} requires non-empty options")
+        if self.condition and self.condition.depends_on == self.field_id:
+            raise ValueError("Field condition cannot depend on itself")
         return self
 
 
@@ -59,6 +67,23 @@ class FormCreate(BaseModel):
                 raise ValueError("Deadline must be after start date")
         return self
 
+    @model_validator(mode="after")
+    def validate_questions(self) -> Self:
+        field_ids = [question.field_id for question in self.questions]
+        if len(field_ids) != len(set(field_ids)):
+            raise ValueError("Question field_id values must be unique")
+
+        known_field_ids = set(field_ids)
+        for question in self.questions:
+            condition = question.condition
+            if condition and condition.depends_on not in known_field_ids:
+                raise ValueError(
+                    f"Condition for field '{question.field_id}' depends on unknown "
+                    f"field_id '{condition.depends_on}'"
+                )
+
+        return self
+
 
 class FormUpdate(BaseModel):
     title: str | None = Field(default=None, min_length=1, max_length=200)
@@ -67,6 +92,26 @@ class FormUpdate(BaseModel):
     start_date: datetime | None = None
     deadline: datetime | None = None
     is_active: bool | None = None
+
+    @model_validator(mode="after")
+    def validate_questions(self) -> Self:
+        if self.questions is None:
+            return self
+
+        field_ids = [question.field_id for question in self.questions]
+        if len(field_ids) != len(set(field_ids)):
+            raise ValueError("Question field_id values must be unique")
+
+        known_field_ids = set(field_ids)
+        for question in self.questions:
+            condition = question.condition
+            if condition and condition.depends_on not in known_field_ids:
+                raise ValueError(
+                    f"Condition for field '{question.field_id}' depends on unknown "
+                    f"field_id '{condition.depends_on}'"
+                )
+
+        return self
 
 
 class FormResponse(BaseModel):

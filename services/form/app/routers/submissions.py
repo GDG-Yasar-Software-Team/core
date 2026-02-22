@@ -33,10 +33,8 @@ async def create_submission(
         return SubmissionResponse.from_db(submission)
     except FormNotFoundError:
         raise HTTPException(status_code=404, detail="Form not found")
-    except FormValidationError:
-        raise HTTPException(
-            status_code=400, detail="Form is not available for submissions"
-        )
+    except FormValidationError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except InvalidObjectIdError:
         raise HTTPException(status_code=400, detail="Invalid form ID format")
 

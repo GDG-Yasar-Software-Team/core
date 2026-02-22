@@ -26,6 +26,7 @@ import type {
 	UserResponse,
 } from "../types";
 import { buildFormSchema } from "../utils/buildFormSchema";
+import { isQuestionVisible } from "../utils/fieldVisibility";
 
 type FormValues = Record<string, unknown>;
 
@@ -45,6 +46,14 @@ const STUDENT_FIELD_KEYS = [
 	"student",
 	"ogrenci",
 	"öğrenci",
+];
+const TURKISH_ID_FIELD_KEYS = [
+	"turkish_identity_number",
+	"tc_identity_number",
+	"tc_kimlik_numarasi",
+	"tc_kimlik_no",
+	"tc_no",
+	"tckn",
 ];
 const TRUE_ALIASES = ["true", "yes", "evet", "1"];
 const FALSE_ALIASES = ["false", "no", "hayir", "hayır", "0"];
@@ -171,6 +180,16 @@ function getDefaultFieldValue(field: FormFieldSchema): unknown {
 	return "";
 }
 
+function areValuesEqual(current: unknown, target: unknown): boolean {
+	if (Array.isArray(current) && Array.isArray(target)) {
+		if (current.length !== target.length) {
+			return false;
+		}
+		return current.every((item, index) => item === target[index]);
+	}
+	return current === target;
+}
+
 function formatError(error: unknown): string {
 	if (error instanceof Error) {
 		return error.message;
@@ -187,6 +206,7 @@ function buildUserPayload(
 	const section = findStringByKeys(values, SECTION_FIELD_KEYS);
 	const grade = findStringByKeys(values, GRADE_FIELD_KEYS);
 	const isYasarStudent = findBooleanByKeys(values, STUDENT_FIELD_KEYS);
+	const turkishIdentityNumber = findStringByKeys(values, TURKISH_ID_FIELD_KEYS);
 
 	return {
 		email,
@@ -194,6 +214,8 @@ function buildUserPayload(
 		section: section ?? existingUser?.section ?? null,
 		grade: grade ?? existingUser?.grade ?? null,
 		is_yasar_student: isYasarStudent ?? existingUser?.is_yasar_student ?? null,
+		turkish_identity_number:
+			turkishIdentityNumber ?? existingUser?.turkish_identity_number ?? null,
 		is_subscribed: existingUser?.is_subscribed ?? true,
 	};
 }
@@ -203,12 +225,19 @@ function buildSubmissionAnswers(
 	values: FormValues,
 	respondentEmail: string,
 ): Record<string, unknown> {
-	const answers: Record<string, unknown> = { ...values };
+	const answers: Record<string, unknown> = {};
 
 	for (const field of form.questions) {
 		if (matchesAnyKey(field.field_id, EMAIL_FIELD_KEYS)) {
 			answers[field.field_id] = respondentEmail;
+			continue;
 		}
+
+		if (!isQuestionVisible(field, values)) {
+			continue;
+		}
+
+		answers[field.field_id] = values[field.field_id];
 	}
 
 	return answers;
@@ -264,6 +293,13 @@ function applyUserAutofill(
 				}
 			}
 		}
+
+		if (
+			matchesAnyKey(field.field_id, TURKISH_ID_FIELD_KEYS) &&
+			user.turkish_identity_number
+		) {
+			setValue(field.field_id, user.turkish_identity_number);
+		}
 	}
 }
 
@@ -275,7 +311,7 @@ const FormSubmissionPage = () => {
 	const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 	const [, setExistingUser] = useState<UserResponse | null>(null);
 	const lookupRequestRef = useRef(0);
-	const visibleQuestions = useMemo(
+	const nonEmailQuestions = useMemo(
 		() =>
 			form?.questions.filter(
 				(question) => !matchesAnyKey(question.field_id, EMAIL_FIELD_KEYS),
@@ -284,8 +320,8 @@ const FormSubmissionPage = () => {
 	);
 
 	const schema = useMemo(
-		() => (form ? buildFormSchema(visibleQuestions) : null),
-		[form, visibleQuestions],
+		() => (form ? buildFormSchema(nonEmailQuestions) : null),
+		[form, nonEmailQuestions],
 	);
 
 	const {
@@ -293,10 +329,20 @@ const FormSubmissionPage = () => {
 		handleSubmit,
 		reset,
 		setValue,
+		clearErrors,
+		watch,
 		formState: { errors, isSubmitting },
 	} = useForm<FormValues>({
 		resolver: schema ? zodResolver(schema) : undefined,
 	});
+	const watchedValues = watch();
+	const visibleQuestions = useMemo(
+		() =>
+			nonEmailQuestions.filter((question) =>
+				isQuestionVisible(question, watchedValues),
+			),
+		[nonEmailQuestions, watchedValues],
+	);
 
 	useEffect(() => {
 		if (!form) {
@@ -313,6 +359,30 @@ const FormSubmissionPage = () => {
 		setShowSuccessAlert(false);
 		setExistingUser(null);
 	}, [form, reset]);
+
+	useEffect(() => {
+		if (!form) {
+			return;
+		}
+
+		for (const field of nonEmailQuestions) {
+			if (isQuestionVisible(field, watchedValues)) {
+				continue;
+			}
+
+			const defaultValue = getDefaultFieldValue(field);
+			if (!areValuesEqual(watchedValues[field.field_id], defaultValue)) {
+				setValue(field.field_id, defaultValue, {
+					shouldDirty: false,
+					shouldTouch: false,
+					shouldValidate: false,
+				});
+			}
+			if ((errors as FieldErrors<FormValues>)[field.field_id]) {
+				clearErrors(field.field_id);
+			}
+		}
+	}, [clearErrors, errors, form, nonEmailQuestions, setValue, watchedValues]);
 
 	useEffect(() => {
 		if (!form) {

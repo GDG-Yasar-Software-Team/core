@@ -4,7 +4,9 @@ from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from bson import ObjectId
 
+from app.models.submission import SubmissionCreate
 from app.services.submission_service import (
     FormNotFoundError,
     FormValidationError,
@@ -37,9 +39,9 @@ def _make_active_form_doc(
         "description": "A test form",
         "questions": [
             {
-                "field_id": "q1",
+                "field_id": "name",
                 "field_type": "text",
-                "label": "Question",
+                "label": "Name",
                 "placeholder": None,
                 "required": True,
                 "options": None,
@@ -116,6 +118,96 @@ class TestCreateSubmission:
 
         with pytest.raises(FormValidationError, match="deadline has passed"):
             await SubmissionService.create_submission(sample_submission_data)
+
+    async def test_create_submission_requires_conditional_field_when_visible(
+        self, mock_submission_collections
+    ):
+        """Raises FormValidationError when a visible conditional required field is missing."""
+        form_doc = _make_active_form_doc()
+        form_doc["questions"] = [
+            {
+                "field_id": "is_yasar_student",
+                "field_type": "radio",
+                "label": "Yaşar Üniversitesi öğrencisi misiniz?",
+                "placeholder": None,
+                "required": True,
+                "options": ["Evet", "Hayır"],
+                "validation": None,
+                "condition": None,
+            },
+            {
+                "field_id": "turkish_identity_number",
+                "field_type": "text",
+                "label": "TC Kimlik Numarası",
+                "placeholder": None,
+                "required": True,
+                "options": None,
+                "validation": None,
+                "condition": {
+                    "depends_on": "is_yasar_student",
+                    "values": ["Hayır"],
+                },
+            },
+        ]
+
+        submission_data = SubmissionCreate(
+            form_id=ObjectId(str(SAMPLE_FORM_ID)),
+            answers={"is_yasar_student": "Hayır"},
+            respondent_email="guest@example.com",
+            respondent_name="Guest User",
+        )
+
+        mock_submission_collections["forms"].find_one = AsyncMock(return_value=form_doc)
+
+        with pytest.raises(FormValidationError, match="turkish_identity_number"):
+            await SubmissionService.create_submission(submission_data)
+
+    async def test_create_submission_skips_conditional_field_when_hidden(
+        self, mock_submission_collections
+    ):
+        """Does not require conditional field when condition does not match."""
+        form_doc = _make_active_form_doc()
+        form_doc["questions"] = [
+            {
+                "field_id": "is_yasar_student",
+                "field_type": "radio",
+                "label": "Yaşar Üniversitesi öğrencisi misiniz?",
+                "placeholder": None,
+                "required": True,
+                "options": ["Evet", "Hayır"],
+                "validation": None,
+                "condition": None,
+            },
+            {
+                "field_id": "turkish_identity_number",
+                "field_type": "text",
+                "label": "TC Kimlik Numarası",
+                "placeholder": None,
+                "required": True,
+                "options": None,
+                "validation": None,
+                "condition": {
+                    "depends_on": "is_yasar_student",
+                    "values": ["Hayır"],
+                },
+            },
+        ]
+
+        submission_data = SubmissionCreate(
+            form_id=ObjectId(str(SAMPLE_FORM_ID)),
+            answers={"is_yasar_student": "Evet"},
+            respondent_email="student@example.com",
+            respondent_name="Student User",
+        )
+
+        mock_submission_collections["forms"].find_one = AsyncMock(return_value=form_doc)
+        mock_submission_collections["submissions"].insert_one = AsyncMock()
+        mock_submission_collections["forms"].update_one = AsyncMock()
+
+        result = await SubmissionService.create_submission(submission_data)
+
+        assert result is not None
+        assert result.answers["is_yasar_student"] == "Evet"
 
 
 class TestGetSubmissionById:
