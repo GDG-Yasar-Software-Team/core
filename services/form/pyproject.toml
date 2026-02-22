@@ -14,3 +14,18 @@ dependencies = [
     "tamga>=1.4.0",
     "uvicorn>=0.40.0",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "httpx>=0.28.0",
+    "mongomock-motor>=0.0.34",
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.25.0",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.11.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+asyncio_default_fixture_loop_scope = "function"

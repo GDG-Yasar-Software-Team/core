@@ -37,3 +37,14 @@ uv run ruff check .
 # Fix auto-fixable issues
 uv run ruff check --fix .
 ```
+
+## Testing
+
+```bash
+# Run tests with coverage (from repo root)
+make test-form-service
+
+# Run tests directly
+cd services/form
+uv run pytest -v --cov=app
+```
