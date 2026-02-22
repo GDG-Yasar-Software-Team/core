@@ -7,6 +7,7 @@ from pydantic import ValidationError
 from app.models.common import validate_object_id
 from app.models.form import (
     FieldType,
+    FieldCondition,
     FormCreate,
     FormFieldSchema,
     FormInDB,
@@ -102,6 +103,19 @@ class TestFormFieldSchema:
                 label="Name",
             )
 
+    def test_condition_cannot_depend_on_self(self):
+        """A field condition cannot reference its own field_id."""
+        with pytest.raises(ValidationError, match="cannot depend on itself"):
+            FormFieldSchema(
+                field_id="turkish_identity_number",
+                field_type=FieldType.TEXT,
+                label="TC Kimlik Numarası",
+                condition=FieldCondition(
+                    depends_on="turkish_identity_number",
+                    values=["Hayır"],
+                ),
+            )
+
 
 class TestFormCreate:
     """Test FormCreate validation."""
@@ -161,6 +175,72 @@ class TestFormCreate:
             deadline=datetime(2025, 6, 20),
         )
         assert form.start_date < form.deadline
+
+    def test_rejects_duplicate_question_field_ids(self):
+        """Duplicate question field_id values raise ValidationError."""
+        with pytest.raises(ValidationError, match="must be unique"):
+            FormCreate(
+                title="Form",
+                description="desc",
+                questions=[
+                    FormFieldSchema(
+                        field_id="is_yasar_student",
+                        field_type=FieldType.RADIO,
+                        label="Yaşar öğrencisi misiniz?",
+                        options=["Evet", "Hayır"],
+                    ),
+                    FormFieldSchema(
+                        field_id="is_yasar_student",
+                        field_type=FieldType.TEXT,
+                        label="Tekrar",
+                    ),
+                ],
+            )
+
+    def test_rejects_condition_with_unknown_dependency(self):
+        """Condition dependency must point to an existing question field_id."""
+        with pytest.raises(ValidationError, match="depends on unknown field_id"):
+            FormCreate(
+                title="Form",
+                description="desc",
+                questions=[
+                    FormFieldSchema(
+                        field_id="turkish_identity_number",
+                        field_type=FieldType.TEXT,
+                        label="TC Kimlik Numarası",
+                        condition=FieldCondition(
+                            depends_on="is_yasar_student",
+                            values=["Hayır"],
+                        ),
+                    )
+                ],
+            )
+
+    def test_accepts_condition_with_existing_dependency(self):
+        """Condition with existing dependency field_id is valid."""
+        form = FormCreate(
+            title="Form",
+            description="desc",
+            questions=[
+                FormFieldSchema(
+                    field_id="is_yasar_student",
+                    field_type=FieldType.RADIO,
+                    label="Yaşar öğrencisi misiniz?",
+                    options=["Evet", "Hayır"],
+                ),
+                FormFieldSchema(
+                    field_id="turkish_identity_number",
+                    field_type=FieldType.TEXT,
+                    label="TC Kimlik Numarası",
+                    condition=FieldCondition(
+                        depends_on="is_yasar_student",
+                        values=["Hayır"],
+                    ),
+                ),
+            ],
+        )
+
+        assert form.questions[1].condition is not None
 
 
 class TestFormUpdate:

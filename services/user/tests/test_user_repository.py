@@ -37,6 +37,7 @@ class TestCreate:
         assert call_args["email"] == "test@example.com"
         assert call_args["is_yasar_student"] is False
         assert call_args["is_subscribed"] is True
+        assert call_args["turkish_identity_number"] is None
         assert call_args["submitted_form_ids"] == []
         assert call_args["submitted_form_count"] == 0
         assert call_args["received_mail_ids"] == []
@@ -105,6 +106,7 @@ class TestCreate:
             name="Test User",
             is_yasar_student=True,
             section="Engineering",
+            turkish_identity_number="12345678901",
             is_subscribed=False,
         )
         await UserRepository.create(user)
@@ -113,6 +115,7 @@ class TestCreate:
         assert call_args["name"] == "Test User"
         assert call_args["is_yasar_student"] is True
         assert call_args["section"] == "Engineering"
+        assert call_args["turkish_identity_number"] == "12345678901"
         assert call_args["is_subscribed"] is False
 
 
@@ -174,6 +177,25 @@ class TestUpdate:
         call_args = mock_mongodb["users"].update_one.call_args[0][1]
         assert "updated_at" in call_args["$set"]
         assert isinstance(call_args["$set"]["updated_at"], datetime)
+
+    async def test_updates_turkish_identity_number(self, mock_mongodb, sample_user_doc):
+        """Update writes turkish_identity_number when provided."""
+        from app.models.user import User
+
+        mock_mongodb["users"].update_one.return_value = MagicMock(matched_count=1)
+        mock_mongodb["users"].find_one.return_value = {
+            **sample_user_doc,
+            "turkish_identity_number": "12345678901",
+        }
+
+        update = User(
+            email="user1@example.com",
+            turkish_identity_number="12345678901",
+        )
+        await UserRepository.update("user1@example.com", update)
+
+        call_args = mock_mongodb["users"].update_one.call_args[0][1]
+        assert call_args["$set"]["turkish_identity_number"] == "12345678901"
 
     async def test_raises_user_not_found_error(self, mock_mongodb):
         """Update raises UserNotFoundError when user not found."""

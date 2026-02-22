@@ -44,6 +44,7 @@ class UserRepository:
             else False,
             "section": user.section,
             "grade": user.grade,
+            "turkish_identity_number": user.turkish_identity_number,
             "submitted_form_ids": [],
             "submitted_form_count": 0,
             "received_mail_ids": [],
@@ -101,6 +102,8 @@ class UserRepository:
             update_fields["section"] = update.section
         if update.grade is not None:
             update_fields["grade"] = update.grade
+        if update.turkish_identity_number is not None:
+            update_fields["turkish_identity_number"] = update.turkish_identity_number
         if update.is_subscribed is not None:
             update_fields["is_subscribed"] = update.is_subscribed
             # Set unsubscribed_at when unsubscribing

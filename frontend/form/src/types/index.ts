@@ -18,6 +18,13 @@ export interface FieldValidation {
 	pattern?: string;
 }
 
+export type FieldConditionValue = string | number | boolean;
+
+export interface FieldCondition {
+	depends_on: string;
+	values: FieldConditionValue[];
+}
+
 export interface FormFieldSchema {
 	field_id: string;
 	field_type: FieldType;
@@ -26,6 +33,7 @@ export interface FormFieldSchema {
 	required: boolean;
 	options?: string[];
 	validation?: FieldValidation;
+	condition?: FieldCondition;
 }
 
 export interface FormCreate {
@@ -116,6 +124,7 @@ export interface UserPayload {
 	is_yasar_student?: boolean | null;
 	section?: string | null;
 	grade?: string | null;
+	turkish_identity_number?: string | null;
 	is_subscribed?: boolean | null;
 }
 
@@ -131,6 +140,7 @@ export interface UserResponse {
 	is_yasar_student: boolean;
 	section: string | null;
 	grade: string | null;
+	turkish_identity_number: string | null;
 	submitted_form_count: number;
 	received_mail_count: number;
 	is_subscribed: boolean;
