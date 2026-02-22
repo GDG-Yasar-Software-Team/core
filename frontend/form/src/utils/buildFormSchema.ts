@@ -49,7 +49,7 @@ function buildFieldSchema(field: FormFieldSchema): z.ZodTypeAny {
 				});
 			}
 
-			return z.preprocess(emptyStringToUndefined, numSchema).optional();
+			return z.preprocess(emptyStringToUndefined, numSchema.optional());
 		}
 		case "checkbox": {
 			if ((field.options?.length ?? 0) > 0) {
@@ -78,7 +78,7 @@ function buildFieldSchema(field: FormFieldSchema): z.ZodTypeAny {
 				});
 			}
 
-			return z.preprocess(emptyStringToUndefined, strSchema).optional();
+			return z.preprocess(emptyStringToUndefined, strSchema.optional());
 		}
 	}
 }
