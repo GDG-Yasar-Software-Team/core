@@ -13,6 +13,7 @@ class User(BaseModel):
     name: str | None = None
     is_yasar_student: bool | None = None  # Auto-set from email domain if None on create
     section: str | None = None  # Faculty/Department
+    grade: str | None = None
     is_subscribed: bool | None = None  # Default True on create
 
 
@@ -24,6 +25,7 @@ class UserInDB(BaseModel):
     name: str | None = None
     is_yasar_student: bool = False
     section: str | None = None
+    grade: str | None = None
     submitted_form_ids: list[PyObjectId] = Field(default_factory=list)
     submitted_form_count: int = 0
     received_mail_ids: list[PyObjectId] = Field(default_factory=list)
@@ -44,6 +46,7 @@ class UserResponse(BaseModel):
     name: str | None
     is_yasar_student: bool
     section: str | None
+    grade: str | None = None
     submitted_form_count: int
     received_mail_count: int
     is_subscribed: bool
@@ -60,6 +63,7 @@ class UserResponse(BaseModel):
             name=user.name,
             is_yasar_student=user.is_yasar_student,
             section=user.section,
+            grade=user.grade,
             submitted_form_count=user.submitted_form_count,
             received_mail_count=user.received_mail_count,
             is_subscribed=user.is_subscribed,
