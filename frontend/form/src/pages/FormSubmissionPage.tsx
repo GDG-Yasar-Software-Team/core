@@ -542,9 +542,6 @@ const FormSubmissionPage = () => {
 								{form.description}
 							</p>
 						)}
-						<p className="mt-3 text-xs text-gray-400">
-							Lütfen önce e-posta adresinizi girin.
-						</p>
 					</div>
 
 					<div className="px-8 py-6">
