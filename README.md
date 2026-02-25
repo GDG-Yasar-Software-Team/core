@@ -12,6 +12,7 @@ We should use this scopes in PR titles:
 | ma  | **`mail-service`**  |
 | fb  | **`form-service`**  |
 | ff  | **`form-frontend`** |
+| ev  | **`event-service`** |
 
 #### Example Usage
 
@@ -53,6 +54,7 @@ cd core
 - Mail service: `http://localhost:8000`
 - User service: `http://localhost:8001`
 - Form service: `http://localhost:8002`
+- Event service: `http://localhost:8003`
 - Form frontend: `http://localhost:3000`
 
 ### Quick Start with Makefile
@@ -118,6 +120,19 @@ make lint               # Lint & auto-fix
 ```
 
 See [services/mail/README.md](services/mail/README.md) for detailed documentation.
+
+### Event Service
+
+Event microservice for GDG on Campus Yasar using [uv](https://docs.astral.sh/uv/) and [Ruff](https://docs.astral.sh/ruff/).
+
+```bash
+make install            # Install dependencies
+make run-event-service  # Run dev server
+make test-event-service # Run tests
+make lint               # Lint & auto-fix
+```
+
+See [services/event/README.md](services/event/README.md) for detailed documentation.
 
 ## Workflow
 

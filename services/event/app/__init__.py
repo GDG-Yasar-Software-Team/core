@@ -1,0 +1,1 @@
+"""Event microservice application package."""
