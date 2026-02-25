@@ -1,12 +1,13 @@
 """Submission service layer for managing form submissions."""
 
 from datetime import datetime, timezone
+from typing import Any
 
 from bson import ObjectId
 
 from app.db.mongodb import MongoDB
 from app.models.common import PyObjectId
-from app.models.form import FormInDB
+from app.models.form import FieldType, FormFieldSchema, FormInDB
 from app.models.submission import SubmissionCreate, SubmissionInDB
 from app.utils.logger import logger
 
@@ -24,7 +25,7 @@ class FormNotFoundError(Exception):
 
 
 class FormValidationError(Exception):
-    """Raised when form validation fails (inactive, not started, deadline passed)."""
+    """Raised when form or submission answer validation fails."""
 
     pass
 
@@ -142,6 +143,73 @@ class SubmissionService:
         return form
 
     @classmethod
+    def _values_match(cls, left: Any, right: Any) -> bool:
+        if isinstance(left, str) and isinstance(right, str):
+            return left.strip().casefold() == right.strip().casefold()
+        return left == right
+
+    @classmethod
+    def _is_field_visible(cls, field: FormFieldSchema, answers: dict[str, Any]) -> bool:
+        condition = field.condition
+        if condition is None:
+            return True
+
+        parent_value = answers.get(condition.depends_on)
+        if parent_value is None:
+            return False
+
+        if isinstance(parent_value, list):
+            for item in parent_value:
+                if any(cls._values_match(item, value) for value in condition.values):
+                    return True
+            return False
+
+        return any(cls._values_match(parent_value, value) for value in condition.values)
+
+    @classmethod
+    def _is_answer_provided(cls, field: FormFieldSchema, value: Any) -> bool:
+        if value is None:
+            return False
+
+        if field.field_type == FieldType.CHECKBOX and not field.options:
+            return value is True
+
+        if field.field_type in {FieldType.CHECKBOX, FieldType.MULTISELECT}:
+            return isinstance(value, list) and len(value) > 0
+
+        if field.field_type == FieldType.NUMBER:
+            if isinstance(value, bool):
+                return False
+            if isinstance(value, (int, float)):
+                return True
+            if isinstance(value, str):
+                return value.strip() != ""
+            return False
+
+        if isinstance(value, str):
+            return value.strip() != ""
+
+        if isinstance(value, list):
+            return len(value) > 0
+
+        return True
+
+    @classmethod
+    def _validate_required_answers(
+        cls, form: FormInDB, answers: dict[str, Any]
+    ) -> None:
+        for field in form.questions:
+            if not field.required:
+                continue
+            if not cls._is_field_visible(field, answers):
+                continue
+
+            if not cls._is_answer_provided(field, answers.get(field.field_id)):
+                raise FormValidationError(
+                    f"Required field '{field.field_id}' is missing or empty"
+                )
+
+    @classmethod
     async def create_submission(
         cls, submission_data: SubmissionCreate
     ) -> SubmissionInDB:
@@ -158,8 +226,9 @@ class SubmissionService:
             ValueError: For validation errors (form not found, inactive, not started, deadline passed)
             PyMongoError: For database errors
         """
-        # Validate form
-        await cls._validate_form(submission_data.form_id)
+        # Validate form and required answers (including conditional questions)
+        form = await cls._validate_form(submission_data.form_id)
+        cls._validate_required_answers(form, submission_data.answers)
 
         # Prepare submission document
         submission_doc = submission_data.model_dump(by_alias=True, exclude={"id"})

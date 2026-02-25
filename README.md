@@ -30,12 +30,6 @@ We should use this scopes in PR titles:
 └── docs/           # Documentation
 ```
 
-## System Design
-
-Full system architecture and design documentation:
-
-🔗 [View System Design on Eraser](https://app.eraser.io/workspace/pKbd4uRkiVb5bCq2z27R)
-
 ## Getting Started
 
 ### Clone the repository
@@ -154,4 +148,4 @@ See [services/event/README.md](services/event/README.md) for detailed documentat
 
 ## License
 
-Internal use only.
+This repository is licensed under the Apache License 2.0. See `LICENSE`.

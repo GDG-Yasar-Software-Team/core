@@ -45,6 +45,29 @@ class TestCreateUser:
             assert captured_user is not None
             assert captured_user.is_yasar_student is True
 
+    async def test_auto_detect_keeps_turkish_identity_number(self, mock_mongodb):
+        """create_user keeps turkish_identity_number while auto-detecting student flag."""
+        captured_user = None
+
+        async def capture_create(user: User):
+            nonlocal captured_user
+            captured_user = user
+            return "507f1f77bcf86cd799439011"
+
+        with patch(
+            "app.services.user_service.UserRepository.create",
+            side_effect=capture_create,
+        ):
+            user = User(
+                email="student@stu.yasar.edu.tr",
+                turkish_identity_number="12345678901",
+            )
+            await UserService.create_user(user)
+
+            assert captured_user is not None
+            assert captured_user.is_yasar_student is True
+            assert captured_user.turkish_identity_number == "12345678901"
+
     async def test_does_not_override_explicit_yasar_student(self, mock_mongodb):
         """create_user respects explicit is_yasar_student=False."""
         captured_user = None

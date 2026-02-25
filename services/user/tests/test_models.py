@@ -19,6 +19,7 @@ class TestUser:
         assert user.name is None
         assert user.is_yasar_student is None
         assert user.section is None
+        assert user.turkish_identity_number is None
         assert user.is_subscribed is None
 
     def test_email_validated(self):
@@ -33,13 +34,23 @@ class TestUser:
             name="Test User",
             is_yasar_student=True,
             section="Engineering",
+            turkish_identity_number="12345678901",
             is_subscribed=False,
         )
         assert user.email == "test@example.com"
         assert user.name == "Test User"
         assert user.is_yasar_student is True
         assert user.section == "Engineering"
+        assert user.turkish_identity_number == "12345678901"
         assert user.is_subscribed is False
+
+    def test_invalid_turkish_identity_number_rejected(self):
+        """Invalid TC Kimlik Number raises ValidationError."""
+        with pytest.raises(ValidationError):
+            User(
+                email="test@example.com",
+                turkish_identity_number="12345",
+            )
 
     def test_missing_email_raises_error(self):
         """Missing email raises ValidationError."""
@@ -58,6 +69,7 @@ class TestUserInDB:
             "name": "Test User",
             "is_yasar_student": True,
             "section": "Engineering",
+            "turkish_identity_number": "12345678901",
             "submitted_form_ids": [ObjectId("507f1f77bcf86cd799439020")],
             "submitted_form_count": 1,
             "received_mail_ids": [],
@@ -73,6 +85,7 @@ class TestUserInDB:
         assert user.name == "Test User"
         assert user.is_yasar_student is True
         assert user.section == "Engineering"
+        assert user.turkish_identity_number == "12345678901"
         assert len(user.submitted_form_ids) == 1
         assert user.submitted_form_count == 1
         assert user.received_mail_ids == []
@@ -132,6 +145,7 @@ class TestUserInDB:
         assert user.name is None
         assert user.is_yasar_student is False
         assert user.section is None
+        assert user.turkish_identity_number is None
         assert user.submitted_form_ids == []
         assert user.submitted_form_count == 0
         assert user.received_mail_ids == []
@@ -152,6 +166,7 @@ class TestUserResponse:
             name="Test User",
             is_yasar_student=True,
             section="Engineering",
+            turkish_identity_number="12345678901",
             submitted_form_ids=[ObjectId()],
             submitted_form_count=1,
             received_mail_ids=[ObjectId(), ObjectId()],
@@ -167,6 +182,7 @@ class TestUserResponse:
         assert response.name == "Test User"
         assert response.is_yasar_student is True
         assert response.section == "Engineering"
+        assert response.turkish_identity_number == "12345678901"
         assert response.submitted_form_count == 1
         assert response.received_mail_count == 2
         assert response.is_subscribed is True
@@ -199,6 +215,7 @@ class TestUserResponse:
             name=None,
             is_yasar_student=False,
             section=None,
+            turkish_identity_number=None,
             submitted_form_ids=[],
             submitted_form_count=0,
             received_mail_ids=[],

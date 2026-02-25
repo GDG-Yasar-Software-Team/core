@@ -1,4 +1,5 @@
-.PHONY: help install lint format clean dev run-form-service run-form-frontend run-mail-service run-mail-campaign test-mail-service run-user-service test-user-service run-event-service test-event-service sync-prompts
+
+.PHONY: help install lint format clean dev run-form-service run-form-frontend test-form-service run-mail-service run-mail-campaign test-mail-service run-user-service test-user-service run-event-service test-event-service sync-prompts
 
 help:
 	@echo "Available commands:"
@@ -9,6 +10,7 @@ help:
 	@echo "  make dev                - Run both backend and frontend dev servers"
 	@echo "  make run-form-service   - Run form backend (FastAPI)"
 	@echo "  make run-form-frontend  - Run form frontend development server"
+	@echo "  make test-form-service  - Run form service tests"
 	@echo "  make run-mail-service   - Run mail backend (FastAPI)"
 	@echo "  make run-mail-campaign  - Run mail campaign CLI script"
 	@echo "  make test-mail-service  - Run mail service tests"
@@ -70,13 +72,13 @@ clean:
 dev:
 	@echo "Starting backend and frontend dev servers..."
 	@trap 'kill 0' INT; \
-	(cd services/form && uv run fastapi dev) & \
+	(cd services/form && uv run python -m app.main) & \
 	(cd frontend/form && bun dev) & \
 	wait
 
 run-form-service:
 	@echo "Starting form service..."
-	cd services/form && uv run fastapi dev
+	cd services/form && uv run python -m app.main
 
 run-form-frontend:
 	@echo "Starting form frontend development server..."
@@ -95,9 +97,14 @@ test-mail-service:
 	cd services/mail && uv run pytest -v --cov=app
 	@echo "Tests complete!"
 
+test-form-service:
+	@echo "Running form service tests..."
+	cd services/form && uv run pytest -v --cov=app
+	@echo "Tests complete!"
+
 run-user-service:
 	@echo "Starting user service..."
-	cd services/user && uv run fastapi dev
+	cd services/user && uv run python -m app.main
 
 test-user-service:
 	@echo "Running user service tests..."

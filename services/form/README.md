@@ -9,7 +9,7 @@ Form microservice for the GDG Core platform.
 uv sync
 
 # Run development server
-uv run fastapi dev
+uv run python -m app.main
 ```
 
 Service runs at `http://localhost:8002` by default.
@@ -36,4 +36,15 @@ uv run ruff check .
 
 # Fix auto-fixable issues
 uv run ruff check --fix .
+```
+
+## Testing
+
+```bash
+# Run tests with coverage (from repo root)
+make test-form-service
+
+# Run tests directly
+cd services/form
+uv run pytest -v --cov=app
 ```

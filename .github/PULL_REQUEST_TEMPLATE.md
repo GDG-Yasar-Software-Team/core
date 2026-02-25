@@ -11,4 +11,5 @@ Closes #
 - [ ] Code follows project conventions
 - [ ] I tested my changes locally
 - [ ] Linting passes
+- [ ] I updated/added tests for my changes
 - [ ] I added @seberatolmez or @dogukanurker as reviewers
