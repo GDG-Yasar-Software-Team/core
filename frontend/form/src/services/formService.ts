@@ -1,5 +1,8 @@
 import type {
+	FormCreate,
+	FormListResponse,
 	FormResponse,
+	FormUpdate,
 	PaginatedSubmissionsResponse,
 	SubmissionCreate,
 	SubmissionResponse,
@@ -76,4 +79,41 @@ export async function getAllSubmissionsByForm(
 	}
 
 	return submissions;
+}
+
+export async function listForms(
+	skip = 0,
+	limit = 20,
+	activeOnly = false,
+): Promise<FormListResponse> {
+	const query = new URLSearchParams({
+		skip: String(skip),
+		limit: String(limit),
+		active_only: String(activeOnly),
+	});
+
+	return request<FormListResponse>(`/forms/?${query.toString()}`);
+}
+
+export async function createForm(payload: FormCreate): Promise<FormResponse> {
+	return request<FormResponse>("/forms/", {
+		method: "POST",
+		body: JSON.stringify(payload),
+	});
+}
+
+export async function updateForm(
+	formId: string,
+	payload: FormUpdate,
+): Promise<FormResponse> {
+	return request<FormResponse>(`/forms/${encodeURIComponent(formId)}`, {
+		method: "PUT",
+		body: JSON.stringify(payload),
+	});
+}
+
+export async function deleteForm(formId: string): Promise<void> {
+	await fetch(`${FORM_SERVICE_URL}/forms/${encodeURIComponent(formId)}`, {
+		method: "DELETE",
+	});
 }

@@ -1,5 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import AdminFormViewsPage from "./pages/AdminFormViewsPage";
+import AdminFormListPage from "./pages/admin/AdminFormListPage";
+import FormEditorPage from "./pages/admin/FormEditorPage";
 import FormSubmissionPage from "./pages/FormSubmissionPage";
 
 function Home() {
@@ -20,6 +22,8 @@ function App() {
 			<Route path="/" element={<Home />} />
 			<Route path="/forms/:formId" element={<FormSubmissionPage />} />
 			<Route path="/views/:formId" element={<AdminFormViewsPage />} />
+			<Route path="/admin/forms" element={<AdminFormListPage />} />
+			<Route path="/admin/forms/editor" element={<FormEditorPage />} />
 			<Route path="*" element={<Navigate to="/" replace />} />
 		</Routes>
 	);

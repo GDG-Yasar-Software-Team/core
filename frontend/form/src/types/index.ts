@@ -148,3 +148,10 @@ export interface UserResponse {
 	created_at: string;
 	updated_at: string | null;
 }
+
+export interface FormListResponse {
+	forms: FormPreview[];
+	total: number;
+	skip: number;
+	limit: number;
+}
