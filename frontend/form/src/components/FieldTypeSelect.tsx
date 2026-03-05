@@ -11,6 +11,7 @@ const FIELD_TYPE_ITEMS: AnimatedListItem[] = [
 	{ value: "checkbox", label: "Onay Kutusu" },
 	{ value: "radio", label: "Radyo Butonları" },
 	{ value: "date", label: "Tarih" },
+	{ value: "department", label: "Bölüm Listesi" },
 ];
 
 interface FieldTypeSelectProps {

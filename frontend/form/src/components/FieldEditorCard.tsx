@@ -4,6 +4,38 @@ import FieldTypeSelect from "./FieldTypeSelect";
 
 const TYPES_WITH_OPTIONS: FieldType[] = ["select", "multiselect", "radio"];
 
+const DEPARTMENT_OPTIONS = [
+	"Bilgisayar Mühendisliği",
+	"Çizgi Film ve Animasyon",
+	"Ekonomi",
+	"Elektrik-Elektronik Mühendisliği",
+	"Endüstri Mühendisliği",
+	"Endüstriyel Tasarım",
+	"Enerji Sistemleri Mühendisliği",
+	"Gastronomi ve Mutfak Sanatları",
+	"Görsel İletişim Tasarımı",
+	"Halkla İlişkiler ve Reklamcılık",
+	"Hukuk",
+	"İç Mimarlık ve Çevre Tasarımı",
+	"İngiliz Dili ve Edebiyatı",
+	"İngilizce Mütercim ve Tercümanlık",
+	"İnşaat Mühendisliği",
+	"İşletme",
+	"Lojistik Yönetimi",
+	"Makine Mühendisliği",
+	"Mimarlık",
+	"Psikoloji",
+	"Radyo, Televizyon ve Sinema",
+	"Tarım Ekonomisi",
+	"Tarım Makineleri ve Teknolojileri Mühendisliği",
+	"Turizm Rehberliği",
+	"Uluslararası İlişkiler",
+	"Uluslararası Ticaret ve Finansman",
+	"Yazılım Mühendisliği",
+	"Yeni Medya ve İletişim",
+	"Yönetim Bilişim Sistemleri",
+];
+
 function slugify(text: string): string {
 	return text
 		.trim()
@@ -40,14 +72,26 @@ const FieldEditorCard = ({
 }: FieldEditorCardProps) => {
 	const [isExpanded, setIsExpanded] = useState(true);
 	const [labelValue, setLabelValue] = useState(field.label);
-	const [optionsText, setOptionsText] = useState(
-		field.options?.join(", ") ?? "",
+	const [options, setOptions] = useState<string[]>(
+		field.options?.length ? field.options : [""],
 	);
 
 	const showOptions = TYPES_WITH_OPTIONS.includes(field.field_type);
 
 	const updateField = (updates: Partial<FormFieldSchema>) => {
 		onChange({ ...field, ...updates });
+	};
+
+	const handleFieldTypeChange = (value: FieldType) => {
+		if (value === "department") {
+			setOptions(DEPARTMENT_OPTIONS);
+			updateField({ field_type: value, options: DEPARTMENT_OPTIONS });
+		} else if (field.field_type === "department") {
+			setOptions([""]);
+			updateField({ field_type: value, options: undefined });
+		} else {
+			updateField({ field_type: value });
+		}
 	};
 
 	const handleLabelChange = (label: string) => {
@@ -59,13 +103,21 @@ const FieldEditorCard = ({
 		updateField(updates);
 	};
 
-	const handleOptionsChange = (text: string) => {
-		setOptionsText(text);
-		const options = text
-			.split(",")
-			.map((opt) => opt.trim())
-			.filter((opt) => opt.length > 0);
-		updateField({ options: options.length > 0 ? options : undefined });
+	const handleOptionChange = (i: number, value: string) => {
+		const next = options.map((o, idx) => (idx === i ? value : o));
+		setOptions(next);
+		const filled = next.filter((o) => o.trim().length > 0);
+		updateField({ options: filled.length > 0 ? filled : undefined });
+	};
+
+	const handleOptionAdd = () => setOptions((prev) => [...prev, ""]);
+
+	const handleOptionRemove = (i: number) => {
+		const next = options.filter((_, idx) => idx !== i);
+		const safe = next.length > 0 ? next : [""];
+		setOptions(safe);
+		const filled = safe.filter((o) => o.trim().length > 0);
+		updateField({ options: filled.length > 0 ? filled : undefined });
 	};
 
 	const handleValidationChange = (
@@ -255,7 +307,7 @@ const FieldEditorCard = ({
 							</label>
 							<FieldTypeSelect
 								value={field.field_type}
-								onChange={(value) => updateField({ field_type: value })}
+								onChange={handleFieldTypeChange}
 							/>
 						</div>
 					</div>
@@ -309,16 +361,41 @@ const FieldEditorCard = ({
 					{showOptions && (
 						<div>
 							<label className="block text-sm font-medium text-slate-700">
-								Seçenekler{" "}
-								<span className="text-slate-400">(virgülle ayırın)</span>
+								Seçenekler
 							</label>
-							<input
-								type="text"
-								value={optionsText}
-								onChange={(e) => handleOptionsChange(e.target.value)}
-								className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
-								placeholder="Seçenek 1, Seçenek 2, Seçenek 3"
-							/>
+							<div className="mt-1 space-y-2">
+								{options.map((opt, i) => (
+									<div key={i} className="flex items-center gap-2">
+										<input
+											type="text"
+											value={opt}
+											onChange={(e) => handleOptionChange(i, e.target.value)}
+											className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+											placeholder={`Seçenek ${i + 1}`}
+										/>
+										<button
+											type="button"
+											onClick={() => handleOptionRemove(i)}
+											disabled={options.length === 1}
+											className="rounded p-1.5 text-red-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-30 disabled:hover:bg-transparent"
+										>
+											<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+											</svg>
+										</button>
+									</div>
+								))}
+								<button
+									type="button"
+									onClick={handleOptionAdd}
+									className="mt-1 flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
+								>
+									<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+									</svg>
+									Seçenek Ekle
+								</button>
+							</div>
 						</div>
 					)}
 

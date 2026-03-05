@@ -8,7 +8,8 @@ export type FieldType =
 	| "multiselect"
 	| "checkbox"
 	| "radio"
-	| "date";
+	| "date"
+	| "department";
 
 export interface FieldValidation {
 	min_length?: number;
