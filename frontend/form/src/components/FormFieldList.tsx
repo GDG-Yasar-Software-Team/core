@@ -60,7 +60,7 @@ const FormFieldList = ({
 		<div className="space-y-3">
 			{fields.map((field, index) => (
 				<FieldEditorCard
-					key={field.field_id || `field-${index}`}
+					key={field._key || field.field_id || `field-${index}`}
 					field={field}
 					index={index}
 					totalFields={fields.length}

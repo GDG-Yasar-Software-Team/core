@@ -21,8 +21,10 @@ function generateFieldId(): string {
 }
 
 function createEmptyField(): FormFieldSchema {
+	const key = generateFieldId();
 	return {
-		field_id: generateFieldId(),
+		_key: key,
+		field_id: key,
 		field_type: "text",
 		label: "",
 		required: false,
@@ -36,6 +38,7 @@ function cleanFieldForSave(field: FormFieldSchema): FormFieldSchema {
 		label: field.label,
 		required: field.required,
 	};
+	delete cleaned._key;
 
 	if (field.placeholder?.trim()) {
 		cleaned.placeholder = field.placeholder.trim();
@@ -144,14 +147,6 @@ const FormEditorPage = () => {
 			isCancelled = true;
 		};
 	}, [formId, reset]);
-
-	useEffect(() => {
-		const defaults = fields.reduce<FormValues>((acc, field) => {
-			acc[field.field_id] = "";
-			return acc;
-		}, {});
-		reset(defaults);
-	}, [fields, reset]);
 
 	const handleAddField = () => {
 		setFields((prev) => [...prev, createEmptyField()]);

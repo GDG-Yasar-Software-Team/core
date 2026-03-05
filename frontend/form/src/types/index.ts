@@ -26,6 +26,7 @@ export interface FieldCondition {
 }
 
 export interface FormFieldSchema {
+	_key?: string;
 	field_id: string;
 	field_type: FieldType;
 	label: string;

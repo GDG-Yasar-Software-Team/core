@@ -39,6 +39,7 @@ const FieldEditorCard = ({
 	onRemove,
 }: FieldEditorCardProps) => {
 	const [isExpanded, setIsExpanded] = useState(true);
+	const [labelValue, setLabelValue] = useState(field.label);
 	const [optionsText, setOptionsText] = useState(
 		field.options?.join(", ") ?? "",
 	);
@@ -50,6 +51,7 @@ const FieldEditorCard = ({
 	};
 
 	const handleLabelChange = (label: string) => {
+		setLabelValue(label);
 		const updates: Partial<FormFieldSchema> = { label };
 		if (isNewField) {
 			updates.field_id = slugify(label);
@@ -241,7 +243,7 @@ const FieldEditorCard = ({
 							</label>
 							<input
 								type="text"
-								value={field.label}
+							value={labelValue}
 								onChange={(e) => handleLabelChange(e.target.value)}
 								className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
 								placeholder="Örn: Ad Soyad"
