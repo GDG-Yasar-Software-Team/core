@@ -1,13 +1,17 @@
 """Pytest fixtures for event service tests."""
 
 from collections.abc import AsyncGenerator, Generator
+from datetime import datetime, timezone
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from bson import ObjectId
 from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
 
 from app.config import Settings
+from app.models.event import EventCreate, Speaker
 
 # Test token constant
 TEST_API_TOKEN = "test-api-token-12345"
@@ -33,7 +37,8 @@ def mock_settings():
     with patch("app.config.settings", test_settings):
         with patch("app.config.get_settings", return_value=test_settings):
             with patch("app.db.mongodb.settings", test_settings):
-                yield test_settings
+                with patch("app.repositories.event_repository.settings", test_settings):
+                    yield test_settings
 
 
 @pytest.fixture
@@ -64,6 +69,66 @@ def mock_mongodb():
                 "db": mock_db,
                 "events": events_collection,
             }
+
+
+@pytest.fixture
+def sample_event_data() -> EventCreate:
+    """Sample EventCreate instance for testing."""
+    return EventCreate(
+        title="GDG DevFest 2025",
+        description="Annual developer festival.",
+        date=datetime(2099, 11, 15, 10, 0, 0, tzinfo=timezone.utc),
+        place="Yaşar University",
+        speakers=[Speaker(name="Jane Doe", title="Engineer", company="Google")],
+        image_url="https://example.com/image.jpg",
+    )
+
+
+@pytest.fixture
+def sample_event_doc() -> dict[str, Any]:
+    """Sample event document in DB format."""
+    return {
+        "_id": ObjectId("507f1f77bcf86cd799439011"),
+        "title": "GDG DevFest 2025",
+        "description": "Annual developer festival.",
+        "date": datetime(2099, 11, 15, 10, 0, 0, tzinfo=timezone.utc),
+        "place": "Yaşar University",
+        "speakers": [{"name": "Jane Doe", "title": "Engineer", "company": "Google"}],
+        "image_url": "https://example.com/image.jpg",
+        "created_at": datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+        "updated_at": None,
+    }
+
+
+@pytest.fixture
+def sample_event_docs() -> list[dict[str, Any]]:
+    """Multiple sample event documents in DB format."""
+    return [
+        {
+            "_id": ObjectId("507f1f77bcf86cd799439011"),
+            "title": "GDG DevFest 2025",
+            "description": "Annual developer festival.",
+            "date": datetime(2099, 11, 15, 10, 0, 0, tzinfo=timezone.utc),
+            "place": "Yaşar University",
+            "speakers": [],
+            "image_url": None,
+            "created_at": datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+            "updated_at": None,
+        },
+        {
+            "_id": ObjectId("507f1f77bcf86cd799439012"),
+            "title": "Flutter Workshop",
+            "description": "Hands-on Flutter workshop.",
+            "date": datetime(2099, 12, 1, 14, 0, 0, tzinfo=timezone.utc),
+            "place": "Engineering Building",
+            "speakers": [
+                {"name": "John Smith", "title": "Developer", "company": "Flutter"}
+            ],
+            "image_url": "https://example.com/flutter.jpg",
+            "created_at": datetime(2025, 2, 1, 0, 0, 0, tzinfo=timezone.utc),
+            "updated_at": None,
+        },
+    ]
 
 
 @pytest.fixture
