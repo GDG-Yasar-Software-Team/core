@@ -1,16 +1,6 @@
 import { useState } from "react";
 import type { FieldType, FormFieldSchema } from "../types";
-
-const FIELD_TYPES: { value: FieldType; label: string }[] = [
-	{ value: "text", label: "Kısa Metin" },
-	{ value: "textarea", label: "Uzun Metin" },
-	{ value: "number", label: "Sayı" },
-	{ value: "select", label: "Açılır Liste" },
-	{ value: "multiselect", label: "Çoklu Seçim" },
-	{ value: "checkbox", label: "Onay Kutusu" },
-	{ value: "radio", label: "Radyo Butonları" },
-	{ value: "date", label: "Tarih" },
-];
+import FieldTypeSelect from "./FieldTypeSelect";
 
 const TYPES_WITH_OPTIONS: FieldType[] = ["select", "multiselect", "radio"];
 
@@ -261,19 +251,10 @@ const FieldEditorCard = ({
 							<label className="block text-sm font-medium text-slate-700">
 								Alan Tipi <span className="text-red-500">*</span>
 							</label>
-							<select
+							<FieldTypeSelect
 								value={field.field_type}
-								onChange={(e) =>
-									updateField({ field_type: e.target.value as FieldType })
-								}
-								className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
-							>
-								{FIELD_TYPES.map((type) => (
-									<option key={type.value} value={type.value}>
-										{type.label}
-									</option>
-								))}
-							</select>
+								onChange={(value) => updateField({ field_type: value })}
+							/>
 						</div>
 					</div>
 
