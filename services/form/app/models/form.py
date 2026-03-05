@@ -54,7 +54,7 @@ class FormFieldSchema(BaseModel):
 
 class FormCreate(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
-    description: str = Field(..., min_length=1, max_length=2000)
+    description: str | None = Field(default=None, min_length=1, max_length=2000)
     questions: list[FormFieldSchema] = Field(..., min_length=1)
     start_date: datetime | None = None
     deadline: datetime | None = None

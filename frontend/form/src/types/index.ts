@@ -38,7 +38,7 @@ export interface FormFieldSchema {
 
 export interface FormCreate {
 	title: string;
-	description: string;
+	description: string | null;
 	questions: FormFieldSchema[];
 	start_date?: string;
 	deadline?: string;

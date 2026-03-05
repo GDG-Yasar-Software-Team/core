@@ -200,7 +200,7 @@ const FormEditorPage = () => {
 		try {
 			const payload: FormCreate = {
 				title: title.trim(),
-				description: description.trim(),
+				description: description.trim() || null,
 				questions: fields.map(cleanFieldForSave),
 				is_active: isActive,
 			};
