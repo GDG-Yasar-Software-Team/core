@@ -34,7 +34,7 @@ function createEmptyField(): FormFieldSchema {
 
 function cleanFieldForSave(field: FormFieldSchema): FormFieldSchema {
 	const cleaned: FormFieldSchema = {
-		field_id: field.field_id,
+		field_id: field.field_id.slice(0, 32),
 		field_type: field.field_type === "department" ? "select" : field.field_type,
 		label: field.label,
 		required: field.required,

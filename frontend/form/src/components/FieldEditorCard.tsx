@@ -44,7 +44,7 @@ function slugify(text: string): string {
 		.replace(/\s+/g, "_")
 		.replace(/-+/g, "_")
 		.replace(/_+/g, "_")
-		.slice(0, 50);
+		.slice(0, 32);
 }
 
 interface FieldEditorCardProps {
