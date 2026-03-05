@@ -3,6 +3,7 @@ import { type FieldError, type FieldErrors, useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import AdminPasswordGate from "../../components/AdminPasswordGate";
 import Banner from "../../components/Banner";
+import { DatePicker } from "../../components/DatePicker";
 import FieldRenderer from "../../components/FieldRenderer";
 import FormFieldList from "../../components/FormFieldList";
 import {
@@ -317,56 +318,44 @@ const FormEditorPage = () => {
 									Form Bilgileri
 								</h2>
 
-								<div>
-									<label className="block text-sm font-medium text-slate-700">
-										Başlık <span className="text-red-500">*</span>
-									</label>
-									<input
-										type="text"
-										value={title}
-										onChange={(e) => setTitle(e.target.value)}
-										className="mt-1 w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+<div className="group relative mt-2">
+								<label className="pointer-events-none absolute left-4 top-0 -translate-y-1/2 bg-white px-1 text-xs font-semibold text-slate-500 transition-colors duration-200 group-focus-within:text-violet-600">
+									Başlık <span className="text-red-500">*</span>
+								</label>
+								<input
+									type="text"
+									value={title}
+									onChange={(e) => setTitle(e.target.value)}
+									className="w-full rounded-2xl border-2 border-slate-200 px-4 pb-3 pt-5 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
 										placeholder="Form başlığı"
 									/>
 								</div>
 
-								<div>
-									<label className="block text-sm font-medium text-slate-700">
-										Açıklama
-									</label>
-									<textarea
-										value={description}
-										onChange={(e) => setDescription(e.target.value)}
-										rows={3}
-										className="mt-1 w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+<div className="group relative mt-2">
+								<label className="pointer-events-none absolute left-4 top-0 -translate-y-1/2 bg-white px-1 text-xs font-semibold text-slate-500 transition-colors duration-200 group-focus-within:text-violet-600">
+									Açıklama
+								</label>
+								<textarea
+									value={description}
+									onChange={(e) => setDescription(e.target.value)}
+									rows={3}
+									className="w-full resize-none rounded-2xl border-2 border-slate-200 px-4 pb-3 pt-5 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
 										placeholder="Form açıklaması (opsiyonel)"
 									/>
 								</div>
 
 								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-									<div>
-										<label className="block text-sm font-medium text-slate-700">
-											Başlangıç Tarihi
-										</label>
-										<input
-											type="date"
-											value={startDate}
-											onChange={(e) => setStartDate(e.target.value)}
-											className="mt-1 w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
-										/>
-									</div>
-									<div>
-										<label className="block text-sm font-medium text-slate-700">
-											Bitiş Tarihi
-										</label>
-										<input
-											type="date"
-											value={deadline}
-											onChange={(e) => setDeadline(e.target.value)}
-											className="mt-1 w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
-										/>
-									</div>
-								</div>
+								<DatePicker
+									label="Başlangıç Tarihi"
+									value={startDate}
+									onChange={setStartDate}
+								/>
+								<DatePicker
+									label="Bitiş Tarihi"
+									value={deadline}
+									onChange={setDeadline}
+								/>
+							</div>
 
 								<div className="flex items-center gap-3">
 									<button

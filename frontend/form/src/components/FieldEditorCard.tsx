@@ -289,55 +289,51 @@ const FieldEditorCard = ({
 			{isExpanded && (
 				<div className="border-t border-slate-100 px-4 py-4 space-y-4">
 					<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-						<div>
-							<label className="block text-sm font-medium text-slate-700">
-								Alan Etiketi <span className="text-red-500">*</span>
-							</label>
-							<input
-								type="text"
+					<div className="group relative mt-2">
+						<label className="pointer-events-none absolute left-4 top-0 -translate-y-1/2 bg-white px-1 text-xs font-semibold text-slate-500 transition-colors duration-200 group-focus-within:text-violet-600">
+							Alan Etiketi <span className="text-red-500">*</span>
+						</label>
+						<input
+							type="text"
 							value={labelValue}
-								onChange={(e) => handleLabelChange(e.target.value)}
-								className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
-								placeholder="Örn: Ad Soyad"
-							/>
-						</div>
-						<div>
-							<label className="block text-sm font-medium text-slate-700">
-								Alan Tipi <span className="text-red-500">*</span>
-							</label>
-							<FieldTypeSelect
-								value={field.field_type}
-								onChange={handleFieldTypeChange}
-							/>
-						</div>
+							onChange={(e) => handleLabelChange(e.target.value)}
+							className="w-full rounded-2xl border-2 border-slate-200 px-4 pb-3 pt-5 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
+							placeholder="Örn: Ad Soyad"
+						/>
 					</div>
+					<FieldTypeSelect
+						value={field.field_type}
+						onChange={handleFieldTypeChange}
+						label="Alan Tipi"
+						required
+					/>
+				</div>
 
-					<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-						<div>
-							<label className="block text-sm font-medium text-slate-700">
-								Alan ID {isNewField && "(otomatik)"}
-							</label>
-							<input
-								type="text"
-								value={field.field_id}
-								onChange={(e) => updateField({ field_id: e.target.value })}
-								disabled={!isNewField}
-								className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:bg-slate-50 disabled:text-slate-500"
-								placeholder="alan_id"
-							/>
-						</div>
-						<div>
-							<label className="block text-sm font-medium text-slate-700">
-								Placeholder
-							</label>
-							<input
-								type="text"
-								value={field.placeholder ?? ""}
-								onChange={(e) =>
-									updateField({ placeholder: e.target.value || undefined })
-								}
-								className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
-								placeholder="Placeholder metni..."
+				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+					<div className="group relative mt-2">
+						<label className="pointer-events-none absolute left-4 top-0 -translate-y-1/2 bg-white px-1 text-xs font-semibold text-slate-500 transition-colors duration-200 group-focus-within:text-violet-600">
+							Alan ID{isNewField && <span className="ml-1 font-normal text-slate-400">(otomatik)</span>}
+						</label>
+						<input
+							type="text"
+							value={field.field_id}
+							onChange={(e) => updateField({ field_id: e.target.value })}
+							disabled={!isNewField}
+							className="w-full rounded-2xl border-2 border-slate-200 px-4 pb-3 pt-5 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
+							placeholder="alan_id"
+						/>
+					</div>
+					<div className="group relative mt-2">
+						<label className="pointer-events-none absolute left-4 top-0 -translate-y-1/2 bg-white px-1 text-xs font-semibold text-slate-500 transition-colors duration-200 group-focus-within:text-violet-600">
+							Placeholder
+						</label>
+						<input
+							type="text"
+							value={field.placeholder ?? ""}
+							onChange={(e) =>
+								updateField({ placeholder: e.target.value || undefined })
+							}
+							className="w-full rounded-2xl border-2 border-slate-200 px-4 pb-3 pt-5 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
 							/>
 						</div>
 					</div>
@@ -363,14 +359,14 @@ const FieldEditorCard = ({
 							<label className="block text-sm font-medium text-slate-700">
 								Seçenekler
 							</label>
-							<div className="mt-1 space-y-2">
-								{options.map((opt, i) => (
-									<div key={i} className="flex items-center gap-2">
-										<input
-											type="text"
-											value={opt}
-											onChange={(e) => handleOptionChange(i, e.target.value)}
-											className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+						<div className="mt-2 space-y-2">
+							{options.map((opt, i) => (
+								<div key={i} className="flex items-center gap-2">
+									<input
+										type="text"
+										value={opt}
+										onChange={(e) => handleOptionChange(i, e.target.value)}
+										className="flex-1 rounded-2xl border-2 border-slate-200 px-4 py-3 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
 											placeholder={`Seçenek ${i + 1}`}
 										/>
 										<button
@@ -415,7 +411,7 @@ const FieldEditorCard = ({
 										onChange={(e) =>
 											handleValidationChange("min_length", e.target.value)
 										}
-										className="mt-1 w-full rounded border border-slate-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200"
+										className="mt-1 w-full rounded-xl border-2 border-slate-200 px-3 py-2 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
 									/>
 								</div>
 								<div>
@@ -428,7 +424,7 @@ const FieldEditorCard = ({
 										onChange={(e) =>
 											handleValidationChange("max_length", e.target.value)
 										}
-										className="mt-1 w-full rounded border border-slate-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200"
+										className="mt-1 w-full rounded-xl border-2 border-slate-200 px-3 py-2 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
 									/>
 								</div>
 							</div>
@@ -443,7 +439,7 @@ const FieldEditorCard = ({
 										onChange={(e) =>
 											handleValidationChange("min_value", e.target.value)
 										}
-										className="mt-1 w-full rounded border border-slate-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200"
+										className="mt-1 w-full rounded-xl border-2 border-slate-200 px-3 py-2 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
 									/>
 								</div>
 								<div>
@@ -456,7 +452,7 @@ const FieldEditorCard = ({
 										onChange={(e) =>
 											handleValidationChange("max_value", e.target.value)
 										}
-										className="mt-1 w-full rounded border border-slate-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200"
+										className="mt-1 w-full rounded-xl border-2 border-slate-200 px-3 py-2 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
 									/>
 								</div>
 							</div>
@@ -468,7 +464,7 @@ const FieldEditorCard = ({
 									type="text"
 									value={field.validation?.pattern ?? ""}
 									onChange={(e) => handlePatternChange(e.target.value)}
-									className="mt-1 w-full rounded border border-slate-300 px-2 py-1.5 text-sm font-mono focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200"
+								className="mt-1 w-full rounded-xl border-2 border-slate-200 px-3 py-2 font-mono text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
 									placeholder="^[A-Z].*"
 								/>
 							</div>
@@ -490,7 +486,7 @@ const FieldEditorCard = ({
 										onChange={(e) =>
 											handleConditionChange("depends_on", e.target.value)
 										}
-										className="mt-1 w-full rounded border border-slate-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200"
+									className="mt-1 w-full rounded-xl border-2 border-slate-200 bg-white px-3 py-2 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
 									>
 										<option value="">Yok</option>
 										{otherFieldIds.map((id) => (
@@ -511,7 +507,7 @@ const FieldEditorCard = ({
 											onChange={(e) =>
 												handleConditionChange("values", e.target.value)
 											}
-											className="mt-1 w-full rounded border border-slate-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200"
+										className="mt-1 w-full rounded-xl border-2 border-slate-200 px-3 py-2 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
 											placeholder="değer1, değer2"
 										/>
 									</div>
