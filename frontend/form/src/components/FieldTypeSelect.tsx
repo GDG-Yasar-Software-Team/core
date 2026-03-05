@@ -9,7 +9,7 @@ const FIELD_TYPE_ITEMS: AnimatedListItem[] = [
 	{ value: "select", label: "Açılır Liste" },
 	{ value: "multiselect", label: "Çoklu Seçim" },
 	{ value: "checkbox", label: "Onay Kutusu" },
-	{ value: "radio", label: "Radyo Butonları" },
+	{ value: "radio", label: "Tekli Seçim (Yuvarlak)" },
 	{ value: "date", label: "Tarih" },
 	{ value: "department", label: "Bölüm Listesi" },
 ];
