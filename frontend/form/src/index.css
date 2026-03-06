@@ -1,6 +1,6 @@
 html,
 body {
-	@apply bg-slate-100;
+	@apply bg-[#050a08];
 }
 
 #root {
