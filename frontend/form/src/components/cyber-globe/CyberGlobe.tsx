@@ -3,52 +3,61 @@ import { OrbitControls } from "@react-three/drei";
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import { Suspense, useRef, useMemo, useState, useEffect } from "react";
 import * as THREE from "three";
+import { CONTINENT_OUTLINES, TECH_HUB_COORDS } from "./continentOutlines";
 
 // ============ CONSTANTS ============
 const GLOBE_RADIUS = 2;
-const PRIMARY_COLOR = "#00ff88"; // Neon green
-const SECONDARY_COLOR = "#00ffff"; // Cyan
-const ACCENT_COLOR = "#ff00ff"; // Magenta
-const WARNING_COLOR = "#ffaa00"; // Orange
-const GRID_COLOR = "#004422";
+const ROTATION_SPEED = 0.0008;
 
-// ============ DOTTED GLOBE ============
-function DottedGlobe() {
+// GDG & Google Colors
+const GOOGLE_BLUE = "#4285F4";
+const GOOGLE_RED = "#EA4335";
+const GOOGLE_YELLOW = "#FBBC05";
+const GOOGLE_GREEN = "#34A853";
+const NEON_GREEN = "#00ff88";
+const NEON_CYAN = "#00ffff";
+const GRID_COLOR = "#003d2e";
+
+// ============ UTILITY FUNCTIONS ============
+function latLngToVector3(lat: number, lng: number, radius: number): THREE.Vector3 {
+	const phi = (90 - lat) * (Math.PI / 180);
+	const theta = (lng + 180) * (Math.PI / 180);
+	return new THREE.Vector3(
+		-radius * Math.sin(phi) * Math.cos(theta),
+		radius * Math.cos(phi),
+		radius * Math.sin(phi) * Math.sin(theta)
+	);
+}
+
+// ============ BACKGROUND STARS ============
+function BackgroundStars() {
 	const pointsRef = useRef<THREE.Points>(null);
-	
-	const { positions, colors } = useMemo(() => {
+
+	const { positions } = useMemo(() => {
 		const positions: number[] = [];
-		const colors: number[] = [];
-		const color = new THREE.Color(PRIMARY_COLOR);
-		
-		// Create dots on sphere surface using fibonacci sphere
-		const numPoints = 2000;
-		const phi = Math.PI * (3 - Math.sqrt(5)); // Golden angle
-		
-		for (let i = 0; i < numPoints; i++) {
-			const y = 1 - (i / (numPoints - 1)) * 2;
-			const radius = Math.sqrt(1 - y * y);
-			const theta = phi * i;
-			
-			const x = Math.cos(theta) * radius;
-			const z = Math.sin(theta) * radius;
-			
-			positions.push(x * GLOBE_RADIUS, y * GLOBE_RADIUS, z * GLOBE_RADIUS);
-			
-			// Vary color intensity
-			const intensity = 0.3 + Math.random() * 0.7;
-			colors.push(color.r * intensity, color.g * intensity, color.b * intensity);
+		const count = 800;
+
+		for (let i = 0; i < count; i++) {
+			const r = 6 + Math.random() * 6;
+			const theta = Math.random() * Math.PI * 2;
+			const phi = Math.acos(2 * Math.random() - 1);
+
+			positions.push(
+				r * Math.sin(phi) * Math.cos(theta),
+				r * Math.sin(phi) * Math.sin(theta),
+				r * Math.cos(phi)
+			);
 		}
-		
+
 		return {
 			positions: new Float32Array(positions),
-			colors: new Float32Array(colors),
 		};
 	}, []);
 
-	useFrame((state) => {
+	useFrame(() => {
 		if (pointsRef.current) {
-			pointsRef.current.rotation.y += 0.001;
+			pointsRef.current.rotation.y += 0.0001;
+			pointsRef.current.rotation.x += 0.00005;
 		}
 	});
 
@@ -57,22 +66,14 @@ function DottedGlobe() {
 			<bufferGeometry>
 				<bufferAttribute
 					attach="attributes-position"
-					count={positions.length / 3}
-					array={positions}
-					itemSize={3}
-				/>
-				<bufferAttribute
-					attach="attributes-color"
-					count={colors.length / 3}
-					array={colors}
-					itemSize={3}
+					args={[positions, 3]}
 				/>
 			</bufferGeometry>
 			<pointsMaterial
-				size={0.03}
-				vertexColors
+				size={0.015}
+				color="#ffffff"
 				transparent
-				opacity={0.8}
+				opacity={0.3}
 				sizeAttenuation
 				blending={THREE.AdditiveBlending}
 			/>
@@ -80,225 +81,318 @@ function DottedGlobe() {
 	);
 }
 
-// ============ WIREFRAME GLOBE ============
-function WireframeGlobe() {
+// ============ DOTTED SPHERE SURFACE ============
+function DottedSphere() {
+	const pointsRef = useRef<THREE.Points>(null);
+
+	const { positions, colors } = useMemo(() => {
+		const positions: number[] = [];
+		const colors: number[] = [];
+		const color = new THREE.Color(NEON_GREEN);
+
+		const numPoints = 1500;
+		const phi = Math.PI * (3 - Math.sqrt(5));
+
+		for (let i = 0; i < numPoints; i++) {
+			const y = 1 - (i / (numPoints - 1)) * 2;
+			const radius = Math.sqrt(1 - y * y);
+			const theta = phi * i;
+
+			positions.push(
+				Math.cos(theta) * radius * GLOBE_RADIUS,
+				y * GLOBE_RADIUS,
+				Math.sin(theta) * radius * GLOBE_RADIUS
+			);
+
+			const intensity = 0.2 + Math.random() * 0.5;
+			colors.push(color.r * intensity, color.g * intensity, color.b * intensity);
+		}
+
+		return {
+			positions: new Float32Array(positions),
+			colors: new Float32Array(colors),
+		};
+	}, []);
+
+	useFrame(() => {
+		if (pointsRef.current) {
+			pointsRef.current.rotation.y += ROTATION_SPEED;
+		}
+	});
+
+	return (
+		<points ref={pointsRef}>
+			<bufferGeometry>
+				<bufferAttribute
+					attach="attributes-position"
+					args={[positions, 3]}
+				/>
+				<bufferAttribute
+					attach="attributes-color"
+					args={[colors, 3]}
+				/>
+			</bufferGeometry>
+			<pointsMaterial
+				size={0.025}
+				vertexColors
+				transparent
+				opacity={0.6}
+				sizeAttenuation
+				blending={THREE.AdditiveBlending}
+			/>
+		</points>
+	);
+}
+
+// ============ ICOSAHEDRON WIREFRAME ============
+function NetworkWireframe() {
 	const meshRef = useRef<THREE.LineSegments>(null);
 
 	useFrame(() => {
 		if (meshRef.current) {
-			meshRef.current.rotation.y += 0.001;
+			meshRef.current.rotation.y += ROTATION_SPEED;
 		}
 	});
 
 	return (
 		<lineSegments ref={meshRef}>
-			<edgesGeometry args={[new THREE.IcosahedronGeometry(GLOBE_RADIUS, 2)]} />
-			<lineBasicMaterial color={GRID_COLOR} transparent opacity={0.3} />
+			<edgesGeometry args={[new THREE.IcosahedronGeometry(GLOBE_RADIUS * 0.99, 2)]} />
+			<lineBasicMaterial color={GRID_COLOR} transparent opacity={0.25} />
 		</lineSegments>
 	);
 }
 
-// ============ LATITUDE/LONGITUDE GRID ============
-function GridLines() {
+// ============ LAT/LONG GRID LINES ============
+function LatLongGrid() {
 	const groupRef = useRef<THREE.Group>(null);
 
-	const lines = useMemo(() => {
-		const lineData: JSX.Element[] = [];
-		
-		// Latitude lines
+	const gridLines = useMemo(() => {
+		const lines: THREE.Line[] = [];
+		const material = new THREE.LineBasicMaterial({
+			color: NEON_GREEN,
+			transparent: true,
+			opacity: 0.12,
+			blending: THREE.AdditiveBlending,
+		});
+
+		// Latitude circles
 		for (let lat = -60; lat <= 60; lat += 30) {
 			const points: THREE.Vector3[] = [];
-			const latRad = (lat * Math.PI) / 180;
-			const r = GLOBE_RADIUS * Math.cos(latRad);
-			const y = GLOBE_RADIUS * Math.sin(latRad);
-			
-			for (let lng = 0; lng <= 360; lng += 5) {
-				const lngRad = (lng * Math.PI) / 180;
-				points.push(new THREE.Vector3(
-					r * Math.cos(lngRad),
-					y,
-					r * Math.sin(lngRad)
-				));
+			for (let lng = 0; lng <= 360; lng += 4) {
+				points.push(latLngToVector3(lat, lng, GLOBE_RADIUS * 1.002));
 			}
-			
 			const geometry = new THREE.BufferGeometry().setFromPoints(points);
-			lineData.push(
-				<line key={`lat-${lat}`} geometry={geometry}>
-					<lineBasicMaterial color={PRIMARY_COLOR} transparent opacity={0.15} />
-				</line>
-			);
+			lines.push(new THREE.Line(geometry, material));
 		}
-		
-		// Longitude lines
+
+		// Longitude arcs
 		for (let lng = 0; lng < 360; lng += 30) {
 			const points: THREE.Vector3[] = [];
-			const lngRad = (lng * Math.PI) / 180;
-			
-			for (let lat = -90; lat <= 90; lat += 5) {
-				const latRad = (lat * Math.PI) / 180;
-				const r = GLOBE_RADIUS * Math.cos(latRad);
-				const y = GLOBE_RADIUS * Math.sin(latRad);
-				points.push(new THREE.Vector3(
-					r * Math.cos(lngRad),
-					y,
-					r * Math.sin(lngRad)
-				));
+			for (let lat = -90; lat <= 90; lat += 4) {
+				points.push(latLngToVector3(lat, lng, GLOBE_RADIUS * 1.002));
 			}
-			
 			const geometry = new THREE.BufferGeometry().setFromPoints(points);
-			lineData.push(
-				<line key={`lng-${lng}`} geometry={geometry}>
-					<lineBasicMaterial color={PRIMARY_COLOR} transparent opacity={0.15} />
-				</line>
-			);
+			lines.push(new THREE.Line(geometry, material));
 		}
-		
-		return lineData;
+
+		return lines;
 	}, []);
 
 	useFrame(() => {
 		if (groupRef.current) {
-			groupRef.current.rotation.y += 0.001;
+			groupRef.current.rotation.y += ROTATION_SPEED;
 		}
 	});
 
-	return <group ref={groupRef}>{lines}</group>;
+	return (
+		<group ref={groupRef}>
+			{gridLines.map((line, i) => (
+				<primitive key={i} object={line} />
+			))}
+		</group>
+	);
 }
 
-// ============ PULSING NODES ============
-interface NodeData {
+// ============ CONTINENT OUTLINES ============
+function ContinentOutlines() {
+	const groupRef = useRef<THREE.Group>(null);
+
+	const outlineLines = useMemo(() => {
+		const lines: THREE.Line[] = [];
+		const material = new THREE.LineBasicMaterial({
+			color: NEON_CYAN,
+			transparent: true,
+			opacity: 0.18,
+			blending: THREE.AdditiveBlending,
+		});
+
+		CONTINENT_OUTLINES.forEach((continent) => {
+			const points = continent.map(([lng, lat]) =>
+				latLngToVector3(lat, lng, GLOBE_RADIUS * 1.003)
+			);
+			const geometry = new THREE.BufferGeometry().setFromPoints(points);
+			lines.push(new THREE.Line(geometry, material));
+		});
+
+		return lines;
+	}, []);
+
+	useFrame(() => {
+		if (groupRef.current) {
+			groupRef.current.rotation.y += ROTATION_SPEED;
+		}
+	});
+
+	return (
+		<group ref={groupRef}>
+			{outlineLines.map((line, i) => (
+				<primitive key={i} object={line} />
+			))}
+		</group>
+	);
+}
+
+// ============ TECH HUB NODES (Google Colors) ============
+interface TechNode {
 	position: THREE.Vector3;
 	color: string;
 	phase: number;
-	scale: number;
+	size: number;
 }
 
-function PulsingNodes() {
+function TechHubNodes() {
 	const meshRef = useRef<THREE.InstancedMesh>(null);
-	const nodesRef = useRef<NodeData[]>([]);
-	
-	const nodeCount = 30;
-	
+	const nodesRef = useRef<TechNode[]>([]);
+
+	const nodeCount = TECH_HUB_COORDS.length + 20;
+
 	useMemo(() => {
-		const nodes: NodeData[] = [];
-		const colors = [PRIMARY_COLOR, SECONDARY_COLOR, ACCENT_COLOR, WARNING_COLOR];
-		
-		for (let i = 0; i < nodeCount; i++) {
-			// Random position on sphere
+		const nodes: TechNode[] = [];
+		const googleColors = [GOOGLE_BLUE, GOOGLE_RED, GOOGLE_YELLOW, GOOGLE_GREEN];
+
+		// Add tech hub positions
+		TECH_HUB_COORDS.forEach((hub, i) => {
+			nodes.push({
+				position: latLngToVector3(hub.lat, hub.lng, GLOBE_RADIUS * 1.01),
+				color: googleColors[i % googleColors.length],
+				phase: Math.random() * Math.PI * 2,
+				size: 0.04 + Math.random() * 0.02,
+			});
+		});
+
+		// Add some random nodes for visual balance
+		for (let i = 0; i < 20; i++) {
 			const phi = Math.random() * Math.PI * 2;
 			const theta = Math.acos(2 * Math.random() - 1);
-			
-			const x = GLOBE_RADIUS * Math.sin(theta) * Math.cos(phi);
-			const y = GLOBE_RADIUS * Math.sin(theta) * Math.sin(phi);
-			const z = GLOBE_RADIUS * Math.cos(theta);
-			
+
 			nodes.push({
-				position: new THREE.Vector3(x, y, z),
-				color: colors[Math.floor(Math.random() * colors.length)],
+				position: new THREE.Vector3(
+					GLOBE_RADIUS * 1.01 * Math.sin(theta) * Math.cos(phi),
+					GLOBE_RADIUS * 1.01 * Math.sin(theta) * Math.sin(phi),
+					GLOBE_RADIUS * 1.01 * Math.cos(theta)
+				),
+				color: i % 2 === 0 ? NEON_GREEN : NEON_CYAN,
 				phase: Math.random() * Math.PI * 2,
-				scale: 0.8 + Math.random() * 0.4,
+				size: 0.03 + Math.random() * 0.015,
 			});
 		}
-		
+
 		nodesRef.current = nodes;
 	}, []);
 
 	useFrame((state) => {
 		if (!meshRef.current) return;
-		
+
 		const time = state.clock.elapsedTime;
 		const dummy = new THREE.Object3D();
 		const color = new THREE.Color();
-		
+
 		nodesRef.current.forEach((node, i) => {
-			const pulse = Math.sin(time * 2 + node.phase) * 0.5 + 0.5;
-			const scale = node.scale * (0.8 + pulse * 0.4);
-			
+			const pulse = Math.sin(time * 1.5 + node.phase) * 0.5 + 0.5;
+			const scale = node.size * (0.7 + pulse * 0.6);
+
 			dummy.position.copy(node.position);
-			dummy.scale.setScalar(scale * 0.05);
+			dummy.scale.setScalar(scale);
 			dummy.updateMatrix();
-			
+
 			meshRef.current!.setMatrixAt(i, dummy.matrix);
-			meshRef.current!.setColorAt(i, color.set(node.color).multiplyScalar(0.5 + pulse * 0.5));
+			meshRef.current!.setColorAt(i, color.set(node.color).multiplyScalar(0.6 + pulse * 0.4));
 		});
-		
+
 		meshRef.current.instanceMatrix.needsUpdate = true;
 		if (meshRef.current.instanceColor) {
 			meshRef.current.instanceColor.needsUpdate = true;
 		}
-		
-		// Rotate with globe
-		meshRef.current.rotation.y += 0.001;
+
+		meshRef.current.rotation.y += ROTATION_SPEED;
 	});
 
 	return (
 		<instancedMesh ref={meshRef} args={[undefined, undefined, nodeCount]}>
-			<sphereGeometry args={[1, 8, 8]} />
+			<sphereGeometry args={[1, 12, 12]} />
 			<meshBasicMaterial transparent opacity={0.9} blending={THREE.AdditiveBlending} />
 		</instancedMesh>
 	);
 }
 
-// ============ NODE HALOS ============
-function NodeHalos() {
+// ============ NODE GLOW RINGS ============
+function NodeGlowRings() {
 	const groupRef = useRef<THREE.Group>(null);
-	const halosRef = useRef<THREE.Mesh[]>([]);
-	
-	const halos = useMemo(() => {
-		const haloElements: JSX.Element[] = [];
-		const colors = [PRIMARY_COLOR, SECONDARY_COLOR, WARNING_COLOR];
-		
-		for (let i = 0; i < 15; i++) {
-			const phi = Math.random() * Math.PI * 2;
-			const theta = Math.acos(2 * Math.random() - 1);
-			
-			const pos = new THREE.Vector3(
-				GLOBE_RADIUS * Math.sin(theta) * Math.cos(phi),
-				GLOBE_RADIUS * Math.sin(theta) * Math.sin(phi),
-				GLOBE_RADIUS * Math.cos(theta)
-			);
-			
-			haloElements.push(
-				<mesh
-					key={i}
-					position={pos}
-					rotation={[Math.random() * Math.PI, Math.random() * Math.PI, 0]}
-				>
-					<ringGeometry args={[0.08, 0.12, 32]} />
-					<meshBasicMaterial
-						color={colors[i % colors.length]}
-						transparent
-						opacity={0.6}
-						side={THREE.DoubleSide}
-						blending={THREE.AdditiveBlending}
-					/>
-				</mesh>
-			);
-		}
-		
-		return haloElements;
+
+	const rings = useMemo(() => {
+		const ringMeshes: { mesh: THREE.Mesh; phase: number }[] = [];
+		const colors = [GOOGLE_BLUE, GOOGLE_RED, GOOGLE_YELLOW, GOOGLE_GREEN, NEON_GREEN, NEON_CYAN];
+
+		// Place rings at some tech hub locations
+		const hubIndices = [0, 3, 6, 9, 12, 15, 18, 21];
+		hubIndices.forEach((idx, i) => {
+			if (idx < TECH_HUB_COORDS.length) {
+				const hub = TECH_HUB_COORDS[idx];
+				const pos = latLngToVector3(hub.lat, hub.lng, GLOBE_RADIUS * 1.015);
+
+				const geometry = new THREE.RingGeometry(0.06, 0.09, 24);
+				const material = new THREE.MeshBasicMaterial({
+					color: colors[i % colors.length],
+					transparent: true,
+					opacity: 0.5,
+					side: THREE.DoubleSide,
+					blending: THREE.AdditiveBlending,
+				});
+
+				const mesh = new THREE.Mesh(geometry, material);
+				mesh.position.copy(pos);
+				mesh.lookAt(0, 0, 0);
+				ringMeshes.push({ mesh, phase: Math.random() * Math.PI * 2 });
+			}
+		});
+
+		return ringMeshes;
 	}, []);
 
 	useFrame((state) => {
 		if (groupRef.current) {
-			groupRef.current.rotation.y += 0.001;
-			
-			// Pulse halos
-			groupRef.current.children.forEach((child, i) => {
-				if (child instanceof THREE.Mesh) {
-					const pulse = Math.sin(state.clock.elapsedTime * 3 + i) * 0.5 + 0.5;
-					child.scale.setScalar(0.8 + pulse * 0.4);
-					(child.material as THREE.MeshBasicMaterial).opacity = 0.3 + pulse * 0.4;
-				}
+			groupRef.current.rotation.y += ROTATION_SPEED;
+
+			rings.forEach(({ mesh, phase }) => {
+				const pulse = Math.sin(state.clock.elapsedTime * 2 + phase) * 0.5 + 0.5;
+				mesh.scale.setScalar(0.8 + pulse * 0.4);
+				(mesh.material as THREE.MeshBasicMaterial).opacity = 0.25 + pulse * 0.35;
 			});
 		}
 	});
 
-	return <group ref={groupRef}>{halos}</group>;
+	return (
+		<group ref={groupRef}>
+			{rings.map(({ mesh }, i) => (
+				<primitive key={i} object={mesh} />
+			))}
+		</group>
+	);
 }
 
-// ============ ATTACK BEAMS ============
-interface BeamData {
+// ============ ANIMATED CONNECTION LINES ============
+interface ConnectionLine {
+	id: number;
 	start: THREE.Vector3;
 	end: THREE.Vector3;
 	progress: number;
@@ -306,254 +400,122 @@ interface BeamData {
 	speed: number;
 }
 
-function AttackBeams() {
-	const [beams, setBeams] = useState<BeamData[]>([]);
+function ConnectionLines() {
+	const [connections, setConnections] = useState<ConnectionLine[]>([]);
 	const groupRef = useRef<THREE.Group>(null);
+	const idRef = useRef(0);
 
-	// Spawn new beams
 	useEffect(() => {
-		const spawnBeam = () => {
-			// Random start position in space
-			const startPhi = Math.random() * Math.PI * 2;
-			const startTheta = Math.acos(2 * Math.random() - 1);
-			const startDist = 4 + Math.random() * 2;
-			
-			const start = new THREE.Vector3(
-				startDist * Math.sin(startTheta) * Math.cos(startPhi),
-				startDist * Math.sin(startTheta) * Math.sin(startPhi),
-				startDist * Math.cos(startTheta)
-			);
-			
-			// Random end position on globe
-			const endPhi = Math.random() * Math.PI * 2;
-			const endTheta = Math.acos(2 * Math.random() - 1);
-			
-			const end = new THREE.Vector3(
-				GLOBE_RADIUS * Math.sin(endTheta) * Math.cos(endPhi),
-				GLOBE_RADIUS * Math.sin(endTheta) * Math.sin(endPhi),
-				GLOBE_RADIUS * Math.cos(endTheta)
-			);
-			
-			const colors = [PRIMARY_COLOR, SECONDARY_COLOR, ACCENT_COLOR, WARNING_COLOR];
-			
-			setBeams(prev => [...prev, {
-				start,
-				end,
-				progress: 0,
-				color: colors[Math.floor(Math.random() * colors.length)],
-				speed: 0.5 + Math.random() * 0.5,
-			}]);
+		const spawnConnection = () => {
+			const idx1 = Math.floor(Math.random() * TECH_HUB_COORDS.length);
+			let idx2 = Math.floor(Math.random() * TECH_HUB_COORDS.length);
+			while (idx2 === idx1) idx2 = Math.floor(Math.random() * TECH_HUB_COORDS.length);
+
+			const hub1 = TECH_HUB_COORDS[idx1];
+			const hub2 = TECH_HUB_COORDS[idx2];
+
+			const colors = [GOOGLE_BLUE, GOOGLE_RED, GOOGLE_YELLOW, GOOGLE_GREEN, NEON_GREEN];
+
+			setConnections((prev) => [
+				...prev,
+				{
+					id: idRef.current++,
+					start: latLngToVector3(hub1.lat, hub1.lng, GLOBE_RADIUS * 1.02),
+					end: latLngToVector3(hub2.lat, hub2.lng, GLOBE_RADIUS * 1.02),
+					progress: 0,
+					color: colors[Math.floor(Math.random() * colors.length)],
+					speed: 0.3 + Math.random() * 0.4,
+				},
+			]);
 		};
 
-		// Spawn initial beams
-		for (let i = 0; i < 5; i++) {
-			setTimeout(spawnBeam, i * 500);
+		for (let i = 0; i < 3; i++) {
+			setTimeout(spawnConnection, i * 800);
 		}
 
-		// Continue spawning
-		const interval = setInterval(spawnBeam, 1500);
+		const interval = setInterval(spawnConnection, 2000);
 		return () => clearInterval(interval);
 	}, []);
 
-	useFrame((state, delta) => {
-		setBeams(prev => prev
-			.map(beam => ({
-				...beam,
-				progress: beam.progress + delta * beam.speed,
-			}))
-			.filter(beam => beam.progress < 1.5)
+	useFrame((_, delta) => {
+		setConnections((prev) =>
+			prev
+				.map((conn) => ({ ...conn, progress: conn.progress + delta * conn.speed }))
+				.filter((conn) => conn.progress < 1.8)
 		);
-		
+
 		if (groupRef.current) {
-			groupRef.current.rotation.y += 0.001;
+			groupRef.current.rotation.y += ROTATION_SPEED;
 		}
 	});
 
 	return (
 		<group ref={groupRef}>
-			{beams.map((beam, i) => (
-				<BeamLine key={i} beam={beam} />
+			{connections.map((conn) => (
+				<ArcConnection key={conn.id} connection={conn} />
 			))}
 		</group>
 	);
 }
 
-function BeamLine({ beam }: { beam: BeamData }) {
-	const progress = Math.min(beam.progress, 1);
-	const tailLength = 0.3;
-	
-	const startT = Math.max(0, progress - tailLength);
-	const endT = progress;
-	
-	const currentStart = beam.start.clone().lerp(beam.end, startT);
-	const currentEnd = beam.start.clone().lerp(beam.end, endT);
-	
-	const points = [currentStart, currentEnd];
-	const geometry = new THREE.BufferGeometry().setFromPoints(points);
-	
-	const opacity = progress > 1 ? 1 - (progress - 1) * 2 : 1;
-	
+function ArcConnection({ connection }: { connection: ConnectionLine }) {
+	const { start, end, progress, color } = connection;
+
+	const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
+	mid.normalize().multiplyScalar(GLOBE_RADIUS * 1.4);
+
+	const curve = new THREE.QuadraticBezierCurve3(start, mid, end);
+	const points = curve.getPoints(30);
+
+	const visibleProgress = Math.min(progress, 1);
+	const tailStart = Math.max(0, visibleProgress - 0.3);
+	const tailEnd = visibleProgress;
+
+	const startIdx = Math.floor(tailStart * points.length);
+	const endIdx = Math.floor(tailEnd * points.length);
+	const visiblePoints = points.slice(startIdx, endIdx + 1);
+
+	if (visiblePoints.length < 2) return null;
+
+	const geometry = new THREE.BufferGeometry().setFromPoints(visiblePoints);
+	const opacity = progress > 1 ? Math.max(0, 1 - (progress - 1) * 1.5) : 0.7;
+
 	return (
-		<>
-			<line geometry={geometry}>
-				<lineBasicMaterial
-					color={beam.color}
-					transparent
-					opacity={opacity * 0.8}
-					blending={THREE.AdditiveBlending}
-				/>
-			</line>
-			{/* Impact point */}
-			{progress >= 0.9 && (
-				<mesh position={beam.end}>
-					<sphereGeometry args={[0.05 * (1 + (progress - 0.9) * 2), 8, 8]} />
-					<meshBasicMaterial
-						color={beam.color}
-						transparent
-						opacity={opacity * 0.6}
-						blending={THREE.AdditiveBlending}
-					/>
-				</mesh>
-			)}
-		</>
+		<primitive
+			object={
+				new THREE.Line(
+					geometry,
+					new THREE.LineBasicMaterial({
+						color,
+						transparent: true,
+						opacity,
+						blending: THREE.AdditiveBlending,
+					})
+				)
+			}
+		/>
 	);
 }
 
-// ============ COMET STREAKS ============
-function CometStreaks() {
-	const [comets, setComets] = useState<{
-		position: THREE.Vector3;
-		velocity: THREE.Vector3;
-		color: string;
-		life: number;
-	}[]>([]);
-
-	useEffect(() => {
-		const spawnComet = () => {
-			const phi = Math.random() * Math.PI * 2;
-			const theta = Math.acos(2 * Math.random() - 1);
-			const dist = 5 + Math.random() * 2;
-			
-			const pos = new THREE.Vector3(
-				dist * Math.sin(theta) * Math.cos(phi),
-				dist * Math.sin(theta) * Math.sin(phi),
-				dist * Math.cos(theta)
-			);
-			
-			// Velocity toward center
-			const vel = pos.clone().normalize().multiplyScalar(-0.03);
-			
-			setComets(prev => [...prev, {
-				position: pos,
-				velocity: vel,
-				color: Math.random() > 0.5 ? PRIMARY_COLOR : SECONDARY_COLOR,
-				life: 0,
-			}]);
-		};
-
-		const interval = setInterval(spawnComet, 2000);
-		return () => clearInterval(interval);
-	}, []);
-
-	useFrame(() => {
-		setComets(prev => prev
-			.map(comet => ({
-				...comet,
-				position: comet.position.clone().add(comet.velocity),
-				life: comet.life + 0.02,
-			}))
-			.filter(comet => comet.position.length() > GLOBE_RADIUS * 0.5 && comet.life < 2)
-		);
-	});
-
-	return (
-		<>
-			{comets.map((comet, i) => (
-				<mesh key={i} position={comet.position}>
-					<sphereGeometry args={[0.02, 4, 4]} />
-					<meshBasicMaterial
-						color={comet.color}
-						transparent
-						opacity={Math.max(0, 1 - comet.life)}
-						blending={THREE.AdditiveBlending}
-					/>
-				</mesh>
-			))}
-		</>
-	);
-}
-
-// ============ SPACE PARTICLES ============
-function SpaceParticles() {
-	const pointsRef = useRef<THREE.Points>(null);
-	
-	const positions = useMemo(() => {
-		const pos: number[] = [];
-		const count = 500;
-		
-		for (let i = 0; i < count; i++) {
-			const r = 4 + Math.random() * 4;
-			const theta = Math.random() * Math.PI * 2;
-			const phi = Math.acos(2 * Math.random() - 1);
-			
-			pos.push(
-				r * Math.sin(phi) * Math.cos(theta),
-				r * Math.sin(phi) * Math.sin(theta),
-				r * Math.cos(phi)
-			);
-		}
-		
-		return new Float32Array(pos);
-	}, []);
-
-	useFrame((state) => {
-		if (pointsRef.current) {
-			pointsRef.current.rotation.y += 0.0002;
-			pointsRef.current.rotation.x += 0.0001;
-		}
-	});
-
-	return (
-		<points ref={pointsRef}>
-			<bufferGeometry>
-				<bufferAttribute
-					attach="attributes-position"
-					count={positions.length / 3}
-					array={positions}
-					itemSize={3}
-				/>
-			</bufferGeometry>
-			<pointsMaterial
-				size={0.02}
-				color={PRIMARY_COLOR}
-				transparent
-				opacity={0.4}
-				sizeAttenuation
-				blending={THREE.AdditiveBlending}
-			/>
-		</points>
-	);
-}
-
-// ============ OUTER RING ============
-function OuterRing() {
+// ============ OUTER GLOW RING ============
+function OuterGlowRing() {
 	const ringRef = useRef<THREE.Mesh>(null);
 
 	useFrame((state) => {
 		if (ringRef.current) {
-			ringRef.current.rotation.z += 0.002;
-			const pulse = Math.sin(state.clock.elapsedTime) * 0.1 + 1;
+			ringRef.current.rotation.z += 0.001;
+			const pulse = Math.sin(state.clock.elapsedTime * 0.5) * 0.08 + 1;
 			ringRef.current.scale.setScalar(pulse);
 		}
 	});
 
 	return (
 		<mesh ref={ringRef} rotation={[Math.PI / 2, 0, 0]}>
-			<ringGeometry args={[GLOBE_RADIUS * 1.3, GLOBE_RADIUS * 1.32, 64]} />
+			<ringGeometry args={[GLOBE_RADIUS * 1.35, GLOBE_RADIUS * 1.38, 64]} />
 			<meshBasicMaterial
-				color={PRIMARY_COLOR}
+				color={NEON_GREEN}
 				transparent
-				opacity={0.3}
+				opacity={0.2}
 				side={THREE.DoubleSide}
 				blending={THREE.AdditiveBlending}
 			/>
@@ -565,36 +527,41 @@ function OuterRing() {
 function Scene() {
 	return (
 		<>
-			<color attach="background" args={["#050a08"]} />
-			<ambientLight intensity={0.1} />
-			
-			<DottedGlobe />
-			<WireframeGlobe />
-			<GridLines />
-			<PulsingNodes />
-			<NodeHalos />
-			<AttackBeams />
-			<CometStreaks />
-			<SpaceParticles />
-			<OuterRing />
-			
+			<color attach="background" args={["#030806"]} />
+			<ambientLight intensity={0.05} />
+
+			{/* Background layer */}
+			<BackgroundStars />
+
+			{/* Globe layers (middle) */}
+			<DottedSphere />
+			<NetworkWireframe />
+			<LatLongGrid />
+			<ContinentOutlines />
+
+			{/* Interactive elements (foreground) */}
+			<TechHubNodes />
+			<NodeGlowRings />
+			<ConnectionLines />
+			<OuterGlowRing />
+
 			<OrbitControls
-				enableZoom={true}
+				enableZoom
 				enablePan={false}
 				minDistance={3.5}
 				maxDistance={8}
 				autoRotate
-				autoRotateSpeed={0.3}
+				autoRotateSpeed={0.2}
 			/>
-			
+
 			<EffectComposer>
 				<Bloom
-					intensity={1.5}
-					luminanceThreshold={0.1}
+					intensity={1.2}
+					luminanceThreshold={0.15}
 					luminanceSmoothing={0.9}
 					mipmapBlur
 				/>
-				<Vignette darkness={0.5} offset={0.3} />
+				<Vignette darkness={0.4} offset={0.35} />
 			</EffectComposer>
 		</>
 	);
