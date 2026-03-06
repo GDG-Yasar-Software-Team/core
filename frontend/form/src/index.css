@@ -1,8 +1,12 @@
 html,
-body,
-#root {
-	@apply bg-white;
+body {
+	@apply bg-slate-100;
 }
+
+#root {
+	@apply bg-transparent;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

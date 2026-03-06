@@ -17,6 +17,7 @@
 		"motion": "^12.35.0",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0",
+		"react-globe.gl": "^2.37.0",
 		"react-hook-form": "^7.71.1",
 		"react-router-dom": "^7.13.0",
 		"zod": "3.24.4"
