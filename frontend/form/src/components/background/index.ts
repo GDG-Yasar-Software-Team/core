@@ -3,3 +3,4 @@
  */
 
 export { LoginCard } from "./LoginCard";
+export { NetworkBackground } from "../../background/NetworkBackground";
