@@ -1,12 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Global Styles
+ * Minimal, clean styling for the application
+ */
+
 html,
 body {
-	@apply bg-[#050a08];
+	@apply bg-white;
+	overflow-x: hidden;
+	-webkit-font-smoothing: antialiased;
 }
 
 #root {
 	@apply bg-transparent;
+	min-height: 100vh;
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Simple fade-in animation for UI elements */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-fadeIn {
+	animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+}

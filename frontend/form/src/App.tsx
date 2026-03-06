@@ -1,18 +1,36 @@
+import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { CyberGlobe, CyberCard } from "./components/cyber-globe";
-import AdminFormViewsPage from "./pages/AdminFormViewsPage";
-import AdminFormListPage from "./pages/admin/AdminFormListPage";
-import FormEditorPage from "./pages/admin/FormEditorPage";
-import FormSubmissionPage from "./pages/FormSubmissionPage";
+import { LoginCard } from "./components/background";
 
+/**
+ * Lazy load non-critical routes to reduce initial bundle size
+ */
+const AdminFormViewsPage = lazy(() => import("./pages/AdminFormViewsPage"));
+const AdminFormListPage = lazy(() => import("./pages/admin/AdminFormListPage"));
+const FormEditorPage = lazy(() => import("./pages/admin/FormEditorPage"));
+const FormSubmissionPage = lazy(() => import("./pages/FormSubmissionPage"));
+
+/**
+ * Loading fallback for lazy-loaded routes
+ */
+function RouteLoadingFallback() {
+	return (
+		<div className="min-h-screen bg-white flex items-center justify-center">
+			<div className="text-emerald-600/70 text-sm font-mono animate-pulse">
+				Loading...
+			</div>
+		</div>
+	);
+}
+
+/**
+ * Home page - clean white background with centered login card
+ */
 function Home() {
 	return (
-		<>
-			<CyberGlobe />
-			<div className="relative z-20 min-h-screen flex items-center justify-center px-4">
-				<CyberCard />
-			</div>
-		</>
+		<div className="min-h-screen bg-white flex items-center justify-center px-4">
+			<LoginCard />
+		</div>
 	);
 }
 
@@ -20,10 +38,39 @@ function App() {
 	return (
 		<Routes>
 			<Route path="/" element={<Home />} />
-			<Route path="/forms/:formId" element={<FormSubmissionPage />} />
-			<Route path="/views/:formId" element={<AdminFormViewsPage />} />
-			<Route path="/admin/forms" element={<AdminFormListPage />} />
-			<Route path="/admin/forms/editor" element={<FormEditorPage />} />
+			{/* Lazy-loaded routes with Suspense fallback */}
+			<Route 
+				path="/forms/:formId" 
+				element={
+					<Suspense fallback={<RouteLoadingFallback />}>
+						<FormSubmissionPage />
+					</Suspense>
+				} 
+			/>
+			<Route 
+				path="/views/:formId" 
+				element={
+					<Suspense fallback={<RouteLoadingFallback />}>
+						<AdminFormViewsPage />
+					</Suspense>
+				} 
+			/>
+			<Route 
+				path="/admin/forms" 
+				element={
+					<Suspense fallback={<RouteLoadingFallback />}>
+						<AdminFormListPage />
+					</Suspense>
+				} 
+			/>
+			<Route 
+				path="/admin/forms/editor" 
+				element={
+					<Suspense fallback={<RouteLoadingFallback />}>
+						<FormEditorPage />
+					</Suspense>
+				} 
+			/>
 			<Route path="*" element={<Navigate to="/" replace />} />
 		</Routes>
 	);
