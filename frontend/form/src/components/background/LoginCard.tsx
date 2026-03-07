@@ -10,7 +10,7 @@
  * - Modern typography and spacing
  */
 
-import { Link } from "react-router-dom";
+import { PillButton } from "../PillButton/PillButton";
 
 export function LoginCard() {
 	return (
@@ -105,27 +105,13 @@ export function LoginCard() {
 						 * 
 						 * Design:
 						 * - Full width gradient button
-						 * - Glow shadow effect
+						 * - Pill animation effect with GSAP
 						 * - Smooth hover animation
 						 */}
-						<Link
+						<PillButton
 							to="/admin/forms"
-							className="
-								block w-full
-								py-4 px-6
-								text-center text-sm font-semibold
-								text-white
-								bg-gradient-to-r from-emerald-400 to-emerald-500
-								rounded-xl
-								shadow-lg shadow-emerald-500/30
-								hover:shadow-xl hover:shadow-emerald-500/40
-								hover:from-emerald-500 hover:to-emerald-600
-								transform hover:-translate-y-0.5 hover:scale-[1.02]
-								transition-all duration-300 ease-out
-							"
-						>
-							Sign In to Dashboard
-						</Link>
+							label="Sign In to Dashboard"
+						/>
 
 						{/* Footer */}
 						<div className="mt-8 text-center">

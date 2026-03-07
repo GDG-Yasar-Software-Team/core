@@ -1,0 +1,77 @@
+.pill-button-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.pill-button {
+  --base: #10b981;
+  --pill-bg: #10b981;
+  --hover-text: #10b981;
+  --pill-text: #ffffff;
+  
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  padding: 0 24px;
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+  color: var(--pill-text);
+  text-decoration: none;
+  border-radius: 16px;
+  box-sizing: border-box;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4),
+              0 4px 10px -5px rgba(16, 185, 129, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+.pill-button:hover {
+  box-shadow: 0 20px 35px -10px rgba(16, 185, 129, 0.5),
+              0 8px 15px -5px rgba(16, 185, 129, 0.4);
+}
+
+.pill-button .hover-circle {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  border-radius: 50%;
+  background: #ffffff;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.pill-button .label-stack {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+  z-index: 2;
+}
+
+.pill-button .pill-label {
+  position: relative;
+  z-index: 2;
+  display: inline-block;
+  line-height: 1;
+  will-change: transform;
+}
+
+.pill-button .pill-label-hover {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--hover-text);
+  z-index: 3;
+  display: inline-block;
+  will-change: transform, opacity;
+}
