@@ -1,6 +1,5 @@
 import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { LoginCard, NetworkBackground } from "./components/background";
 
 /**
  * Lazy load non-critical routes to reduce initial bundle size
@@ -23,26 +22,11 @@ function RouteLoadingFallback() {
 	);
 }
 
-/**
- * Home page - Network globe background with centered login card
- */
-function Home() {
-	return (
-		<>
-			{/* 3D Network Globe Background */}
-			<NetworkBackground />
-			{/* Centered Login Card - must be above the canvas */}
-			<div className="relative z-10 min-h-screen flex items-center justify-center px-4">
-				<LoginCard />
-			</div>
-		</>
-	);
-}
-
 function App() {
 	return (
 		<Routes>
-			<Route path="/" element={<Home />} />
+			{/* Home redirects to admin panel */}
+			<Route path="/" element={<Navigate to="/admin/forms" replace />} />
 			{/* Lazy-loaded routes with Suspense fallback */}
 			<Route 
 				path="/forms/:formId" 
