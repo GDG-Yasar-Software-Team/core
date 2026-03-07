@@ -37,25 +37,55 @@ export const CONFIG = {
 	mouseInfluence: 0.3,      // How much mouse affects nodes
 	mouseRadius: 2.5,         // Radius of mouse influence
 	
-	// Colors - Soft teal / mint green palette
-	colors: {
-		nodeCore: 0x34d399,    // #34d399 - Emerald 400
-		nodeGlow: 0x10b981,    // #10b981 - Emerald 500
-		connections: 0x34d399,
-		ambient: 0x064e3b,     // Dark emerald for depth
+	// Google/GDG Colors - 4 quadrants
+	googleColors: {
+		blue: 0x4285F4,    // #4285F4 - Google Blue (top-right: x>0, y>0)
+		red: 0xEA4335,     // #EA4335 - Google Red (top-left: x<0, y>0)
+		yellow: 0xFBBC05,  // #FBBC05 - Google Yellow (bottom-left: x<0, y<0)
+		green: 0x34A853,   // #34A853 - Google Green (bottom-right: x>0, y<0)
 	},
 	
 	// Opacity - MORE VISIBLE
 	opacity: {
 		nodeCore: 1.0,         // Full opacity for nodes
 		nodeGlow: 0.6,         // Stronger glow
-		connections: 0.4,      // More visible connections
+		connections: 0.5,      // More visible connections
 	},
 	
 	// Performance
 	targetFPS: 30,
 	mobileBreakpoint: 768,    // Disable on smaller screens
 } as const;
+
+// Google color array for easy access
+const GOOGLE_COLORS = [
+	new THREE.Color(CONFIG.googleColors.green),  // quadrant 0: x>0, y>0 (sağ üst - yeşil)
+	new THREE.Color(CONFIG.googleColors.red),    // quadrant 1: x<0, y>0 (sol üst - kırmızı)
+	new THREE.Color(CONFIG.googleColors.blue),   // quadrant 2: x<0, y<0 (sol alt - mavi)
+	new THREE.Color(CONFIG.googleColors.yellow), // quadrant 3: x>0, y<0 (sağ alt - sarı)
+];
+
+/**
+ * Get quadrant index based on position (0-3)
+ * Quadrants based on x,y coordinates looking from front (z-axis):
+ * - 0: Green (top-right / sağ üst)
+ * - 1: Red (top-left / sol üst)
+ * - 2: Blue (bottom-left / sol alt)
+ * - 3: Yellow (bottom-right / sağ alt)
+ */
+function getQuadrant(x: number, y: number): number {
+	if (x >= 0 && y >= 0) return 0; // Green (sağ üst)
+	if (x < 0 && y >= 0) return 1;  // Red (sol üst)
+	if (x < 0 && y < 0) return 2;   // Blue (sol alt)
+	return 3;                        // Yellow (sağ alt)
+}
+
+/**
+ * Get color based on position
+ */
+function getColorForPosition(x: number, y: number): THREE.Color {
+	return GOOGLE_COLORS[getQuadrant(x, y)];
+}
 
 // ============ TYPES ============
 
@@ -185,7 +215,7 @@ export class NetworkSphere {
 	}
 	
 	/**
-	 * Create the core node points
+	 * Create the core node points with Google colors per quadrant
 	 */
 	private createNodePoints(): THREE.Points {
 		const geometry = new THREE.BufferGeometry();
@@ -194,20 +224,31 @@ export class NetworkSphere {
 			new THREE.BufferAttribute(this.nodePositions, 3)
 		);
 		
+		// Add vertex colors based on position quadrant
+		const colors = new Float32Array(CONFIG.nodeCount * 3);
+		for (let i = 0; i < this.nodes.length; i++) {
+			const node = this.nodes[i];
+			const color = getColorForPosition(node.basePosition.x, node.basePosition.y);
+			colors[i * 3] = color.r;
+			colors[i * 3 + 1] = color.g;
+			colors[i * 3 + 2] = color.b;
+		}
+		geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+		
 		const material = new THREE.PointsMaterial({
-			color: CONFIG.colors.nodeCore,
 			size: CONFIG.nodeSize,
 			transparent: true,
 			opacity: CONFIG.opacity.nodeCore,
 			sizeAttenuation: true,
 			depthWrite: false,
+			vertexColors: true,
 		});
 		
 		return new THREE.Points(geometry, material);
 	}
 	
 	/**
-	 * Create glowing sprites around nodes
+	 * Create glowing sprites around nodes with Google colors
 	 */
 	private createGlowSprites(): THREE.Points {
 		const geometry = new THREE.BufferGeometry();
@@ -216,17 +257,28 @@ export class NetworkSphere {
 			new THREE.BufferAttribute(this.glowPositions, 3)
 		);
 		
-		// Create circular glow texture
+		// Add vertex colors based on position quadrant
+		const colors = new Float32Array(CONFIG.nodeCount * 3);
+		for (let i = 0; i < this.nodes.length; i++) {
+			const node = this.nodes[i];
+			const color = getColorForPosition(node.basePosition.x, node.basePosition.y);
+			colors[i * 3] = color.r;
+			colors[i * 3 + 1] = color.g;
+			colors[i * 3 + 2] = color.b;
+		}
+		geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+		
+		// Create circular glow texture (white - will be tinted by vertex color)
 		const canvas = document.createElement("canvas");
 		canvas.width = 64;
 		canvas.height = 64;
 		const ctx = canvas.getContext("2d")!;
 		
 		const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-		gradient.addColorStop(0, "rgba(52, 211, 153, 1.0)");
-		gradient.addColorStop(0.2, "rgba(52, 211, 153, 0.8)");
-		gradient.addColorStop(0.5, "rgba(16, 185, 129, 0.4)");
-		gradient.addColorStop(1, "rgba(16, 185, 129, 0)");
+		gradient.addColorStop(0, "rgba(255, 255, 255, 1.0)");
+		gradient.addColorStop(0.2, "rgba(255, 255, 255, 0.8)");
+		gradient.addColorStop(0.5, "rgba(255, 255, 255, 0.4)");
+		gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
 		
 		ctx.fillStyle = gradient;
 		ctx.fillRect(0, 0, 64, 64);
@@ -240,7 +292,7 @@ export class NetworkSphere {
 			opacity: CONFIG.opacity.nodeGlow,
 			sizeAttenuation: true,
 			depthWrite: false,
-			// Normal blending for visibility on white background
+			vertexColors: true,
 		});
 		
 		return new THREE.Points(geometry, material);
@@ -277,14 +329,19 @@ export class NetworkSphere {
 				this.connectionPositions[idx + 4] = other.basePosition.y;
 				this.connectionPositions[idx + 5] = other.basePosition.z;
 				
-				// Colors (will be updated based on distance)
-				const color = new THREE.Color(CONFIG.colors.connections);
-				this.connectionColors[idx] = color.r;
-				this.connectionColors[idx + 1] = color.g;
-				this.connectionColors[idx + 2] = color.b;
-				this.connectionColors[idx + 3] = color.r;
-				this.connectionColors[idx + 4] = color.g;
-				this.connectionColors[idx + 5] = color.b;
+				// Colors based on node positions (Google quadrant colors)
+				const startColor = getColorForPosition(node.basePosition.x, node.basePosition.y);
+				const endColor = getColorForPosition(other.basePosition.x, other.basePosition.y);
+				
+				// Start point color
+				this.connectionColors[idx] = startColor.r;
+				this.connectionColors[idx + 1] = startColor.g;
+				this.connectionColors[idx + 2] = startColor.b;
+				
+				// End point color (creates gradient effect on lines)
+				this.connectionColors[idx + 3] = endColor.r;
+				this.connectionColors[idx + 4] = endColor.g;
+				this.connectionColors[idx + 5] = endColor.b;
 				
 				idx += 6;
 			}
