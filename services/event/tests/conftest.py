@@ -38,7 +38,8 @@ def mock_settings():
         with patch("app.config.get_settings", return_value=test_settings):
             with patch("app.db.mongodb.settings", test_settings):
                 with patch("app.repositories.event_repository.settings", test_settings):
-                    yield test_settings
+                    with patch("app.auth.api_key.settings", test_settings):
+                        yield test_settings
 
 
 @pytest.fixture
