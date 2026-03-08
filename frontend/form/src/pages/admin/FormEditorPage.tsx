@@ -12,7 +12,7 @@ import {
 	getFormById,
 	updateForm,
 } from "../../services/formService";
-import type { FormCreate, FormFieldSchema, FormResponse } from "../../types";
+import type { FormCreate, FormFieldSchema, FormResponse, FormUpdate } from "../../types";
 
 type FormValues = Record<string, unknown>;
 
@@ -205,7 +205,7 @@ const FormEditorPage = () => {
 			setLoadError(null);
 
 			try {
-				const form: FormResponse = await getFormById(formId);
+				const form: FormResponse = await getFormById(formId!);
 				if (isCancelled) return;
 
 				setTitle(form.title);
@@ -300,7 +300,11 @@ const FormEditorPage = () => {
 			}
 
 			if (isEditMode && formId) {
-				await updateForm(formId, payload);
+				const updatePayload: FormUpdate = {
+					...payload,
+					description: payload.description ?? undefined,
+				};
+				await updateForm(formId, updatePayload);
 			} else {
 				await createForm(payload);
 			}
