@@ -197,8 +197,15 @@ const FieldEditorCard = ({
 
 	const otherFieldIds = allFieldIds.filter((id) => id !== field.field_id);
 
+	// GDG colors for borders
+	const gdgColors = ["#4285F4", "#EA4335", "#FBBC05", "#34A853"];
+	const borderColor = gdgColors[index % 4];
+
 	return (
-		<div className="rounded-xl border border-slate-200 bg-white shadow-sm">
+		<div
+			className="rounded-xl border-2 bg-white/50 backdrop-blur-sm shadow-sm"
+			style={{ borderColor }}
+		>
 			<div
 				className="flex cursor-pointer items-center justify-between px-4 py-3"
 				onClick={() => setIsExpanded(!isExpanded)}

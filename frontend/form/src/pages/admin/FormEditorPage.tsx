@@ -33,6 +33,92 @@ function createEmptyField(): FormFieldSchema {
 	};
 }
 
+function createDefaultFields(): FormFieldSchema[] {
+	return [
+		{
+			_key: generateFieldId(),
+			field_id: "isim_soyisim",
+			field_type: "text",
+			label: "İsim - Soyisim",
+			placeholder: "yanıtınız...",
+			required: true,
+		},
+		{
+			_key: generateFieldId(),
+			field_id: "blm",
+			field_type: "department",
+			label: "Bölüm",
+			placeholder: "seçiniz...",
+			required: true,
+			options: [
+				"Bilgisayar Mühendisliği",
+				"Çizgi Film ve Animasyon",
+				"Ekonomi",
+				"Elektrik-Elektronik Mühendisliği",
+				"Endüstri Mühendisliği",
+				"Endüstriyel Tasarım",
+				"Enerji Sistemleri Mühendisliği",
+				"Gastronomi ve Mutfak Sanatları",
+				"Görsel İletişim Tasarımı",
+				"Halkla İlişkiler ve Reklamcılık",
+				"Hukuk",
+				"İç Mimarlık ve Çevre Tasarımı",
+				"İngiliz Dili ve Edebiyatı",
+				"İngilizce Mütercim ve Tercümanlık",
+				"İnşaat Mühendisliği",
+				"İşletme",
+				"Lojistik Yönetimi",
+				"Makine Mühendisliği",
+				"Mimarlık",
+				"Psikoloji",
+				"Radyo, Televizyon ve Sinema",
+				"Tarım Ekonomisi",
+				"Tarım Makineleri ve Teknolojileri Mühendisliği",
+				"Turizm Rehberliği",
+				"Uluslararası İlişkiler",
+				"Uluslararası Ticaret ve Finansman",
+				"Yazılım Mühendisliği",
+				"Yeni Medya ve İletişim",
+				"Yönetim Bilişim Sistemleri",
+				"Diğer",
+			],
+		},
+		{
+			_key: generateFieldId(),
+			field_id: "snf",
+			field_type: "select",
+			label: "Sınıf",
+			placeholder: "seçiniz...",
+			required: true,
+			options: ["Hazırlık", "1. Sınıf", "2. Sınıf", "3. Sınıf", "4. Sınıf"],
+		},
+		{
+			_key: generateFieldId(),
+			field_id: "aktif_olarak_yasar_universitesi_ogrencisi_misiniz",
+			field_type: "radio",
+			label: "Aktif olarak Yaşar Üniversitesi öğrencisi misiniz?",
+			required: true,
+			options: ["Evet", "Hayır"],
+		},
+		{
+			_key: generateFieldId(),
+			field_id: "etkinligimizi_nereden_duydunuz",
+			field_type: "radio",
+			label: "Etkinliğimizi nereden duydunuz?",
+			required: true,
+			options: [
+				"Arkadaş Tavsiyesi",
+				"Üniversite İçindeki Afişlerden",
+				"Instagram",
+				"Whatsapp Grubu",
+				"LinkedIn",
+				"Davetiye",
+				"Mail",
+			],
+		},
+	];
+}
+
 function cleanFieldForSave(field: FormFieldSchema): FormFieldSchema {
 	const cleaned: FormFieldSchema = {
 		field_id: field.field_id.slice(0, 32),
@@ -152,6 +238,10 @@ const FormEditorPage = () => {
 
 	const handleAddField = () => {
 		setFields((prev) => [...prev, createEmptyField()]);
+	};
+
+	const handleAddDefaultFields = () => {
+		setFields((prev) => [...prev, ...createDefaultFields()]);
 	};
 
 	const validateForm = (): string | null => {
@@ -383,13 +473,22 @@ const FormEditorPage = () => {
 									<h2 className="text-lg font-semibold text-slate-900">
 										Form Alanları
 									</h2>
-									<button
-										type="button"
-										onClick={handleAddField}
-										className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-									>
-										+ Alan Ekle
-									</button>
+									<div className="flex gap-2">
+										<button
+											type="button"
+											onClick={handleAddDefaultFields}
+											className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+										>
+											+ Varsayılan Şablon
+										</button>
+										<button
+											type="button"
+											onClick={handleAddField}
+											className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+										>
+											+ Alan Ekle
+										</button>
+									</div>
 								</div>
 
 								<FormFieldList
