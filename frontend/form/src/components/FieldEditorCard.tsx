@@ -48,14 +48,19 @@ function slugify(text: string): string {
 		.slice(0, 32);
 }
 
-type NumericValidationKey = "min_length" | "max_length" | "min_value" | "max_value";
+type NumericValidationKey =
+	| "min_length"
+	| "max_length"
+	| "min_value"
+	| "max_value";
 
-const NUMBER_VALIDATION_FIELDS: { key: NumericValidationKey; label: string }[] = [
-	{ key: "min_length", label: "Min Uzunluk" },
-	{ key: "max_length", label: "Max Uzunluk" },
-	{ key: "min_value", label: "Min Değer" },
-	{ key: "max_value", label: "Max Değer" },
-];
+const NUMBER_VALIDATION_FIELDS: { key: NumericValidationKey; label: string }[] =
+	[
+		{ key: "min_length", label: "Min Uzunluk" },
+		{ key: "max_length", label: "Max Uzunluk" },
+		{ key: "min_value", label: "Min Değer" },
+		{ key: "max_value", label: "Max Değer" },
+	];
 
 const INPUT_CLASS =
 	"w-full rounded-2xl border-2 border-slate-200 px-4 pb-3 pt-5 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100";
@@ -207,6 +212,8 @@ const FieldEditorCard = ({
 			style={{ borderColor }}
 		>
 			<div
+				role="button"
+				tabIndex={0}
 				className="flex cursor-pointer items-center justify-between px-4 py-3"
 				onClick={() => setIsExpanded(!isExpanded)}
 				onKeyDown={(e) => e.key === "Enter" && setIsExpanded(!isExpanded)}
@@ -313,182 +320,226 @@ const FieldEditorCard = ({
 			</div>
 
 			{isExpanded && (
-			<div className="border-t border-slate-100 px-4 py-4 space-y-4">
-				{/* Satır 1: Alan Etiketi + Alan Tipi */}
-				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-					<div className="group relative mt-2">
-						<label className={FLOATING_LABEL_CLASS}>
-							Alan Etiketi <span className="text-red-500">*</span>
-						</label>
-						<input
-							type="text"
-							value={labelValue}
-							onChange={(e) => handleLabelChange(e.target.value)}
-							className={INPUT_CLASS}
-							placeholder="Örn: Ad Soyad"
-						/>
-					</div>
-					<FieldTypeSelect
-						value={field.field_type}
-						onChange={handleFieldTypeChange}
-						label="Alan Tipi"
-						required
-					/>
-				</div>
-
-				{/* Satır 2: Alan ID + Placeholder */}
-				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-					<div className="group relative mt-2">
-						<label className={FLOATING_LABEL_CLASS}>
-							Alan ID
-							{isNewField && <span className="ml-1 font-normal text-slate-400">(otomatik)</span>}
-						</label>
-						<input
-							type="text"
-							value={field.field_id}
-							onChange={(e) => updateField({ field_id: e.target.value })}
-							disabled={!isNewField}
-							className={`${INPUT_CLASS} disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400`}
-							placeholder="alan_id"
-						/>
-					</div>
-					<div className="group relative mt-2">
-						<label className={FLOATING_LABEL_CLASS}>Placeholder</label>
-						<input
-							type="text"
-							value={field.placeholder ?? ""}
-							onChange={(e) => updateField({ placeholder: e.target.value || undefined })}
-							className={INPUT_CLASS}
-							placeholder="Placeholder metni..."
-						/>
-					</div>
-				</div>
-
-				{/* Zorunlu Alan toggle */}
-				<div className="flex items-center gap-2">
-					<input
-						type="checkbox"
-						id={`required-${field.field_id}`}
-						checked={field.required}
-						onChange={(e) => updateField({ required: e.target.checked })}
-						className="h-4 w-4 rounded border-slate-300 text-blue-500 focus:ring-blue-200"
-					/>
-					<label htmlFor={`required-${field.field_id}`} className="text-sm font-medium text-slate-700">
-						Zorunlu Alan
-					</label>
-				</div>
-
-				{/* Seçenek listesi (select / multiselect / radio) */}
-				{showOptions && (
-					<div>
-						<p className="text-sm font-medium text-slate-700">Seçenekler</p>
-						<div className="mt-2 space-y-2">
-							{options.map((opt, i) => (
-								<div key={`opt-${i}`} className="flex items-center gap-2">
-									<input
-										type="text"
-										value={opt}
-										onChange={(e) => handleOptionChange(i, e.target.value)}
-										className="flex-1 rounded-2xl border-2 border-slate-200 px-4 py-3 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
-										placeholder={`Seçenek ${i + 1}`}
-									/>
-									<button
-										type="button"
-										onClick={() => handleOptionRemove(i)}
-										disabled={options.length === 1}
-										className="rounded p-1.5 text-red-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-30 disabled:hover:bg-transparent"
-									>
-										<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-										</svg>
-									</button>
-								</div>
-							))}
-							<button
-								type="button"
-								onClick={handleOptionAdd}
-								className="mt-1 flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
-							>
-								<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-								</svg>
-								Seçenek Ekle
-							</button>
-						</div>
-					</div>
-				)}
-
-				{/* Doğrulama Kuralları */}
-				<details className="rounded-lg border border-slate-200 bg-slate-50">
-					<summary className="cursor-pointer px-3 py-2 text-sm font-medium text-slate-700">
-						Doğrulama Kuralları
-					</summary>
-					<div className="space-y-3 px-3 pb-3 pt-1">
-						<div className="grid grid-cols-2 gap-3">
-							{NUMBER_VALIDATION_FIELDS.map(({ key, label }) => (
-								<div key={key}>
-									<label className="block text-xs text-slate-600">{label}</label>
-									<input
-										type="number"
-										value={field.validation?.[key] ?? ""}
-										onChange={(e) => handleValidationChange(key, e.target.value)}
-										className={SMALL_INPUT_CLASS}
-									/>
-								</div>
-							))}
-						</div>
-						<div>
-							<label className="block text-xs text-slate-600">Regex Deseni</label>
+				<div className="border-t border-slate-100 px-4 py-4 space-y-4">
+					{/* Satır 1: Alan Etiketi + Alan Tipi */}
+					<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+						<div className="group relative mt-2">
+							<label className={FLOATING_LABEL_CLASS}>
+								Alan Etiketi <span className="text-red-500">*</span>
+							</label>
 							<input
 								type="text"
-								value={field.validation?.pattern ?? ""}
-								onChange={(e) => handlePatternChange(e.target.value)}
-								className={`${SMALL_INPUT_CLASS} font-mono`}
-								placeholder="^[A-Z].*"
+								value={labelValue}
+								onChange={(e) => handleLabelChange(e.target.value)}
+								className={INPUT_CLASS}
+								placeholder="Örn: Ad Soyad"
+							/>
+						</div>
+						<FieldTypeSelect
+							value={field.field_type}
+							onChange={handleFieldTypeChange}
+							label="Alan Tipi"
+							required
+						/>
+					</div>
+
+					{/* Satır 2: Alan ID + Placeholder */}
+					<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+						<div className="group relative mt-2">
+							<label className={FLOATING_LABEL_CLASS}>
+								Alan ID
+								{isNewField && (
+									<span className="ml-1 font-normal text-slate-400">
+										(otomatik)
+									</span>
+								)}
+							</label>
+							<input
+								type="text"
+								value={field.field_id}
+								onChange={(e) => updateField({ field_id: e.target.value })}
+								disabled={!isNewField}
+								className={`${INPUT_CLASS} disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400`}
+								placeholder="alan_id"
+							/>
+						</div>
+						<div className="group relative mt-2">
+							<label className={FLOATING_LABEL_CLASS}>Placeholder</label>
+							<input
+								type="text"
+								value={field.placeholder ?? ""}
+								onChange={(e) =>
+									updateField({ placeholder: e.target.value || undefined })
+								}
+								className={INPUT_CLASS}
+								placeholder="Placeholder metni..."
 							/>
 						</div>
 					</div>
-				</details>
 
-				{/* Koşullu Görünürlük */}
-				{otherFieldIds.length > 0 && (
+					{/* Zorunlu Alan toggle */}
+					<div className="flex items-center gap-2">
+						<input
+							type="checkbox"
+							id={`required-${field.field_id}`}
+							checked={field.required}
+							onChange={(e) => updateField({ required: e.target.checked })}
+							className="h-4 w-4 rounded border-slate-300 text-blue-500 focus:ring-blue-200"
+						/>
+						<label
+							htmlFor={`required-${field.field_id}`}
+							className="text-sm font-medium text-slate-700"
+						>
+							Zorunlu Alan
+						</label>
+					</div>
+
+					{/* Seçenek listesi (select / multiselect / radio) */}
+					{showOptions && (
+						<div>
+							<p className="text-sm font-medium text-slate-700">Seçenekler</p>
+							<div className="mt-2 space-y-2">
+								{options.map((opt, i) => (
+									<div key={`opt-${i}`} className="flex items-center gap-2">
+										<input
+											type="text"
+											value={opt}
+											onChange={(e) => handleOptionChange(i, e.target.value)}
+											className="flex-1 rounded-2xl border-2 border-slate-200 px-4 py-3 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
+											placeholder={`Seçenek ${i + 1}`}
+										/>
+										<button
+											type="button"
+											onClick={() => handleOptionRemove(i)}
+											disabled={options.length === 1}
+											className="rounded p-1.5 text-red-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-30 disabled:hover:bg-transparent"
+										>
+											<svg
+												className="h-4 w-4"
+												fill="none"
+												stroke="currentColor"
+												viewBox="0 0 24 24"
+											>
+												<path
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													strokeWidth={2}
+													d="M6 18L18 6M6 6l12 12"
+												/>
+											</svg>
+										</button>
+									</div>
+								))}
+								<button
+									type="button"
+									onClick={handleOptionAdd}
+									className="mt-1 flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
+								>
+									<svg
+										className="h-4 w-4"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+										aria-hidden="true"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={2}
+											d="M12 4v16m8-8H4"
+										/>
+									</svg>
+									Seçenek Ekle
+								</button>
+							</div>
+						</div>
+					)}
+
+					{/* Doğrulama Kuralları */}
 					<details className="rounded-lg border border-slate-200 bg-slate-50">
 						<summary className="cursor-pointer px-3 py-2 text-sm font-medium text-slate-700">
-							Koşullu Görünürlük
+							Doğrulama Kuralları
 						</summary>
 						<div className="space-y-3 px-3 pb-3 pt-1">
-							<div>
-								<label className="block text-xs text-slate-600">Bağlı Olduğu Alan</label>
-								<select
-									value={field.condition?.depends_on ?? ""}
-									onChange={(e) => handleConditionChange("depends_on", e.target.value)}
-									className={`${SMALL_INPUT_CLASS} bg-white`}
-								>
-									<option value="">Yok</option>
-									{otherFieldIds.map((id) => (
-										<option key={id} value={id}>{id}</option>
-									))}
-								</select>
+							<div className="grid grid-cols-2 gap-3">
+								{NUMBER_VALIDATION_FIELDS.map(({ key, label }) => (
+									<div key={key}>
+										<label className="block text-xs text-slate-600">
+											{label}
+										</label>
+										<input
+											type="number"
+											value={field.validation?.[key] ?? ""}
+											onChange={(e) =>
+												handleValidationChange(key, e.target.value)
+											}
+											className={SMALL_INPUT_CLASS}
+										/>
+									</div>
+								))}
 							</div>
-							{field.condition?.depends_on && (
-								<div>
-									<label className="block text-xs text-slate-600">
-										Göstermek için gerekli değerler (virgülle ayırın)
-									</label>
-									<input
-										type="text"
-										value={field.condition?.values?.join(", ") ?? ""}
-										onChange={(e) => handleConditionChange("values", e.target.value)}
-										className={SMALL_INPUT_CLASS}
-										placeholder="değer1, değer2"
-									/>
-								</div>
-							)}
+							<div>
+								<label className="block text-xs text-slate-600">
+									Regex Deseni
+								</label>
+								<input
+									type="text"
+									value={field.validation?.pattern ?? ""}
+									onChange={(e) => handlePatternChange(e.target.value)}
+									className={`${SMALL_INPUT_CLASS} font-mono`}
+									placeholder="^[A-Z].*"
+								/>
+							</div>
 						</div>
 					</details>
-				)}
-			</div>
-		)}
+
+					{/* Koşullu Görünürlük */}
+					{otherFieldIds.length > 0 && (
+						<details className="rounded-lg border border-slate-200 bg-slate-50">
+							<summary className="cursor-pointer px-3 py-2 text-sm font-medium text-slate-700">
+								Koşullu Görünürlük
+							</summary>
+							<div className="space-y-3 px-3 pb-3 pt-1">
+								<div>
+									<label className="block text-xs text-slate-600">
+										Bağlı Olduğu Alan
+									</label>
+									<select
+										value={field.condition?.depends_on ?? ""}
+										onChange={(e) =>
+											handleConditionChange("depends_on", e.target.value)
+										}
+										className={`${SMALL_INPUT_CLASS} bg-white`}
+									>
+										<option value="">Yok</option>
+										{otherFieldIds.map((id) => (
+											<option key={id} value={id}>
+												{id}
+											</option>
+										))}
+									</select>
+								</div>
+								{field.condition?.depends_on && (
+									<div>
+										<label className="block text-xs text-slate-600">
+											Göstermek için gerekli değerler (virgülle ayırın)
+										</label>
+										<input
+											type="text"
+											value={field.condition?.values?.join(", ") ?? ""}
+											onChange={(e) =>
+												handleConditionChange("values", e.target.value)
+											}
+											className={SMALL_INPUT_CLASS}
+											placeholder="değer1, değer2"
+										/>
+									</div>
+								)}
+							</div>
+						</details>
+					)}
+				</div>
+			)}
 		</div>
 	);
 };

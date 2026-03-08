@@ -1,5 +1,5 @@
-import { useRef, useState, useEffect, useCallback } from "react";
 import { motion, useInView } from "motion/react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import "./AnimatedList.css";
 
 interface AnimatedItemProps {
@@ -9,7 +9,12 @@ interface AnimatedItemProps {
 	onClick: () => void;
 }
 
-const AnimatedItem = ({ children, index, onMouseEnter, onClick }: AnimatedItemProps) => {
+const AnimatedItem = ({
+	children,
+	index,
+	onMouseEnter,
+	onClick,
+}: AnimatedItemProps) => {
 	const ref = useRef(null);
 	const inView = useInView(ref, { amount: 0.5, once: false });
 	return (
@@ -116,7 +121,10 @@ const AnimatedList = ({
 			const itemBottom = itemTop + selectedItem.offsetHeight;
 			if (itemTop < containerScrollTop + extraMargin) {
 				container.scrollTo({ top: itemTop - extraMargin, behavior: "smooth" });
-			} else if (itemBottom > containerScrollTop + containerHeight - extraMargin) {
+			} else if (
+				itemBottom >
+				containerScrollTop + containerHeight - extraMargin
+			) {
 				container.scrollTo({
 					top: itemBottom - containerHeight + extraMargin,
 					behavior: "smooth",
@@ -134,19 +142,19 @@ const AnimatedList = ({
 				onScroll={handleScroll}
 			>
 				{items.map((item, index) => (
-				<AnimatedItem
-					key={item.value}
-					index={index}
-					onMouseEnter={() => setSelectedIndex(index)}
-					onClick={() => handleItemClick(item, index)}
-				>
-					<div
-						className={`animated-list-item ${selectedIndex === index ? "selected" : ""}`}
+					<AnimatedItem
+						key={item.value}
+						index={index}
+						onMouseEnter={() => setSelectedIndex(index)}
+						onClick={() => handleItemClick(item, index)}
 					>
-						<p className="animated-list-item-text">{item.label}</p>
-					</div>
-				</AnimatedItem>
-			))}
+						<div
+							className={`animated-list-item ${selectedIndex === index ? "selected" : ""}`}
+						>
+							<p className="animated-list-item-text">{item.label}</p>
+						</div>
+					</AnimatedItem>
+				))}
 			</div>
 			{showGradients && (
 				<>

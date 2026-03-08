@@ -28,37 +28,37 @@ function App() {
 			{/* Home redirects to admin panel */}
 			<Route path="/" element={<Navigate to="/admin/forms" replace />} />
 			{/* Lazy-loaded routes with Suspense fallback */}
-			<Route 
-				path="/forms/:formId" 
+			<Route
+				path="/forms/:formId"
 				element={
 					<Suspense fallback={<RouteLoadingFallback />}>
 						<FormSubmissionPage />
 					</Suspense>
-				} 
+				}
 			/>
-			<Route 
-				path="/views/:formId" 
+			<Route
+				path="/views/:formId"
 				element={
 					<Suspense fallback={<RouteLoadingFallback />}>
 						<AdminFormViewsPage />
 					</Suspense>
-				} 
+				}
 			/>
-			<Route 
-				path="/admin/forms" 
+			<Route
+				path="/admin/forms"
 				element={
 					<Suspense fallback={<RouteLoadingFallback />}>
 						<AdminFormListPage />
 					</Suspense>
-				} 
+				}
 			/>
-			<Route 
-				path="/admin/forms/editor" 
+			<Route
+				path="/admin/forms/editor"
 				element={
 					<Suspense fallback={<RouteLoadingFallback />}>
 						<FormEditorPage />
 					</Suspense>
-				} 
+				}
 			/>
 			<Route path="*" element={<Navigate to="/" replace />} />
 		</Routes>

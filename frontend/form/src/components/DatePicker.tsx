@@ -175,6 +175,7 @@ export function DatePicker({ label, value, onChange }: DatePickerProps) {
 									className="h-4 w-4"
 									viewBox="0 0 20 20"
 									fill="currentColor"
+									role="img"
 									aria-label="Önceki ay"
 								>
 									<path
@@ -199,6 +200,7 @@ export function DatePicker({ label, value, onChange }: DatePickerProps) {
 									className="h-4 w-4"
 									viewBox="0 0 20 20"
 									fill="currentColor"
+									role="img"
 									aria-label="Sonraki ay"
 								>
 									<path

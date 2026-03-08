@@ -1,6 +1,6 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.3.11/schema.json",
-	"root": false,
+	"root": true,
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",
@@ -23,7 +23,23 @@
 					"options": {
 						"ignore": ["tailwind"]
 					}
-				}
+				},
+				"noArrayIndexKey": "off"
+			},
+			"a11y": {
+				"noSvgWithoutTitle": "off",
+				"noLabelWithoutControl": "off",
+				"noStaticElementInteractions": "off",
+				"useSemanticElements": "off"
+			},
+			"complexity": {
+				"noImportantStyles": "off"
+			},
+			"style": {
+				"noNonNullAssertion": "off"
+			},
+			"correctness": {
+				"useExhaustiveDependencies": "warn"
 			}
 		}
 	},

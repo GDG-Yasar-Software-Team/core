@@ -1,2 +1,1 @@
-export { PhoneMockup } from './PhoneMockup';
-export { default } from './PhoneMockup';
+export { default, PhoneMockup } from "./PhoneMockup";

@@ -15,7 +15,7 @@ export function useForms(skip = 0, limit = 20): UseFormsResult {
 	const [total, setTotal] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const [refreshKey, setRefreshKey] = useState(0);
+	const [_refreshKey, setRefreshKey] = useState(0);
 
 	const refetch = useCallback(() => {
 		setRefreshKey((prev) => prev + 1);
@@ -50,7 +50,7 @@ export function useForms(skip = 0, limit = 20): UseFormsResult {
 		return () => {
 			isCancelled = true;
 		};
-	}, [skip, limit, refreshKey]);
+	}, [skip, limit]);
 
 	return { forms, total, isLoading, error, refetch };
 }

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FieldType } from "../types";
 import AnimatedList, { type AnimatedListItem } from "./AnimatedList";
 
@@ -21,7 +21,12 @@ interface FieldTypeSelectProps {
 	required?: boolean;
 }
 
-const FieldTypeSelect = ({ value, onChange, label, required }: FieldTypeSelectProps) => {
+const FieldTypeSelect = ({
+	value,
+	onChange,
+	label,
+	required,
+}: FieldTypeSelectProps) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const containerRef = useRef<HTMLDivElement>(null);
 
@@ -51,10 +56,13 @@ const FieldTypeSelect = ({ value, onChange, label, required }: FieldTypeSelectPr
 	return (
 		<div ref={containerRef} className="relative mt-2">
 			{label && (
-				<span className={`pointer-events-none absolute left-4 top-0 -translate-y-1/2 bg-white px-1 text-xs font-semibold transition-colors duration-200 z-10 ${
-					isOpen ? "text-violet-600" : "text-slate-500"
-				}`}>
-					{label}{required && <span className="text-red-500 ml-0.5">*</span>}
+				<span
+					className={`pointer-events-none absolute left-4 top-0 -translate-y-1/2 bg-white px-1 text-xs font-semibold transition-colors duration-200 z-10 ${
+						isOpen ? "text-violet-600" : "text-slate-500"
+					}`}
+				>
+					{label}
+					{required && <span className="text-red-500 ml-0.5">*</span>}
 				</span>
 			)}
 			<button
@@ -74,6 +82,7 @@ const FieldTypeSelect = ({ value, onChange, label, required }: FieldTypeSelectPr
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
+					aria-hidden="true"
 				>
 					<path
 						strokeLinecap="round"

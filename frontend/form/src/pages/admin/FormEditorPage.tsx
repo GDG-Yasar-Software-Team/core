@@ -12,7 +12,12 @@ import {
 	getFormById,
 	updateForm,
 } from "../../services/formService";
-import type { FormCreate, FormFieldSchema, FormResponse, FormUpdate } from "../../types";
+import type {
+	FormCreate,
+	FormFieldSchema,
+	FormResponse,
+	FormUpdate,
+} from "../../types";
 
 type FormValues = Record<string, unknown>;
 
@@ -143,7 +148,7 @@ function cleanFieldForSave(field: FormFieldSchema): FormFieldSchema {
 			v.max_length !== undefined ||
 			v.min_value !== undefined ||
 			v.max_value !== undefined ||
-			(v.pattern && v.pattern.trim());
+			v.pattern?.trim();
 		if (hasValues) {
 			cleaned.validation = {};
 			if (v.min_length !== undefined)
@@ -413,44 +418,44 @@ const FormEditorPage = () => {
 									Form Bilgileri
 								</h2>
 
-<div className="group relative mt-2">
-								<label className="pointer-events-none absolute left-4 top-0 -translate-y-1/2 bg-white px-1 text-xs font-semibold text-slate-500 transition-colors duration-200 group-focus-within:text-violet-600">
-									Başlık <span className="text-red-500">*</span>
-								</label>
-								<input
-									type="text"
-									value={title}
-									onChange={(e) => setTitle(e.target.value)}
-									className="w-full rounded-2xl border-2 border-slate-200 px-4 pb-3 pt-5 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
+								<div className="group relative mt-2">
+									<label className="pointer-events-none absolute left-4 top-0 -translate-y-1/2 bg-white px-1 text-xs font-semibold text-slate-500 transition-colors duration-200 group-focus-within:text-violet-600">
+										Başlık <span className="text-red-500">*</span>
+									</label>
+									<input
+										type="text"
+										value={title}
+										onChange={(e) => setTitle(e.target.value)}
+										className="w-full rounded-2xl border-2 border-slate-200 px-4 pb-3 pt-5 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
 										placeholder="Form başlığı"
 									/>
 								</div>
 
-<div className="group relative mt-2">
-								<label className="pointer-events-none absolute left-4 top-0 -translate-y-1/2 bg-white px-1 text-xs font-semibold text-slate-500 transition-colors duration-200 group-focus-within:text-violet-600">
-									Açıklama
-								</label>
-								<textarea
-									value={description}
-									onChange={(e) => setDescription(e.target.value)}
-									rows={3}
-									className="w-full resize-none rounded-2xl border-2 border-slate-200 px-4 pb-3 pt-5 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
+								<div className="group relative mt-2">
+									<label className="pointer-events-none absolute left-4 top-0 -translate-y-1/2 bg-white px-1 text-xs font-semibold text-slate-500 transition-colors duration-200 group-focus-within:text-violet-600">
+										Açıklama
+									</label>
+									<textarea
+										value={description}
+										onChange={(e) => setDescription(e.target.value)}
+										rows={3}
+										className="w-full resize-none rounded-2xl border-2 border-slate-200 px-4 pb-3 pt-5 text-sm transition-all duration-200 hover:border-slate-300 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
 										placeholder="Form açıklaması (opsiyonel)"
 									/>
 								</div>
 
 								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-								<DatePicker
-									label="Başlangıç Tarihi"
-									value={startDate}
-									onChange={setStartDate}
-								/>
-								<DatePicker
-									label="Bitiş Tarihi"
-									value={deadline}
-									onChange={setDeadline}
-								/>
-							</div>
+									<DatePicker
+										label="Başlangıç Tarihi"
+										value={startDate}
+										onChange={setStartDate}
+									/>
+									<DatePicker
+										label="Bitiş Tarihi"
+										value={deadline}
+										onChange={setDeadline}
+									/>
+								</div>
 
 								<div className="flex items-center gap-3">
 									<button
@@ -535,8 +540,12 @@ const FormEditorPage = () => {
 							{/* Mobile Preview */}
 							<div className="flex flex-col items-center">
 								<div className="text-center mb-6">
-									<h3 className="text-lg font-semibold text-slate-900">Mobil Görünüm</h3>
-									<p className="text-sm text-slate-500">Formunuz telefonda böyle görünecek</p>
+									<h3 className="text-lg font-semibold text-slate-900">
+										Mobil Görünüm
+									</h3>
+									<p className="text-sm text-slate-500">
+										Formunuz telefonda böyle görünecek
+									</p>
 								</div>
 								<PhoneMockup>
 									<div>
@@ -627,15 +636,21 @@ const FormEditorPage = () => {
 							{/* Divider */}
 							<div className="flex items-center gap-4">
 								<div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
-								<span className="text-xs text-slate-400 font-medium">WEB GÖRÜNÜMÜ</span>
+								<span className="text-xs text-slate-400 font-medium">
+									WEB GÖRÜNÜMÜ
+								</span>
 								<div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
 							</div>
 
 							{/* Web Preview */}
 							<div>
 								<div className="text-center mb-6">
-									<h3 className="text-lg font-semibold text-slate-900">Masaüstü Görünüm</h3>
-									<p className="text-sm text-slate-500">Formunuz bilgisayarda böyle görünecek</p>
+									<h3 className="text-lg font-semibold text-slate-900">
+										Masaüstü Görünüm
+									</h3>
+									<p className="text-sm text-slate-500">
+										Formunuz bilgisayarda böyle görünecek
+									</p>
 								</div>
 								<div className="flex items-center justify-center">
 									<div className="w-full max-w-2xl">
@@ -687,8 +702,8 @@ const FormEditorPage = () => {
 												{previewForm.questions.length === 0 && (
 													<div className="rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 px-6 py-12 text-center">
 														<p className="text-sm text-gray-500">
-															Henüz alan eklenmedi. "Düzenle" moduna geçerek alan
-															ekleyin.
+															Henüz alan eklenmedi. "Düzenle" moduna geçerek
+															alan ekleyin.
 														</p>
 													</div>
 												)}

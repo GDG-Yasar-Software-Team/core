@@ -4,7 +4,12 @@ const STORAGE_KEY = "admin_authorized";
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD ?? "";
 
 // DEBUG: Remove this after testing
-console.log("ADMIN_PASSWORD from env:", ADMIN_PASSWORD, "length:", ADMIN_PASSWORD.length);
+console.log(
+	"ADMIN_PASSWORD from env:",
+	ADMIN_PASSWORD,
+	"length:",
+	ADMIN_PASSWORD.length,
+);
 
 function getStoredAuth(): boolean {
 	if (typeof window === "undefined") {
@@ -18,7 +23,12 @@ export function useAdminAuth() {
 
 	const authorize = useCallback((password: string): boolean => {
 		// DEBUG: Remove this after testing
-		console.log("Entered:", JSON.stringify(password), "Expected:", JSON.stringify(ADMIN_PASSWORD));
+		console.log(
+			"Entered:",
+			JSON.stringify(password),
+			"Expected:",
+			JSON.stringify(ADMIN_PASSWORD),
+		);
 		if (password === ADMIN_PASSWORD) {
 			sessionStorage.setItem(STORAGE_KEY, "true");
 			setIsAuthorized(true);
