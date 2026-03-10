@@ -1,5 +1,5 @@
 
-.PHONY: help install lint format clean dev run-form-service run-form-frontend test-form-service run-mail-service run-mail-campaign test-mail-service run-user-service test-user-service run-event-service test-event-service sync-prompts
+.PHONY: help install lint format clean dev run-form-service run-form-frontend test-form-service run-mail-service run-mail-frontend run-mail-campaign test-mail-service run-user-service test-user-service run-event-service test-event-service sync-prompts
 
 help:
 	@echo "Available commands:"
@@ -12,6 +12,7 @@ help:
 	@echo "  make run-form-frontend  - Run form frontend development server"
 	@echo "  make test-form-service  - Run form service tests"
 	@echo "  make run-mail-service   - Run mail backend (FastAPI)"
+	@echo "  make run-mail-frontend  - Run mail frontend development server"
 	@echo "  make run-mail-campaign  - Run mail campaign CLI script"
 	@echo "  make test-mail-service  - Run mail service tests"
 	@echo "  make run-user-service   - Run user backend (FastAPI)"
@@ -29,8 +30,10 @@ install:
 	cd services/user && uv sync --all-extras
 	@echo "Installing event backend dependencies..."
 	cd services/event && uv sync --all-extras
-	@echo "Installing frontend dependencies..."
+	@echo "Installing form frontend dependencies..."
 	cd frontend/form && bun install
+	@echo "Installing mail frontend dependencies..."
+	cd frontend/mail && bun install
 	@echo "All dependencies installed!"
 
 lint:
@@ -42,8 +45,10 @@ lint:
 	cd services/user && uv run ruff check --fix .
 	@echo "Linting and fixing event backend code..."
 	cd services/event && uv run ruff check --fix .
-	@echo "Linting and fixing frontend code..."
+	@echo "Linting and fixing form frontend code..."
 	cd frontend/form && bun run biome check --write .
+	@echo "Linting and fixing mail frontend code..."
+	cd frontend/mail && bun run biome check --write .
 	@echo "All linting complete!"
 
 format:
@@ -55,8 +60,10 @@ format:
 	cd services/user && uv run ruff format .
 	@echo "Formatting event backend code..."
 	cd services/event && uv run ruff format .
-	@echo "Formatting frontend code..."
+	@echo "Formatting form frontend code..."
 	cd frontend/form && bun run biome check --write .
+	@echo "Formatting mail frontend code..."
+	cd frontend/mail && bun run biome check --write .
 	@echo "All code formatted!"
 
 clean:
@@ -83,6 +90,10 @@ run-form-service:
 run-form-frontend:
 	@echo "Starting form frontend development server..."
 	cd frontend/form && bun dev
+
+run-mail-frontend:
+	@echo "Starting mail frontend development server..."
+	cd frontend/mail && bun dev
 
 run-mail-service:
 	@echo "Starting mail service..."
