@@ -37,7 +37,7 @@ function App() {
 				}
 			/>
 			<Route
-				path="/views/:formId"
+				path="/admin/views/:formId"
 				element={
 					<Suspense fallback={<RouteLoadingFallback />}>
 						<AdminFormViewsPage />

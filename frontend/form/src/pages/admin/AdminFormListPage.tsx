@@ -19,25 +19,40 @@ const AdminFormListPage = () => {
 	const navigate = useNavigate();
 	const [page, setPage] = useState(0);
 	const [deletingId, setDeletingId] = useState<string | null>(null);
+	const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+	const [deleteError, setDeleteError] = useState<string | null>(null);
 
 	const skip = page * PAGE_SIZE;
 	const { forms, total, isLoading, error, refetch } = useForms(skip, PAGE_SIZE);
 
 	const totalPages = Math.ceil(total / PAGE_SIZE);
 
-	const handleDelete = async (formId: string, title: string) => {
-		const confirmed = window.confirm(
-			`"${title}" formunu silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`,
-		);
-		if (!confirmed) return;
+	const handleDeleteClick = (formId: string) => {
+		if (confirmDeleteId === formId) {
+			// Second click - perform deletion
+			performDelete(formId);
+		} else {
+			// First click - show confirmation
+			setConfirmDeleteId(formId);
+			setDeleteError(null);
+		}
+	};
 
+	const handleCancelDelete = () => {
+		setConfirmDeleteId(null);
+		setDeleteError(null);
+	};
+
+	const performDelete = async (formId: string) => {
 		setDeletingId(formId);
+		setDeleteError(null);
 		try {
 			await deleteForm(formId);
+			setConfirmDeleteId(null);
 			refetch();
 		} catch (err) {
-			alert(
-				`Silme hatası: ${err instanceof Error ? err.message : "Bilinmeyen hata"}`,
+			setDeleteError(
+				err instanceof Error ? err.message : "Bilinmeyen hata",
 			);
 		} finally {
 			setDeletingId(null);
@@ -141,32 +156,63 @@ const AdminFormListPage = () => {
 												</td>
 												<td className="px-6 py-4">
 													<div className="flex items-center justify-end gap-2">
-														<button
-															type="button"
-															onClick={() => navigate(`/views/${form.id}`)}
-															className="rounded px-2 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100"
-															title="Yanıtları Görüntüle"
-														>
-															Yanıtlar
-														</button>
-														<button
-															type="button"
-															onClick={() =>
-																navigate(`/admin/forms/editor?id=${form.id}`)
-															}
-															className="rounded px-2 py-1 text-xs font-medium text-blue-600 hover:bg-blue-50"
-														>
-															Düzenle
-														</button>
-														<button
-															type="button"
-															onClick={() => handleDelete(form.id, form.title)}
-															disabled={deletingId === form.id}
-															className="rounded px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
-														>
-															{deletingId === form.id ? "Siliniyor..." : "Sil"}
-														</button>
+														{confirmDeleteId === form.id ? (
+															<>
+																<span className="text-xs text-red-600 font-medium mr-1">
+																	Silmek istediğinize emin misiniz?
+																</span>
+																<button
+																	type="button"
+																	onClick={() => handleDeleteClick(form.id)}
+																	disabled={deletingId === form.id}
+																	className="rounded px-2 py-1 text-xs font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50"
+																>
+																	{deletingId === form.id ? "Siliniyor..." : "Evet, Sil"}
+																</button>
+																<button
+																	type="button"
+																	onClick={handleCancelDelete}
+																	disabled={deletingId === form.id}
+																	className="rounded px-2 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100 disabled:opacity-50"
+																>
+																	İptal
+																</button>
+															</>
+														) : (
+															<>
+																<button
+																	type="button"
+																	onClick={() => navigate(`/admin/views/${form.id}`)}
+																	className="rounded px-2 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100"
+																	title="Yanıtları Görüntüle"
+																>
+																	Yanıtlar
+																</button>
+																<button
+																	type="button"
+																	onClick={() =>
+																		navigate(`/admin/forms/editor?id=${form.id}`)
+																	}
+																	className="rounded px-2 py-1 text-xs font-medium text-blue-600 hover:bg-blue-50"
+																>
+																	Düzenle
+																</button>
+																<button
+																	type="button"
+																	onClick={() => handleDeleteClick(form.id)}
+																	disabled={deletingId === form.id}
+																	className="rounded px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
+																>
+																	Sil
+																</button>
+															</>
+														)}
 													</div>
+													{deleteError && confirmDeleteId === form.id && (
+														<p className="mt-1 text-xs text-red-600 text-right">
+															{deleteError}
+														</p>
+													)}
 												</td>
 											</tr>
 										))}

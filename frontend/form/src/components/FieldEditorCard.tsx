@@ -1,41 +1,9 @@
 import { useState } from "react";
+import { DEPARTMENTS } from "../constants/departments";
 import type { FieldType, FormFieldSchema } from "../types";
 import FieldTypeSelect from "./FieldTypeSelect";
 
 const TYPES_WITH_OPTIONS: FieldType[] = ["select", "multiselect", "radio"];
-
-const DEPARTMENT_OPTIONS = [
-	"Bilgisayar Mühendisliği",
-	"Çizgi Film ve Animasyon",
-	"Ekonomi",
-	"Elektrik-Elektronik Mühendisliği",
-	"Endüstri Mühendisliği",
-	"Endüstriyel Tasarım",
-	"Enerji Sistemleri Mühendisliği",
-	"Gastronomi ve Mutfak Sanatları",
-	"Görsel İletişim Tasarımı",
-	"Halkla İlişkiler ve Reklamcılık",
-	"Hukuk",
-	"İç Mimarlık ve Çevre Tasarımı",
-	"İngiliz Dili ve Edebiyatı",
-	"İngilizce Mütercim ve Tercümanlık",
-	"İnşaat Mühendisliği",
-	"İşletme",
-	"Lojistik Yönetimi",
-	"Makine Mühendisliği",
-	"Mimarlık",
-	"Psikoloji",
-	"Radyo, Televizyon ve Sinema",
-	"Tarım Ekonomisi",
-	"Tarım Makineleri ve Teknolojileri Mühendisliği",
-	"Turizm Rehberliği",
-	"Uluslararası İlişkiler",
-	"Uluslararası Ticaret ve Finansman",
-	"Yazılım Mühendisliği",
-	"Yeni Medya ve İletişim",
-	"Yönetim Bilişim Sistemleri",
-	"Diğer",
-];
 
 function slugify(text: string): string {
 	return text
@@ -108,8 +76,8 @@ const FieldEditorCard = ({
 
 	const handleFieldTypeChange = (value: FieldType) => {
 		if (value === "department") {
-			setOptions(DEPARTMENT_OPTIONS);
-			updateField({ field_type: value, options: DEPARTMENT_OPTIONS });
+			setOptions(DEPARTMENTS);
+			updateField({ field_type: value, options: DEPARTMENTS });
 		} else if (field.field_type === "department") {
 			setOptions([""]);
 			updateField({ field_type: value, options: undefined });
