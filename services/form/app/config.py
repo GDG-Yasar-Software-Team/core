@@ -11,7 +11,8 @@ class Settings(BaseSettings):
     CORS_ALLOW_ORIGIN_REGEX: str | None = r"https?://(localhost|127\.0\.0\.1)(:\d+)?$"
 
     # Admin authentication token for protected endpoints
-    ADMIN_API_TOKEN: str = "9374c8c7ab72df4d04b904a0e02acb00ec74b84474514fe301d9ccc259bc8eb0"
+    # SECURITY: No default value - must be set via .env file
+    ADMIN_API_TOKEN: str
 
     model_config = SettingsConfigDict(
         env_file=".env",

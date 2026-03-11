@@ -32,10 +32,18 @@ def mock_settings():
         HOST="0.0.0.0",
         PORT=8002,
         ENV="test",
+        ADMIN_API_TOKEN="test-admin-token",
     )
     with patch("app.config.settings", test_settings):
         with patch("app.db.mongodb.settings", test_settings):
-            yield test_settings
+            with patch("app.auth.api_key.settings", test_settings):
+                yield test_settings
+
+
+@pytest.fixture
+def auth_headers() -> dict[str, str]:
+    """Authentication headers for protected endpoints."""
+    return {"X-API-Token": "test-admin-token"}
 
 
 @pytest.fixture

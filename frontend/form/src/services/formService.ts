@@ -139,25 +139,7 @@ export async function updateForm(
 }
 
 export async function deleteForm(formId: string): Promise<void> {
-	const token = getAdminToken();
-	if (!token) {
-		throw new Error("Not authenticated - admin token not found");
-	}
-
-	const response = await fetch(
-		`${FORM_SERVICE_URL}/forms/${encodeURIComponent(formId)}`,
-		{
-			method: "DELETE",
-			headers: {
-				"X-API-Token": token,
-			},
-		},
-	);
-
-	if (!response.ok) {
-		const errorText = await response.text();
-		throw new Error(
-			`Form service request failed: ${response.status} ${errorText}`,
-		);
-	}
+	await authenticatedRequest<void>(`/forms/${encodeURIComponent(formId)}`, {
+		method: "DELETE",
+	});
 }
