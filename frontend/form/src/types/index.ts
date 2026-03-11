@@ -49,7 +49,7 @@ export interface FormCreate {
 
 export interface FormUpdate {
 	title?: string;
-	description?: string;
+	description?: string | null;
 	questions?: FormFieldSchema[];
 	start_date?: string;
 	deadline?: string;
@@ -85,6 +85,7 @@ export interface FormPreview {
 	start_date?: string;
 	deadline?: string;
 	is_active: boolean;
+	created_at: string;
 }
 
 export interface SubmissionCreate {

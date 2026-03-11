@@ -127,7 +127,7 @@ function createDefaultFields(): FormFieldSchema[] {
 function cleanFieldForSave(field: FormFieldSchema): FormFieldSchema {
 	const cleaned: FormFieldSchema = {
 		field_id: field.field_id.slice(0, 32),
-		field_type: field.field_type === "department" ? "select" : field.field_type,
+		field_type: field.field_type,
 		label: field.label,
 		required: field.required,
 	};
@@ -246,6 +246,22 @@ const FormEditorPage = () => {
 	};
 
 	const handleAddDefaultFields = () => {
+		const defaultFieldIds = new Set([
+			"isim_soyisim",
+			"blm",
+			"snf",
+			"aktif_olarak_yasar_universitesi_ogrencisi_misiniz",
+			"etkinligimizi_nereden_duydunuz",
+		]);
+
+		// Check if any default field already exists
+		const existingIds = new Set(fields.map((f) => f.field_id));
+		const hasAnyDefault = [...defaultFieldIds].some((id) => existingIds.has(id));
+
+		if (hasAnyDefault) {
+			return; // Early return - default fields already exist
+		}
+
 		setFields((prev) => [...prev, ...createDefaultFields()]);
 	};
 
@@ -307,7 +323,7 @@ const FormEditorPage = () => {
 			if (isEditMode && formId) {
 				const updatePayload: FormUpdate = {
 					...payload,
-					description: payload.description ?? undefined,
+					description: payload.description,
 				};
 				await updateForm(formId, updatePayload);
 			} else {

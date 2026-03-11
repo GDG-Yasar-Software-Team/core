@@ -137,7 +137,7 @@ const AdminFormListPage = () => {
 													{formatDate(form.deadline)}
 												</td>
 												<td className="px-6 py-4 text-sm text-slate-600">
-													{formatDate(form.start_date)}
+													{formatDate(form.created_at)}
 												</td>
 												<td className="px-6 py-4">
 													<div className="flex items-center justify-end gap-2">
