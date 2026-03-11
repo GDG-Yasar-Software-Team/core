@@ -7,6 +7,7 @@ import type {
 	SubmissionCreate,
 	SubmissionResponse,
 } from "../types";
+import { getAdminToken } from "../hooks/useAdminAuth";
 
 const FORM_SERVICE_URL =
 	import.meta.env.VITE_FORM_SERVICE_URL ?? "http://localhost:8002";
@@ -28,6 +29,28 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 	}
 
 	return (await response.json()) as T;
+}
+
+/**
+ * Make an authenticated request to the form service.
+ * Includes the admin API token in the X-API-Token header.
+ */
+async function authenticatedRequest<T>(
+	path: string,
+	init: RequestInit = {},
+): Promise<T> {
+	const token = getAdminToken();
+	if (!token) {
+		throw new Error("Not authenticated - admin token not found");
+	}
+
+	return request<T>(path, {
+		...init,
+		headers: {
+			...(init.headers ?? {}),
+			"X-API-Token": token,
+		},
+	});
 }
 
 export async function getFormById(formId: string): Promise<FormResponse> {
@@ -96,7 +119,7 @@ export async function listForms(
 }
 
 export async function createForm(payload: FormCreate): Promise<FormResponse> {
-	return request<FormResponse>("/forms/", {
+	return authenticatedRequest<FormResponse>("/forms/", {
 		method: "POST",
 		body: JSON.stringify(payload),
 	});
@@ -106,14 +129,32 @@ export async function updateForm(
 	formId: string,
 	payload: FormUpdate,
 ): Promise<FormResponse> {
-	return request<FormResponse>(`/forms/${encodeURIComponent(formId)}`, {
+	return authenticatedRequest<FormResponse>(`/forms/${encodeURIComponent(formId)}`, {
 		method: "PUT",
 		body: JSON.stringify(payload),
 	});
 }
 
 export async function deleteForm(formId: string): Promise<void> {
-	await fetch(`${FORM_SERVICE_URL}/forms/${encodeURIComponent(formId)}`, {
-		method: "DELETE",
-	});
+	const token = getAdminToken();
+	if (!token) {
+		throw new Error("Not authenticated - admin token not found");
+	}
+
+	const response = await fetch(
+		`${FORM_SERVICE_URL}/forms/${encodeURIComponent(formId)}`,
+		{
+			method: "DELETE",
+			headers: {
+				"X-API-Token": token,
+			},
+		},
+	);
+
+	if (!response.ok) {
+		const errorText = await response.text();
+		throw new Error(
+			`Form service request failed: ${response.status} ${errorText}`,
+		);
+	}
 }

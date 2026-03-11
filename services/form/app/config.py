@@ -10,6 +10,9 @@ class Settings(BaseSettings):
     CORS_ALLOW_ORIGINS: str = "http://localhost:3000,http://127.0.0.1:3000"
     CORS_ALLOW_ORIGIN_REGEX: str | None = r"https?://(localhost|127\.0\.0\.1)(:\d+)?$"
 
+    # Admin authentication token for protected endpoints
+    ADMIN_API_TOKEN: str = "9374c8c7ab72df4d04b904a0e02acb00ec74b84474514fe301d9ccc259bc8eb0"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_ignore_empty=True,

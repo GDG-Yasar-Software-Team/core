@@ -1,23 +1,23 @@
 import { type FormEvent, useState } from "react";
 import { useAdminAuth } from "../hooks/useAdminAuth";
 
-interface AdminPasswordGateProps {
+interface AdminTokenGateProps {
 	children: React.ReactNode;
 }
 
-const AdminPasswordGate = ({ children }: AdminPasswordGateProps) => {
+const AdminTokenGate = ({ children }: AdminTokenGateProps) => {
 	const { isAuthorized, authorize } = useAdminAuth();
-	const [password, setPassword] = useState("");
+	const [token, setToken] = useState("");
 	const [authError, setAuthError] = useState<string | null>(null);
 
 	const onUnlock = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		const success = authorize(password);
+		const success = authorize(token);
 		if (success) {
 			setAuthError(null);
 		} else {
-			setAuthError("Yönetici şifresi hatalı.");
+			setAuthError("Geçersiz API token.");
 		}
 	};
 
@@ -32,25 +32,25 @@ const AdminPasswordGate = ({ children }: AdminPasswordGateProps) => {
 					Yönetici Erişimi
 				</h1>
 				<p className="mt-2 text-sm text-slate-500">
-					Devam etmek için yönetici şifresini girin.
+					Devam etmek için API token girin.
 				</p>
 
 				<form onSubmit={onUnlock} className="mt-6 space-y-4">
 					<div>
 						<label
-							htmlFor="admin-password"
+							htmlFor="admin-token"
 							className="block text-sm font-medium text-slate-700"
 						>
-							Yönetici Şifresi
+							API Token
 						</label>
 						<input
-							id="admin-password"
+							id="admin-token"
 							type="password"
-							value={password}
-							onChange={(event) => setPassword(event.target.value)}
+							value={token}
+							onChange={(event) => setToken(event.target.value)}
 							autoComplete="off"
 							className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
-							placeholder="Şifre"
+							placeholder="Token"
 						/>
 					</div>
 
@@ -72,4 +72,7 @@ const AdminPasswordGate = ({ children }: AdminPasswordGateProps) => {
 	);
 };
 
-export default AdminPasswordGate;
+export default AdminTokenGate;
+
+// Backward compatible alias
+export { AdminTokenGate as AdminPasswordGate };
