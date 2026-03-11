@@ -1,3 +1,4 @@
+import { getAdminToken } from "../hooks/useAdminAuth";
 import type {
 	FormCreate,
 	FormListResponse,
@@ -7,7 +8,6 @@ import type {
 	SubmissionCreate,
 	SubmissionResponse,
 } from "../types";
-import { getAdminToken } from "../hooks/useAdminAuth";
 
 const FORM_SERVICE_URL =
 	import.meta.env.VITE_FORM_SERVICE_URL ?? "http://localhost:8002";
@@ -129,10 +129,13 @@ export async function updateForm(
 	formId: string,
 	payload: FormUpdate,
 ): Promise<FormResponse> {
-	return authenticatedRequest<FormResponse>(`/forms/${encodeURIComponent(formId)}`, {
-		method: "PUT",
-		body: JSON.stringify(payload),
-	});
+	return authenticatedRequest<FormResponse>(
+		`/forms/${encodeURIComponent(formId)}`,
+		{
+			method: "PUT",
+			body: JSON.stringify(payload),
+		},
+	);
 }
 
 export async function deleteForm(formId: string): Promise<void> {
