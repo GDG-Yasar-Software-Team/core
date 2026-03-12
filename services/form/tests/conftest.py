@@ -5,6 +5,7 @@ import os
 # Must set required env vars BEFORE importing app modules,
 # because app.config instantiates Settings() at import time.
 os.environ.setdefault("MONGODB_URI", "mongodb://localhost:27017")
+os.environ.setdefault("ADMIN_API_TOKEN", "test-admin-token")
 
 from collections.abc import AsyncGenerator, Generator
 from datetime import datetime
