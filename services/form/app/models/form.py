@@ -44,7 +44,12 @@ class FormFieldSchema(BaseModel):
 
     @model_validator(mode="after")
     def validate_options_for_choice_fields(self) -> Self:
-        choice_types = {FieldType.SELECT, FieldType.MULTISELECT, FieldType.RADIO, FieldType.DEPARTMENT}
+        choice_types = {
+            FieldType.SELECT,
+            FieldType.MULTISELECT,
+            FieldType.RADIO,
+            FieldType.DEPARTMENT,
+        }
         if self.field_type in choice_types:
             if not self.options:
                 raise ValueError(f"{self.field_type} requires non-empty options")
