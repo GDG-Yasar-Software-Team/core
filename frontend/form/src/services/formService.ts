@@ -143,3 +143,31 @@ export async function deleteForm(formId: string): Promise<void> {
 		method: "DELETE",
 	});
 }
+
+/**
+ * Verify if an API token is valid by making a lightweight preflight request.
+ * Uses DELETE on a fake form ID - auth check happens before ID validation.
+ */
+export async function verifyToken(
+	token: string,
+): Promise<{ valid: boolean; error?: string }> {
+	try {
+		const response = await fetch(`${FORM_SERVICE_URL}/forms/__verify_token__`, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+				"X-API-Token": token,
+			},
+		});
+
+		if (response.status === 401) {
+			const data = await response.json();
+			return { valid: false, error: data.detail || "Geçersiz API token" };
+		}
+
+		// 400 (invalid ID format) or 404 (not found) means auth passed
+		return { valid: true };
+	} catch {
+		return { valid: false, error: "Sunucuya bağlanılamadı" };
+	}
+}

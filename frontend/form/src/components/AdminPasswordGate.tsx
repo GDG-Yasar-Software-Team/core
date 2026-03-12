@@ -1,5 +1,6 @@
 import { type FormEvent, useState } from "react";
 import { useAdminAuth } from "../hooks/useAdminAuth";
+import { verifyToken } from "../services/formService";
 
 interface AdminTokenGateProps {
 	children: React.ReactNode;
@@ -9,16 +10,30 @@ const AdminTokenGate = ({ children }: AdminTokenGateProps) => {
 	const { isAuthorized, authorize } = useAdminAuth();
 	const [token, setToken] = useState("");
 	const [authError, setAuthError] = useState<string | null>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
-	const onUnlock = (event: FormEvent<HTMLFormElement>) => {
+	const onUnlock = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		const success = authorize(token);
-		if (success) {
-			setAuthError(null);
-		} else {
+		const trimmedToken = token.trim();
+		if (!trimmedToken) {
 			setAuthError("Geçersiz API token.");
+			return;
 		}
+
+		setIsLoading(true);
+		setAuthError(null);
+
+		const result = await verifyToken(trimmedToken);
+
+		if (!result.valid) {
+			setAuthError(result.error || "Geçersiz API token.");
+			setIsLoading(false);
+			return;
+		}
+
+		authorize(trimmedToken);
+		setIsLoading(false);
 	};
 
 	if (isAuthorized) {
@@ -56,9 +71,10 @@ const AdminTokenGate = ({ children }: AdminTokenGateProps) => {
 
 					<button
 						type="submit"
-						className="w-full rounded-lg bg-[#4285F4] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#3367D6]"
+						disabled={isLoading}
+						className="w-full rounded-lg bg-[#4285F4] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#3367D6] disabled:opacity-60 disabled:cursor-not-allowed"
 					>
-						Panele Gir
+						{isLoading ? "Doğrulanıyor..." : "Panele Gir"}
 					</button>
 				</form>
 

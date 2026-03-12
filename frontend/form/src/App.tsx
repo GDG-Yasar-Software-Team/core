@@ -4,7 +4,9 @@ import { Navigate, Route, Routes } from "react-router-dom";
 /**
  * Lazy load non-critical routes to reduce initial bundle size
  */
-const AdminFormViewsPage = lazy(() => import("./pages/AdminFormViewsPage"));
+const AdminFormViewsPage = lazy(
+	() => import("./pages/admin/AdminFormViewsPage"),
+);
 const AdminFormListPage = lazy(() => import("./pages/admin/AdminFormListPage"));
 const FormEditorPage = lazy(() => import("./pages/admin/FormEditorPage"));
 const FormSubmissionPage = lazy(() => import("./pages/FormSubmissionPage"));

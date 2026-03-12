@@ -1,13 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import AdminPasswordGate from "../components/AdminPasswordGate";
-import { useAdminAuth } from "../hooks/useAdminAuth";
-import { getAllSubmissionsByForm, getFormById } from "../services/formService";
+import AdminPasswordGate from "../../components/AdminPasswordGate";
+import { useAdminAuth } from "../../hooks/useAdminAuth";
+import {
+	getAllSubmissionsByForm,
+	getFormById,
+} from "../../services/formService";
 import type {
 	FormFieldSchema,
 	FormResponse,
 	SubmissionResponse,
-} from "../types";
+} from "../../types";
 
 const EMAIL_FIELD_KEYS = ["email", "e_mail", "mail"];
 

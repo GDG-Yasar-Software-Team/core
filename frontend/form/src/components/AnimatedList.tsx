@@ -1,6 +1,11 @@
 import { motion, useInView } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import "./AnimatedList.css";
+
+/** Custom scrollbar styles (webkit-specific) */
+const scrollbarStyles: React.CSSProperties = {
+	scrollbarWidth: "thin",
+	scrollbarColor: "#cbd5e1 #f1f5f9",
+};
 
 interface AnimatedItemProps {
 	children: React.ReactNode;
@@ -26,7 +31,7 @@ const AnimatedItem = ({
 			initial={{ scale: 0.7, opacity: 0 }}
 			animate={inView ? { scale: 1, opacity: 1 } : { scale: 0.7, opacity: 0 }}
 			transition={{ duration: 0.2, delay: 0.05 }}
-			style={{ marginBottom: "0.5rem", cursor: "pointer" }}
+			className="mb-2 cursor-pointer"
 		>
 			{children}
 		</motion.div>
@@ -135,10 +140,13 @@ const AnimatedList = ({
 	}, [selectedIndex, keyboardNav]);
 
 	return (
-		<div className="animated-list-container">
+		<div className="relative w-full">
 			<div
 				ref={listRef}
-				className={`animated-list ${!displayScrollbar ? "no-scrollbar" : ""}`}
+				className={`max-h-[220px] overflow-y-auto p-2 bg-white rounded-lg ${
+					!displayScrollbar ? "scrollbar-none" : ""
+				}`}
+				style={displayScrollbar ? scrollbarStyles : undefined}
 				onScroll={handleScroll}
 			>
 				{items.map((item, index) => (
@@ -149,9 +157,21 @@ const AnimatedList = ({
 						onClick={() => handleItemClick(item, index)}
 					>
 						<div
-							className={`animated-list-item ${selectedIndex === index ? "selected" : ""}`}
+							className={`px-3 py-2 rounded-md border transition-colors duration-150 ${
+								selectedIndex === index
+									? "bg-blue-50 border-blue-500"
+									: "bg-slate-50 border-transparent hover:bg-blue-50 hover:border-blue-200"
+							}`}
 						>
-							<p className="animated-list-item-text">{item.label}</p>
+							<p
+								className={`text-sm leading-5 m-0 ${
+									selectedIndex === index
+										? "text-blue-700 font-medium"
+										: "text-slate-800"
+								}`}
+							>
+								{item.label}
+							</p>
 						</div>
 					</AnimatedItem>
 				))}
@@ -159,11 +179,11 @@ const AnimatedList = ({
 			{showGradients && (
 				<>
 					<div
-						className="animated-list-top-gradient"
+						className="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-white to-transparent pointer-events-none rounded-t-lg transition-opacity duration-300"
 						style={{ opacity: topGradientOpacity }}
 					/>
 					<div
-						className="animated-list-bottom-gradient"
+						className="absolute bottom-0 left-0 right-0 h-[60px] bg-gradient-to-t from-white to-transparent pointer-events-none rounded-b-lg transition-opacity duration-300"
 						style={{ opacity: bottomGradientOpacity }}
 					/>
 				</>
