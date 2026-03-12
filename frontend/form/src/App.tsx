@@ -1,14 +1,24 @@
+import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import AdminFormViewsPage from "./pages/AdminFormViewsPage";
-import FormSubmissionPage from "./pages/FormSubmissionPage";
 
-function Home() {
+/**
+ * Lazy load non-critical routes to reduce initial bundle size
+ */
+const AdminFormViewsPage = lazy(
+	() => import("./pages/admin/AdminFormViewsPage"),
+);
+const AdminFormListPage = lazy(() => import("./pages/admin/AdminFormListPage"));
+const FormEditorPage = lazy(() => import("./pages/admin/FormEditorPage"));
+const FormSubmissionPage = lazy(() => import("./pages/FormSubmissionPage"));
+
+/**
+ * Loading fallback for lazy-loaded routes
+ */
+function RouteLoadingFallback() {
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-			<div className="text-center">
-				<p className="text-sm text-gray-600">
-					GDG on Campus Yaşar Üniversitesi Form Uygulaması
-				</p>
+		<div className="min-h-screen bg-white flex items-center justify-center">
+			<div className="text-emerald-600/70 text-sm font-mono animate-pulse">
+				Loading...
 			</div>
 		</div>
 	);
@@ -17,9 +27,41 @@ function Home() {
 function App() {
 	return (
 		<Routes>
-			<Route path="/" element={<Home />} />
-			<Route path="/forms/:formId" element={<FormSubmissionPage />} />
-			<Route path="/views/:formId" element={<AdminFormViewsPage />} />
+			{/* Home redirects to admin panel */}
+			<Route path="/" element={<Navigate to="/admin/forms" replace />} />
+			{/* Lazy-loaded routes with Suspense fallback */}
+			<Route
+				path="/forms/:formId"
+				element={
+					<Suspense fallback={<RouteLoadingFallback />}>
+						<FormSubmissionPage />
+					</Suspense>
+				}
+			/>
+			<Route
+				path="/admin/views/:formId"
+				element={
+					<Suspense fallback={<RouteLoadingFallback />}>
+						<AdminFormViewsPage />
+					</Suspense>
+				}
+			/>
+			<Route
+				path="/admin/forms"
+				element={
+					<Suspense fallback={<RouteLoadingFallback />}>
+						<AdminFormListPage />
+					</Suspense>
+				}
+			/>
+			<Route
+				path="/admin/forms/editor"
+				element={
+					<Suspense fallback={<RouteLoadingFallback />}>
+						<FormEditorPage />
+					</Suspense>
+				}
+			/>
 			<Route path="*" element={<Navigate to="/" replace />} />
 		</Routes>
 	);

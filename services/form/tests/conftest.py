@@ -5,6 +5,7 @@ import os
 # Must set required env vars BEFORE importing app modules,
 # because app.config instantiates Settings() at import time.
 os.environ.setdefault("MONGODB_URI", "mongodb://localhost:27017")
+os.environ.setdefault("ADMIN_API_TOKEN", "test-admin-token")
 
 from collections.abc import AsyncGenerator, Generator
 from datetime import datetime
@@ -32,10 +33,18 @@ def mock_settings():
         HOST="0.0.0.0",
         PORT=8002,
         ENV="test",
+        ADMIN_API_TOKEN="test-admin-token",
     )
     with patch("app.config.settings", test_settings):
         with patch("app.db.mongodb.settings", test_settings):
-            yield test_settings
+            with patch("app.auth.api_key.settings", test_settings):
+                yield test_settings
+
+
+@pytest.fixture
+def auth_headers() -> dict[str, str]:
+    """Authentication headers for protected endpoints."""
+    return {"X-API-Token": "test-admin-token"}
 
 
 @pytest.fixture
