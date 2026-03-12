@@ -51,9 +51,7 @@ const AdminFormListPage = () => {
 			setConfirmDeleteId(null);
 			refetch();
 		} catch (err) {
-			setDeleteError(
-				err instanceof Error ? err.message : "Bilinmeyen hata",
-			);
+			setDeleteError(err instanceof Error ? err.message : "Bilinmeyen hata");
 		} finally {
 			setDeletingId(null);
 		}
@@ -167,7 +165,9 @@ const AdminFormListPage = () => {
 																	disabled={deletingId === form.id}
 																	className="rounded px-2 py-1 text-xs font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50"
 																>
-																	{deletingId === form.id ? "Siliniyor..." : "Evet, Sil"}
+																	{deletingId === form.id
+																		? "Siliniyor..."
+																		: "Evet, Sil"}
 																</button>
 																<button
 																	type="button"
@@ -182,7 +182,9 @@ const AdminFormListPage = () => {
 															<>
 																<button
 																	type="button"
-																	onClick={() => navigate(`/admin/views/${form.id}`)}
+																	onClick={() =>
+																		navigate(`/admin/views/${form.id}`)
+																	}
 																	className="rounded px-2 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100"
 																	title="Yanıtları Görüntüle"
 																>
@@ -191,7 +193,9 @@ const AdminFormListPage = () => {
 																<button
 																	type="button"
 																	onClick={() =>
-																		navigate(`/admin/forms/editor?id=${form.id}`)
+																		navigate(
+																			`/admin/forms/editor?id=${form.id}`,
+																		)
 																	}
 																	className="rounded px-2 py-1 text-xs font-medium text-blue-600 hover:bg-blue-50"
 																>

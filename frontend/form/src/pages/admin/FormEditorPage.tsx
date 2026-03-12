@@ -5,10 +5,7 @@ import AdminPasswordGate from "../../components/AdminPasswordGate";
 import { DatePicker } from "../../components/DatePicker";
 import FormFieldList from "../../components/FormFieldList";
 import FormPreview from "../../components/FormPreview";
-import {
-	DEPARTMENTS,
-	MAX_FIELD_ID_LENGTH,
-} from "../../constants/departments";
+import { DEPARTMENTS, MAX_FIELD_ID_LENGTH } from "../../constants/departments";
 import {
 	createForm,
 	getFormById,
@@ -227,7 +224,9 @@ const FormEditorPage = () => {
 
 		// Check if any default field already exists
 		const existingIds = new Set(fields.map((f) => f.field_id));
-		const hasAnyDefault = [...defaultFieldIds].some((id) => existingIds.has(id));
+		const hasAnyDefault = [...defaultFieldIds].some((id) =>
+			existingIds.has(id),
+		);
 
 		if (hasAnyDefault) {
 			return; // Early return - default fields already exist
@@ -526,7 +525,11 @@ const FormEditorPage = () => {
 							</div>
 						</>
 					) : (
-						<FormPreview form={previewForm} register={register} errors={errors} />
+						<FormPreview
+							form={previewForm}
+							register={register}
+							errors={errors}
+						/>
 					)}
 				</div>
 			</div>

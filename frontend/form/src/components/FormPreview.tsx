@@ -1,8 +1,8 @@
 import type { FieldError, FieldErrors, UseFormRegister } from "react-hook-form";
+import type { FormFieldSchema, FormResponse } from "../types";
 import Banner from "./Banner";
 import FieldRenderer from "./FieldRenderer";
 import { PhoneMockup } from "./PhoneMockup";
-import type { FormFieldSchema, FormResponse } from "../types";
 
 type FormValues = Record<string, unknown>;
 
@@ -85,9 +85,9 @@ const FormPreview = ({ form, register, errors }: FormPreviewProps) => {
 											field={field}
 											registration={register(field.field_id)}
 											error={
-												(errors as FieldErrors<FormValues>)[
-													field.field_id
-												] as FieldError | undefined
+												(errors as FieldErrors<FormValues>)[field.field_id] as
+													| FieldError
+													| undefined
 											}
 										/>
 									</div>
@@ -168,9 +168,9 @@ const FormPreview = ({ form, register, errors }: FormPreviewProps) => {
 											field={field}
 											registration={register(field.field_id)}
 											error={
-												(errors as FieldErrors<FormValues>)[
-													field.field_id
-												] as FieldError | undefined
+												(errors as FieldErrors<FormValues>)[field.field_id] as
+													| FieldError
+													| undefined
 											}
 										/>
 									))}
