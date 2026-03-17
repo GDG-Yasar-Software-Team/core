@@ -8,7 +8,8 @@ export type FieldType =
 	| "multiselect"
 	| "checkbox"
 	| "radio"
-	| "date";
+	| "date"
+	| "department";
 
 export interface FieldValidation {
 	min_length?: number;
@@ -26,6 +27,7 @@ export interface FieldCondition {
 }
 
 export interface FormFieldSchema {
+	_key?: string;
 	field_id: string;
 	field_type: FieldType;
 	label: string;
@@ -38,7 +40,7 @@ export interface FormFieldSchema {
 
 export interface FormCreate {
 	title: string;
-	description: string;
+	description: string | null;
 	questions: FormFieldSchema[];
 	start_date?: string;
 	deadline?: string;
@@ -47,7 +49,7 @@ export interface FormCreate {
 
 export interface FormUpdate {
 	title?: string;
-	description?: string;
+	description?: string | null;
 	questions?: FormFieldSchema[];
 	start_date?: string;
 	deadline?: string;
@@ -83,6 +85,7 @@ export interface FormPreview {
 	start_date?: string;
 	deadline?: string;
 	is_active: boolean;
+	created_at: string;
 }
 
 export interface SubmissionCreate {
@@ -147,4 +150,11 @@ export interface UserResponse {
 	unsubscribed_at: string | null;
 	created_at: string;
 	updated_at: string | null;
+}
+
+export interface FormListResponse {
+	forms: FormPreview[];
+	total: number;
+	skip: number;
+	limit: number;
 }

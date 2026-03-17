@@ -1,5 +1,9 @@
+import { getAdminToken } from "../hooks/useAdminAuth";
 import type {
+	FormCreate,
+	FormListResponse,
 	FormResponse,
+	FormUpdate,
 	PaginatedSubmissionsResponse,
 	SubmissionCreate,
 	SubmissionResponse,
@@ -25,6 +29,28 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 	}
 
 	return (await response.json()) as T;
+}
+
+/**
+ * Make an authenticated request to the form service.
+ * Includes the admin API token in the X-API-Token header.
+ */
+async function authenticatedRequest<T>(
+	path: string,
+	init: RequestInit = {},
+): Promise<T> {
+	const token = getAdminToken();
+	if (!token) {
+		throw new Error("Not authenticated - admin token not found");
+	}
+
+	return request<T>(path, {
+		...init,
+		headers: {
+			...(init.headers ?? {}),
+			"X-API-Token": token,
+		},
+	});
 }
 
 export async function getFormById(formId: string): Promise<FormResponse> {
@@ -76,4 +102,72 @@ export async function getAllSubmissionsByForm(
 	}
 
 	return submissions;
+}
+
+export async function listForms(
+	skip = 0,
+	limit = 20,
+	activeOnly = false,
+): Promise<FormListResponse> {
+	const query = new URLSearchParams({
+		skip: String(skip),
+		limit: String(limit),
+		active_only: String(activeOnly),
+	});
+
+	return request<FormListResponse>(`/forms/?${query.toString()}`);
+}
+
+export async function createForm(payload: FormCreate): Promise<FormResponse> {
+	return authenticatedRequest<FormResponse>("/forms/", {
+		method: "POST",
+		body: JSON.stringify(payload),
+	});
+}
+
+export async function updateForm(
+	formId: string,
+	payload: FormUpdate,
+): Promise<FormResponse> {
+	return authenticatedRequest<FormResponse>(
+		`/forms/${encodeURIComponent(formId)}`,
+		{
+			method: "PUT",
+			body: JSON.stringify(payload),
+		},
+	);
+}
+
+export async function deleteForm(formId: string): Promise<void> {
+	await authenticatedRequest<void>(`/forms/${encodeURIComponent(formId)}`, {
+		method: "DELETE",
+	});
+}
+
+/**
+ * Verify if an API token is valid by making a lightweight preflight request.
+ * Uses DELETE on a fake form ID - auth check happens before ID validation.
+ */
+export async function verifyToken(
+	token: string,
+): Promise<{ valid: boolean; error?: string }> {
+	try {
+		const response = await fetch(`${FORM_SERVICE_URL}/forms/__verify_token__`, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+				"X-API-Token": token,
+			},
+		});
+
+		if (response.status === 401) {
+			const data = await response.json();
+			return { valid: false, error: data.detail || "Geçersiz API token" };
+		}
+
+		// 400 (invalid ID format) or 404 (not found) means auth passed
+		return { valid: true };
+	} catch {
+		return { valid: false, error: "Sunucuya bağlanılamadı" };
+	}
 }

@@ -3,13 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="GDG on Campus Form Service - Create and manage event registration forms" />
     <link rel="icon" type="image/x-icon" href="/gdg-logo.ico" />
     <link rel="shortcut icon" href="/gdg-logo.ico" />
     <link rel="icon" type="image/png" href="/gdg-logo.png" />
     <title>GDG Form Service</title>
+    <!-- Critical CSS inlined for faster FCP -->
+    <style>
+      html, body { background-color: #ffffff; margin: 0; padding: 0; }
+      #root { min-height: 100vh; }
+    </style>
+    <!-- Preconnect to external origins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Load fonts with display=swap for text visibility -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Preload main script for faster execution -->
+    <link rel="modulepreload" href="/src/main.tsx" />
   </head>
   <body>
     <div id="root"></div>
