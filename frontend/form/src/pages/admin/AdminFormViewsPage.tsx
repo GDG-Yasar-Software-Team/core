@@ -11,6 +11,8 @@ import type {
 	FormResponse,
 	SubmissionResponse,
 } from "../../types";
+import { exportSubmissionsToXlsx } from "../../utils/exportSubmissions";
+import { formatAnswer, formatDateTime } from "../../utils/formatHelpers";
 
 const EMAIL_FIELD_KEYS = ["email", "e_mail", "mail"];
 
@@ -20,54 +22,6 @@ function normalizeKey(value: string): string {
 
 function matchesAnyKey(fieldId: string, keys: string[]): boolean {
 	return keys.includes(normalizeKey(fieldId));
-}
-
-function formatDateTime(value: string | undefined): string {
-	if (!value) {
-		return "-";
-	}
-
-	const date = new Date(value);
-	if (Number.isNaN(date.getTime())) {
-		return value;
-	}
-
-	return new Intl.DateTimeFormat("tr-TR", {
-		dateStyle: "medium",
-		timeStyle: "short",
-	}).format(date);
-}
-
-function formatAnswer(value: unknown): string {
-	if (value === null || value === undefined) {
-		return "-";
-	}
-
-	if (typeof value === "string") {
-		const trimmed = value.trim();
-		return trimmed.length > 0 ? trimmed : "-";
-	}
-
-	if (typeof value === "number") {
-		return String(value);
-	}
-
-	if (typeof value === "boolean") {
-		return value ? "Evet" : "Hayır";
-	}
-
-	if (Array.isArray(value)) {
-		if (value.length === 0) {
-			return "-";
-		}
-		return value.map((item) => formatAnswer(item)).join(", ");
-	}
-
-	try {
-		return JSON.stringify(value);
-	} catch {
-		return "-";
-	}
 }
 
 function formatError(error: unknown): string {
@@ -184,13 +138,32 @@ const AdminFormViewsPage = () => {
 			<div className="min-h-screen bg-slate-100 px-4 py-8">
 				<div className="mx-auto max-w-7xl space-y-6">
 					<div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-						<p className="text-xs uppercase tracking-wide text-slate-500">
-							Form Görüntüleme Paneli
-						</p>
-						<h1 className="mt-2 text-2xl font-bold text-slate-900">
-							{form?.title ?? "Form verileri yükleniyor..."}
-						</h1>
-						<p className="mt-2 text-sm text-slate-500">Form ID: {formId}</p>
+						<div className="flex items-start justify-between gap-4">
+							<div>
+								<p className="text-xs uppercase tracking-wide text-slate-500">
+									Form Görüntüleme Paneli
+								</p>
+								<h1 className="mt-2 text-2xl font-bold text-slate-900">
+									{form?.title ?? "Form verileri yükleniyor..."}
+								</h1>
+								<p className="mt-2 text-sm text-slate-500">Form ID: {formId}</p>
+							</div>
+							{form && submissions.length > 0 && (
+								<button
+									type="button"
+									onClick={() =>
+										exportSubmissionsToXlsx({
+											formTitle: form.title,
+											submissions,
+											visibleQuestions,
+										})
+									}
+									className="shrink-0 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 active:bg-emerald-800"
+								>
+									XLSX İndir
+								</button>
+							)}
+						</div>
 					</div>
 
 					{isLoading ? (
