@@ -44,6 +44,6 @@ export function exportSubmissionsToXlsx({
 	const workbook = XLSX.utils.book_new();
 	XLSX.utils.book_append_sheet(workbook, worksheet, "Gönderimler");
 
-	const fileName = `${formTitle}-submissions.xlsx`;
+	const fileName = `${formTitle} Yanıtlar.xlsx`;
 	XLSX.writeFile(workbook, fileName);
 }
