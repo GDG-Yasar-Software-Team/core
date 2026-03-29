@@ -86,26 +86,26 @@ class TestGetFormAPI:
 class TestListFormsAPI:
     """Test GET /forms/ endpoint."""
 
-    def test_list_forms_empty(self, sync_client, mock_mongodb):
+    def test_list_forms_empty(self, sync_client, mock_mongodb, auth_headers):
         """GET /forms/ returns empty list."""
         mock_mongodb["forms"].count_documents = AsyncMock(return_value=0)
         cursor = create_async_cursor([])
         mock_mongodb["forms"].find = MagicMock(return_value=cursor)
 
-        response = sync_client.get("/forms/")
+        response = sync_client.get("/forms/", headers=auth_headers)
 
         assert response.status_code == 200
         data = response.json()
         assert data["forms"] == []
         assert data["total"] == 0
 
-    def test_list_forms_with_results(self, sync_client, mock_mongodb, sample_form_doc):
+    def test_list_forms_with_results(self, sync_client, mock_mongodb, sample_form_doc, auth_headers):
         """GET /forms/ returns forms with pagination info."""
         mock_mongodb["forms"].count_documents = AsyncMock(return_value=1)
         cursor = create_async_cursor([sample_form_doc])
         mock_mongodb["forms"].find = MagicMock(return_value=cursor)
 
-        response = sync_client.get("/forms/?skip=0&limit=10")
+        response = sync_client.get("/forms/?skip=0&limit=10", headers=auth_headers)
 
         assert response.status_code == 200
         data = response.json()
