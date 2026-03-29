@@ -1,5 +1,7 @@
 """API key authentication for admin endpoints."""
 
+import hmac
+
 from fastapi import HTTPException, Security
 from fastapi.security import APIKeyHeader
 
@@ -25,7 +27,7 @@ async def verify_api_key(api_key: str = Security(api_key_header)) -> str:
         logger.warning("API request without authentication token")
         raise HTTPException(status_code=401, detail="Missing API token")
 
-    if api_key != settings.ADMIN_API_TOKEN:
+    if not hmac.compare_digest(api_key, settings.ADMIN_API_TOKEN):
         logger.warning("API request with invalid authentication token")
         raise HTTPException(status_code=401, detail="Invalid API token")
 
