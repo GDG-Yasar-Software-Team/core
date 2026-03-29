@@ -127,9 +127,7 @@ class SubmissionService:
             form = FormInDB.model_validate(form_doc)
         except Exception as e:
             logger.error(f"Error converting form document to FormInDB: {e}")
-            raise FormValidationError(
-                "invalid_form_schema", internal_note=str(form_id)
-            )
+            raise FormValidationError("invalid_form_schema", internal_note=str(form_id))
 
         if not form.is_active:
             raise FormValidationError("form_not_active")

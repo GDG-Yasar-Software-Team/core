@@ -180,7 +180,9 @@ class TestGetSubmissionAPI:
             "app.services.submission_service.MongoDB.get_db",
             return_value=mock_mongodb["db"],
         ):
-            response = sync_client.get(f"/submissions/{SAMPLE_SUBMISSION_ID}", headers=auth_headers)
+            response = sync_client.get(
+                f"/submissions/{SAMPLE_SUBMISSION_ID}", headers=auth_headers
+            )
 
         assert response.status_code == 200
         data = response.json()
@@ -194,7 +196,9 @@ class TestGetSubmissionAPI:
             "app.services.submission_service.MongoDB.get_db",
             return_value=mock_mongodb["db"],
         ):
-            response = sync_client.get(f"/submissions/{SAMPLE_SUBMISSION_ID}", headers=auth_headers)
+            response = sync_client.get(
+                f"/submissions/{SAMPLE_SUBMISSION_ID}", headers=auth_headers
+            )
 
         assert response.status_code == 404
 
@@ -224,19 +228,25 @@ class TestGetSubmissionsByFormAPI:
             "app.services.submission_service.MongoDB.get_db",
             return_value=mock_mongodb["db"],
         ):
-            response = sync_client.get(f"/submissions/by-form/{SAMPLE_FORM_ID}", headers=auth_headers)
+            response = sync_client.get(
+                f"/submissions/by-form/{SAMPLE_FORM_ID}", headers=auth_headers
+            )
 
         assert response.status_code == 200
         data = response.json()
         assert data["total"] == 1
         assert len(data["submissions"]) == 1
 
-    def test_get_submissions_by_form_invalid_id(self, sync_client, mock_mongodb, auth_headers):
+    def test_get_submissions_by_form_invalid_id(
+        self, sync_client, mock_mongodb, auth_headers
+    ):
         """GET /submissions/by-form/{form_id} returns 400 for invalid form ID."""
         with patch(
             "app.services.submission_service.MongoDB.get_db",
             return_value=mock_mongodb["db"],
         ):
-            response = sync_client.get("/submissions/by-form/bad-id", headers=auth_headers)
+            response = sync_client.get(
+                "/submissions/by-form/bad-id", headers=auth_headers
+            )
 
         assert response.status_code == 400

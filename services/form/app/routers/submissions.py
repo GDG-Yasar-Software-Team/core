@@ -44,7 +44,11 @@ async def create_submission(
         raise HTTPException(status_code=400, detail={"code": "invalid_form_id"})
 
 
-@router.get("/{submission_id}", response_model=SubmissionResponse, dependencies=[Depends(verify_api_key)])
+@router.get(
+    "/{submission_id}",
+    response_model=SubmissionResponse,
+    dependencies=[Depends(verify_api_key)],
+)
 async def get_submission_by_id(
     submission_id: str,
 ) -> SubmissionResponse:
@@ -58,7 +62,11 @@ async def get_submission_by_id(
         raise HTTPException(status_code=400, detail="Invalid submission ID format")
 
 
-@router.get("/by-form/{form_id}", response_model=PaginatedSubmissionsResponse, dependencies=[Depends(verify_api_key)])
+@router.get(
+    "/by-form/{form_id}",
+    response_model=PaginatedSubmissionsResponse,
+    dependencies=[Depends(verify_api_key)],
+)
 async def get_submissions_by_form(
     form_id: str,
     skip: Annotated[int, Query(ge=0)] = 0,

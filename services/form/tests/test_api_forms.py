@@ -99,7 +99,9 @@ class TestListFormsAPI:
         assert data["forms"] == []
         assert data["total"] == 0
 
-    def test_list_forms_with_results(self, sync_client, mock_mongodb, sample_form_doc, auth_headers):
+    def test_list_forms_with_results(
+        self, sync_client, mock_mongodb, sample_form_doc, auth_headers
+    ):
         """GET /forms/ returns forms with pagination info."""
         mock_mongodb["forms"].count_documents = AsyncMock(return_value=1)
         cursor = create_async_cursor([sample_form_doc])
