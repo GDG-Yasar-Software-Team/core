@@ -76,7 +76,7 @@ export async function getSubmissionsByForm(
 		limit: String(limit),
 	});
 
-	return request<PaginatedSubmissionsResponse>(
+	return authenticatedRequest<PaginatedSubmissionsResponse>(
 		`/submissions/by-form/${encodeURIComponent(formId)}?${query.toString()}`,
 	);
 }
@@ -115,7 +115,7 @@ export async function listForms(
 		active_only: String(activeOnly),
 	});
 
-	return request<FormListResponse>(`/forms/?${query.toString()}`);
+	return authenticatedRequest<FormListResponse>(`/forms/?${query.toString()}`);
 }
 
 export async function createForm(payload: FormCreate): Promise<FormResponse> {
