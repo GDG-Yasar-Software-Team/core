@@ -2,8 +2,9 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 
+from app.auth import verify_api_key
 from app.models.submission import (
     PaginatedSubmissionsResponse,
     SubmissionCreate,
@@ -33,13 +34,13 @@ async def create_submission(
         return SubmissionResponse.from_db(submission)
     except FormNotFoundError:
         raise HTTPException(status_code=404, detail="Form not found")
-    except FormValidationError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except FormValidationError:
+        raise HTTPException(status_code=400, detail="Form validation failed")
     except InvalidObjectIdError:
         raise HTTPException(status_code=400, detail="Invalid form ID format")
 
 
-@router.get("/{submission_id}", response_model=SubmissionResponse)
+@router.get("/{submission_id}", response_model=SubmissionResponse, dependencies=[Depends(verify_api_key)])
 async def get_submission_by_id(
     submission_id: str,
 ) -> SubmissionResponse:
@@ -53,7 +54,7 @@ async def get_submission_by_id(
         raise HTTPException(status_code=400, detail="Invalid submission ID format")
 
 
-@router.get("/by-form/{form_id}", response_model=PaginatedSubmissionsResponse)
+@router.get("/by-form/{form_id}", response_model=PaginatedSubmissionsResponse, dependencies=[Depends(verify_api_key)])
 async def get_submissions_by_form(
     form_id: str,
     skip: Annotated[int, Query(ge=0)] = 0,
