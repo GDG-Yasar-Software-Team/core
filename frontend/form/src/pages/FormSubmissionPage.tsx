@@ -35,11 +35,20 @@ const NAME_FIELD_KEYS = [
 	"name",
 	"full_name",
 	"fullname",
+	"isim_soyisim",
+	"isimsoyisim",
 	"ad_soyad",
 	"adsoyad",
 ];
-const SECTION_FIELD_KEYS = ["section", "department", "dept", "bolum", "bölüm"];
-const GRADE_FIELD_KEYS = ["grade", "class", "sinif", "sınıf", "year"];
+const SECTION_FIELD_KEYS = [
+	"section",
+	"department",
+	"dept",
+	"bolum",
+	"bölüm",
+	"blm",
+];
+const GRADE_FIELD_KEYS = ["grade", "class", "sinif", "sınıf", "year", "snf"];
 const STUDENT_FIELD_KEYS = [
 	"is_yasar_student",
 	"yasar_student",
