@@ -8,6 +8,7 @@ import type {
 	SubmissionCreate,
 	SubmissionResponse,
 } from "../types";
+import { throwIfNotOk } from "../utils/apiClientError";
 
 const FORM_SERVICE_URL =
 	import.meta.env.VITE_FORM_SERVICE_URL ?? "http://localhost:8002";
@@ -21,14 +22,13 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 		},
 	});
 
-	if (!response.ok) {
-		const errorText = await response.text();
-		throw new Error(
-			`Form service request failed: ${response.status} ${errorText}`,
-		);
-	}
+	await throwIfNotOk(response);
 
-	return (await response.json()) as T;
+	const text = await response.text();
+	if (!text.trim()) {
+		return undefined as T;
+	}
+	return JSON.parse(text) as T;
 }
 
 /**

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AdminPasswordGate from "../../components/AdminPasswordGate";
 import { useForms } from "../../hooks/useForms";
 import { deleteForm } from "../../services/formService";
+import { ApiClientError } from "../../utils/apiClientError";
 
 function formatDate(value: string | undefined): string {
 	if (!value) return "-";
@@ -51,7 +52,11 @@ const AdminFormListPage = () => {
 			setConfirmDeleteId(null);
 			refetch();
 		} catch (err) {
-			setDeleteError(err instanceof Error ? err.message : "Bilinmeyen hata");
+			if (err instanceof ApiClientError && err.status === 401) {
+				setDeleteError("Oturum doğrulanamadı. Lütfen tekrar giriş yapın.");
+			} else {
+				setDeleteError("Silme işlemi başarısız. Lütfen tekrar deneyin.");
+			}
 		} finally {
 			setDeletingId(null);
 		}

@@ -3,8 +3,10 @@
 from contextlib import asynccontextmanager
 
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from app.clients import user_client
 from app.config import settings
@@ -12,6 +14,7 @@ from app.db.mongodb import MongoDB
 from app.routers import forms_router
 from app.routers import submissions
 from app.routers import users
+from app.utils.logger import logger
 
 
 @asynccontextmanager
@@ -43,6 +46,22 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "X-API-Token"],
 )
+
+
+@app.exception_handler(RequestValidationError)
+async def request_validation_exception_handler(
+    request: Request, exc: RequestValidationError
+) -> JSONResponse:
+    """Hide Pydantic field paths from public POST /submissions responses."""
+    path = request.url.path.rstrip("/")
+    if request.method == "POST" and path.endswith("/submissions"):
+        logger.warning(f"Submission payload validation failed: {exc.errors()}")
+        return JSONResponse(
+            status_code=422,
+            content={"detail": {"code": "invalid_submission_payload"}},
+        )
+    return JSONResponse(status_code=422, content={"detail": exc.errors()})
+
 
 # Include routers
 app.include_router(submissions.router)

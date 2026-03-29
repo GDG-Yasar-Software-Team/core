@@ -16,6 +16,7 @@ from app.services.submission_service import (
     InvalidObjectIdError,
     SubmissionService,
 )
+from app.utils.logger import logger
 
 router = APIRouter(prefix="/submissions", tags=["submissions"])
 
@@ -33,11 +34,14 @@ async def create_submission(
         submission = await SubmissionService.create_submission(submission_data)
         return SubmissionResponse.from_db(submission)
     except FormNotFoundError:
-        raise HTTPException(status_code=404, detail="Form not found")
-    except FormValidationError:
-        raise HTTPException(status_code=400, detail="Form validation failed")
+        raise HTTPException(status_code=404, detail={"code": "form_not_found"})
+    except FormValidationError as e:
+        logger.warning(
+            f"Submission rejected: code={e.code} internal={e.internal_note!r}"
+        )
+        raise HTTPException(status_code=400, detail={"code": e.code})
     except InvalidObjectIdError:
-        raise HTTPException(status_code=400, detail="Invalid form ID format")
+        raise HTTPException(status_code=400, detail={"code": "invalid_form_id"})
 
 
 @router.get("/{submission_id}", response_model=SubmissionResponse, dependencies=[Depends(verify_api_key)])

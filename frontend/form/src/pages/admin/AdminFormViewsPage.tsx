@@ -11,6 +11,7 @@ import type {
 	FormResponse,
 	SubmissionResponse,
 } from "../../types";
+import { ApiClientError } from "../../utils/apiClientError";
 
 const EMAIL_FIELD_KEYS = ["email", "e_mail", "mail"];
 
@@ -71,10 +72,10 @@ function formatAnswer(value: unknown): string {
 }
 
 function formatError(error: unknown): string {
-	if (error instanceof Error) {
-		if (error.message.includes("404")) {
-			return "Form bulunamadı.";
-		}
+	if (error instanceof ApiClientError && error.status === 404) {
+		return "Form bulunamadı.";
+	}
+	if (error instanceof ApiClientError) {
 		return "Veriler yüklenirken bir hata oluştu.";
 	}
 	return "Beklenmeyen bir hata oluştu.";

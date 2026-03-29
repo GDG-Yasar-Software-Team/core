@@ -1,4 +1,5 @@
 import type { UserCreateResponse, UserPayload, UserResponse } from "../types";
+import { throwIfNotOk } from "../utils/apiClientError";
 
 const FORM_SERVICE_URL =
 	import.meta.env.VITE_FORM_SERVICE_URL ?? "http://localhost:8002";
@@ -12,12 +13,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 		},
 	});
 
-	if (!response.ok) {
-		const errorText = await response.text();
-		throw new Error(
-			`User service request failed: ${response.status} ${errorText}`,
-		);
-	}
+	await throwIfNotOk(response);
 
 	return (await response.json()) as T;
 }
@@ -36,10 +32,7 @@ export async function getUserByEmail(
 		return null;
 	}
 
-	if (!response.ok) {
-		const errorText = await response.text();
-		throw new Error(`User lookup failed: ${response.status} ${errorText}`);
-	}
+	await throwIfNotOk(response);
 
 	return (await response.json()) as UserResponse;
 }

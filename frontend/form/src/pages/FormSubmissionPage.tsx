@@ -25,8 +25,10 @@ import type {
 	UserPayload,
 	UserResponse,
 } from "../types";
+import { ApiClientError } from "../utils/apiClientError";
 import { buildFormSchema } from "../utils/buildFormSchema";
 import { isQuestionVisible } from "../utils/fieldVisibility";
+import { messageForPublicFormSubmitError } from "../utils/publicFormMessages";
 
 type FormValues = Record<string, unknown>;
 
@@ -197,13 +199,6 @@ function areValuesEqual(current: unknown, target: unknown): boolean {
 		return current.every((item, index) => item === target[index]);
 	}
 	return current === target;
-}
-
-function formatError(error: unknown): string {
-	if (error instanceof Error) {
-		return error.message;
-	}
-	return "Beklenmeyen bir hata oluştu.";
 }
 
 function buildUserPayload(
@@ -483,11 +478,14 @@ const FormSubmissionPage = () => {
 				try {
 					await createUser(payload);
 				} catch (createError) {
-					const message = formatError(createError);
-					if (!message.includes("409")) {
+					if (
+						createError instanceof ApiClientError &&
+						createError.status === 409
+					) {
+						await updateUser(normalizedEmail, payload);
+					} else {
 						throw createError;
 					}
-					await updateUser(normalizedEmail, payload);
 				}
 			}
 
@@ -505,7 +503,7 @@ const FormSubmissionPage = () => {
 			setShowSuccessAlert(true);
 			setSubmissionError(null);
 		} catch (submitError) {
-			setSubmissionError(formatError(submitError));
+			setSubmissionError(messageForPublicFormSubmitError(submitError));
 		}
 	};
 

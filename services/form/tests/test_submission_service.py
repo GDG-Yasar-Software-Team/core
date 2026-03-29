@@ -94,8 +94,9 @@ class TestCreateSubmission:
         form_doc = _make_active_form_doc(is_active=False)
         mock_submission_collections["forms"].find_one = AsyncMock(return_value=form_doc)
 
-        with pytest.raises(FormValidationError, match="not active"):
+        with pytest.raises(FormValidationError) as exc_info:
             await SubmissionService.create_submission(sample_submission_data)
+        assert exc_info.value.code == "form_not_active"
 
     async def test_create_submission_form_not_started(
         self, mock_submission_collections, sample_submission_data
@@ -105,8 +106,9 @@ class TestCreateSubmission:
         form_doc = _make_active_form_doc(start_date=future_date)
         mock_submission_collections["forms"].find_one = AsyncMock(return_value=form_doc)
 
-        with pytest.raises(FormValidationError, match="not started yet"):
+        with pytest.raises(FormValidationError) as exc_info:
             await SubmissionService.create_submission(sample_submission_data)
+        assert exc_info.value.code == "form_not_started"
 
     async def test_create_submission_deadline_passed(
         self, mock_submission_collections, sample_submission_data
@@ -116,8 +118,9 @@ class TestCreateSubmission:
         form_doc = _make_active_form_doc(deadline=past_date)
         mock_submission_collections["forms"].find_one = AsyncMock(return_value=form_doc)
 
-        with pytest.raises(FormValidationError, match="deadline has passed"):
+        with pytest.raises(FormValidationError) as exc_info:
             await SubmissionService.create_submission(sample_submission_data)
+        assert exc_info.value.code == "form_deadline_passed"
 
     async def test_create_submission_requires_conditional_field_when_visible(
         self, mock_submission_collections
@@ -159,8 +162,10 @@ class TestCreateSubmission:
 
         mock_submission_collections["forms"].find_one = AsyncMock(return_value=form_doc)
 
-        with pytest.raises(FormValidationError, match="turkish_identity_number"):
+        with pytest.raises(FormValidationError) as exc_info:
             await SubmissionService.create_submission(submission_data)
+        assert exc_info.value.code == "required_answer_incomplete"
+        assert exc_info.value.internal_note == "turkish_identity_number"
 
     async def test_create_submission_skips_conditional_field_when_hidden(
         self, mock_submission_collections
