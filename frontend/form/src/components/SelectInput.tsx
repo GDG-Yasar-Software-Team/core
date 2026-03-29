@@ -32,7 +32,6 @@ const SelectInput = ({
 		<select
 			id={id}
 			multiple={multiple}
-			defaultValue={multiple ? [] : ""}
 			className={`w-full rounded-lg border px-4 py-2.5 text-sm transition focus:outline-none focus:ring-2 bg-white ${
 				multiple ? "min-h-[120px]" : "appearance-none"
 			} ${
