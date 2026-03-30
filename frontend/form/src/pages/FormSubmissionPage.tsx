@@ -534,6 +534,43 @@ const FormSubmissionPage = () => {
 		);
 	}
 
+	if (showSuccessAlert) {
+		return (
+			<div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12 font-sans">
+				<div className="w-full max-w-2xl">
+					<div className="rounded-2xl shadow-lg border border-gray-200 overflow-hidden bg-white">
+						<Banner />
+						<div className="px-8 py-8">
+							<h1 className="text-2xl font-bold text-gray-900 font-display tracking-tight">
+								{form.title}
+							</h1>
+							<p className="mt-4 text-sm text-gray-700 font-medium">
+								Yanıtınız kaydedildi. Katılımınız için teşekkür ederiz.
+							</p>
+							<div className="mt-6">
+								<button
+									type="button"
+									onClick={() => {
+										setShowSuccessAlert(false);
+										setRespondentEmail("");
+										reset();
+									}}
+									className="text-blue-600 hover:text-blue-800 hover:underline text-sm font-medium transition"
+								>
+									Başka bir yanıt gönder
+								</button>
+							</div>
+						</div>
+					</div>
+					<p className="mt-8 text-center text-xs text-gray-500">
+						<span className="font-medium">GDG on Campus Yaşar Üniversitesi</span>{" "}
+						tarafından geliştirilmiştir.
+					</p>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12 font-sans">
 			<div className="w-full max-w-2xl">
@@ -622,18 +659,6 @@ const FormSubmissionPage = () => {
 					tarafından geliştirilmiştir.
 				</p>
 			</div>
-			{showSuccessAlert && (
-				<div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4">
-					<div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-2xl">
-						<h2 className="text-xl font-semibold text-gray-900">
-							Başvurunuz Alındı
-						</h2>
-						<p className="mt-3 text-sm text-gray-600">
-							Formunuz başarıyla gönderildi. Katılımınız için teşekkür ederiz.
-						</p>
-					</div>
-				</div>
-			)}
 		</div>
 	);
 };
