@@ -118,6 +118,24 @@ class TestCreateUser:
             with pytest.raises(DuplicateEmailError):
                 await UserService.create_user(user)
 
+    async def test_normalizes_email_before_create(self, mock_mongodb):
+        """create_user normalizes email before delegating to repository."""
+        captured_user = None
+
+        async def capture_create(user: User):
+            nonlocal captured_user
+            captured_user = user
+            return "507f1f77bcf86cd799439011"
+
+        with patch(
+            "app.services.user_service.UserRepository.create",
+            side_effect=capture_create,
+        ):
+            await UserService.create_user(User(email=" Test@Example.com "))
+
+            assert captured_user is not None
+            assert str(captured_user.email) == "test@example.com"
+
 
 class TestUpdateUser:
     """Tests for UserService.update_user()."""
@@ -160,6 +178,37 @@ class TestUpdateUser:
             with pytest.raises(UserNotFoundError):
                 await UserService.update_user("nonexistent@example.com", update)
 
+    async def test_normalizes_emails_before_update(self, mock_mongodb, sample_user_doc):
+        """update_user normalizes both route and payload emails."""
+        updated_user = UserInDB(
+            _id=ObjectId("507f1f77bcf86cd799439011"),
+            email="newemail@example.com",
+            name="Updated Name",
+            is_yasar_student=False,
+            submitted_form_ids=[],
+            submitted_form_count=0,
+            received_mail_ids=[],
+            received_mail_count=0,
+            is_subscribed=True,
+            created_at=datetime(2025, 1, 15, 12, 0, 0),
+            updated_at=datetime.now(),
+        )
+
+        with patch(
+            "app.services.user_service.UserRepository.update",
+            new_callable=AsyncMock,
+            return_value=updated_user,
+        ) as mock_update:
+            await UserService.update_user(
+                " User1@Example.com ",
+                User(email=" NewEmail@Example.com ", name="Updated Name"),
+            )
+
+            mock_update.assert_called_once()
+            call_args = mock_update.call_args[0]
+            assert call_args[0] == "user1@example.com"
+            assert str(call_args[1].email) == "newemail@example.com"
+
 
 class TestGetUserByEmail:
     """Tests for UserService.get_user_by_email()."""
@@ -188,6 +237,17 @@ class TestGetUserByEmail:
             response = await UserService.get_user_by_email("nonexistent@example.com")
 
             assert response is None
+
+    async def test_normalizes_email_before_lookup(self, mock_mongodb):
+        """get_user_by_email normalizes email before delegating to repository."""
+        with patch(
+            "app.services.user_service.UserRepository.get_by_email",
+            new_callable=AsyncMock,
+            return_value=None,
+        ) as mock_get:
+            await UserService.get_user_by_email(" User1@Example.com ")
+
+            mock_get.assert_called_once_with("user1@example.com")
 
 
 class TestGetSubscribedEmails:
