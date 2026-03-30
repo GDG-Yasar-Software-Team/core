@@ -118,6 +118,23 @@ class TestCreate:
         assert call_args["turkish_identity_number"] == "12345678901"
         assert call_args["is_subscribed"] is False
 
+    async def test_normalizes_email_before_lookup_and_insert(self, mock_mongodb):
+        """Create normalizes emails before duplicate checks and inserts."""
+        from app.models.user import User
+
+        mock_mongodb["users"].find_one.return_value = None
+        mock_mongodb["users"].insert_one.return_value = MagicMock(
+            inserted_id=ObjectId()
+        )
+
+        await UserRepository.create(User(email=" Test@Example.com "))
+
+        mock_mongodb["users"].find_one.assert_called_once_with(
+            {"email": "test@example.com"}
+        )
+        call_args = mock_mongodb["users"].insert_one.call_args[0][0]
+        assert call_args["email"] == "test@example.com"
+
 
 class TestGetByEmail:
     """Tests for UserRepository.get_by_email()."""
@@ -141,6 +158,16 @@ class TestGetByEmail:
         user = await UserRepository.get_by_email("nonexistent@example.com")
 
         assert user is None
+
+    async def test_normalizes_email_before_query(self, mock_mongodb, sample_user_doc):
+        """get_by_email normalizes email before querying MongoDB."""
+        mock_mongodb["users"].find_one.return_value = sample_user_doc
+
+        await UserRepository.get_by_email(" User1@Example.com ")
+
+        mock_mongodb["users"].find_one.assert_called_once_with(
+            {"email": "user1@example.com"}
+        )
 
 
 class TestUpdate:
@@ -224,6 +251,24 @@ class TestUpdate:
 
         call_args = mock_mongodb["users"].update_one.call_args[0][1]
         assert "unsubscribed_at" in call_args["$set"]
+
+    async def test_normalizes_lookup_and_updated_email(
+        self, mock_mongodb, sample_user_doc
+    ):
+        """Update normalizes both the lookup email and stored email."""
+        from app.models.user import User
+
+        mock_mongodb["users"].update_one.return_value = MagicMock(matched_count=1)
+        mock_mongodb["users"].find_one.return_value = sample_user_doc
+
+        await UserRepository.update(
+            " User1@Example.com ",
+            User(email=" NewEmail@Example.com ", name="Updated Name"),
+        )
+
+        update_call_args = mock_mongodb["users"].update_one.call_args[0]
+        assert update_call_args[0] == {"email": "user1@example.com"}
+        assert update_call_args[1]["$set"]["email"] == "newemail@example.com"
 
 
 class TestGetSubscribedEmails:
