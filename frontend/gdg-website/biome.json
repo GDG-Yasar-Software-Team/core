@@ -39,7 +39,7 @@
 	},
 	"overrides": [
 		{
-			"include": ["**/dist/**", "**/node_modules/**", "tsconfig*.json"],
+			"includes": ["**/dist/**", "**/node_modules/**", "tsconfig*.json"],
 			"linter": {
 				"enabled": false
 			},
