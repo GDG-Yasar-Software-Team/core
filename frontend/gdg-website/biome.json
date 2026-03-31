@@ -1,4 +1,5 @@
 {
+	"extends": ["../../biome.json"],
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",
