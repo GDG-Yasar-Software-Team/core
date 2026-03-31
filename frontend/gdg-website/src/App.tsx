@@ -1,10 +1,10 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
 
-const HomePage = lazy(() => import("./pages/HomePage"));
-const AboutPage = lazy(() => import("./pages/AboutPage"));
-const TeamPage = lazy(() => import("./pages/TeamPage"));
-const EventsPage = lazy(() => import("./pages/EventsPage"));
+const HomePage = lazy(() => import("./pages/Home"));
+const AboutPage = lazy(() => import("./pages/About"));
+const TeamPage = lazy(() => import("./pages/Team"));
+const UpcomingEventsPage = lazy(() => import("./pages/UpcomingEvents"));
 const EventDetailPage = lazy(() => import("./pages/EventDetailPage"));
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
 					<Route path="/" element={<HomePage />} />
 					<Route path="/about" element={<AboutPage />} />
 					<Route path="/team" element={<TeamPage />} />
-					<Route path="/upcoming-events" element={<EventsPage />} />
+					<Route path="/upcoming-events" element={<UpcomingEventsPage />} />
 					<Route
 						path="/upcoming-events/:eventId"
 						element={<EventDetailPage />}

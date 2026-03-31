@@ -1,16 +1,16 @@
 import type React from "react";
-import { Navigation } from "../components/layout/Navigation";
-import { Footer } from "../components/layout/Footer";
-import { HeroSection } from "../components/features/HeroSection";
-import { HighlightCard } from "../components/features/HighlightCard";
-import { EventCard } from "../components/features/EventCard";
-import { highlights } from "../data/highlights";
-import { events } from "../data/events";
+import { Navigation } from "../../components/layout/Navigation";
+import { Footer } from "../../components/layout/Footer";
+import { HeroSection } from "../../components/features/HeroSection";
+import { HighlightCard } from "../../components/features/HighlightCard";
+import { EventCard } from "../UpcomingEvents/components/EventCard";
+import { highlights } from "../../data/highlights";
+import { upcomingEvents } from "../UpcomingEvents/data/events";
 import "./HomePage.css";
 
 export const HomePage: React.FC = () => {
-	const recentEvents = events
-		.filter((e) => e.status === "upcoming")
+	const recentEvents = upcomingEvents
+		.filter((e) => !e.isPast)
 		.slice(0, 3);
 
 	return (

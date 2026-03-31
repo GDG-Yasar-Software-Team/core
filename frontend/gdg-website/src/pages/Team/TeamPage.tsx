@@ -1,10 +1,10 @@
 import type React from "react";
-import { Navigation } from "../components/layout/Navigation";
-import { Footer } from "../components/layout/Footer";
-import { TeamMemberCard } from "../components/features/TeamMemberCard";
-import FlowingMenu from "../components/features/FlowingMenu";
-import LightPillar from "../components/features/LightPillar";
-import { teamMembers } from "../data/team";
+import { Navigation } from "../../components/layout/Navigation";
+import { Footer } from "../../components/layout/Footer";
+import { TeamMemberCard } from "../../components/features/TeamMemberCard";
+import FlowingMenu from "../../components/features/FlowingMenu";
+import LightPillar from "../../components/features/LightPillar";
+import { teamMembers } from "../../data/team";
 import "./TeamPage.css";
 
 export const TeamPage: React.FC = () => {
