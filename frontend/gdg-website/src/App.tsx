@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router";
 import { lazy, Suspense } from "react";
+import { BrowserRouter, Route, Routes } from "react-router";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
