@@ -43,6 +43,12 @@
 	object-fit: contain;
 }
 
+.navigation__gooey-wrapper {
+	display: none;
+	position: relative;
+	overflow: visible;
+}
+
 .navigation__links {
 	display: none;
 	list-style: none;
@@ -52,7 +58,7 @@
 }
 
 .navigation__link {
-	color: #5f6368;
+	color: #ffffff;
 	text-decoration: none;
 	font-size: 14px;
 	font-weight: 500;
@@ -62,7 +68,7 @@
 }
 
 .navigation__link:hover {
-	background-color: #f1f3f4;
+	background-color: #3c4043;
 }
 
 .navigation__link:focus-visible {
@@ -160,6 +166,10 @@
 
 /* Desktop breakpoint */
 @media (min-width: 768px) {
+	.navigation__gooey-wrapper {
+		display: block;
+	}
+
 	.navigation__links {
 		display: flex;
 	}
