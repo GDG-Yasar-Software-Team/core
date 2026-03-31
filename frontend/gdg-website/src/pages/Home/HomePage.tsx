@@ -4,7 +4,7 @@ import { Footer } from "../../components/layout/Footer";
 import { HeroSection } from "../../components/features/HeroSection";
 import { HighlightCard } from "../../components/features/HighlightCard";
 import { EventCard } from "../UpcomingEvents/components/EventCard";
-import { highlights } from "../../data/highlights";
+import { highlights } from "./highlights.data";
 import { upcomingEvents } from "../UpcomingEvents/data/events";
 import "./HomePage.css";
 

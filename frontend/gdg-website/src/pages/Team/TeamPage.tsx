@@ -4,7 +4,7 @@ import { Footer } from "../../components/layout/Footer";
 import { TeamMemberCard } from "../../components/features/TeamMemberCard";
 import FlowingMenu from "../../components/features/FlowingMenu";
 import LightPillar from "../../components/features/LightPillar";
-import { teamMembers } from "../../data/team";
+import { teamMembers } from "./team.data";
 import "./TeamPage.css";
 
 export const TeamPage: React.FC = () => {

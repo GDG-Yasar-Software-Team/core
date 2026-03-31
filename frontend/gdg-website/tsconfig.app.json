@@ -20,10 +20,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@/features/*": ["src/features/*"],
       "@/components/*": ["src/components/*"],
-      "@/lib/*": ["src/lib/*"],
-      "@/hooks/*": ["src/hooks/*"],
+      "@/pages/*": ["src/pages/*"],
       "@/types/*": ["src/types/*"],
       "@/styles/*": ["src/styles/*"]
     },
