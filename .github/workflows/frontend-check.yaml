@@ -1,20 +1,19 @@
 name: Frontend Check
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - "frontend/**/*.ts"
-      - "frontend/**/*.tsx"
-      - "frontend/**/*.js"
-      - "frontend/**/*.jsx"
+      - "frontend/**"
+      - "biome.json"
+      - ".github/workflows/frontend-check.yaml"
   pull_request:
     branches: [main]
     paths:
-      - "frontend/**/*.ts"
-      - "frontend/**/*.tsx"
-      - "frontend/**/*.js"
-      - "frontend/**/*.jsx"
+      - "frontend/**"
+      - "biome.json"
+      - ".github/workflows/frontend-check.yaml"
 
 jobs:
   lint:
@@ -26,7 +25,7 @@ jobs:
         uses: oven-sh/setup-bun@v2
 
       - name: Install Biome
-        run: bun add -g @biomejs/biome
+        run: bun add -g @biomejs/biome@2.4.10
 
       - name: Run Biome Check
         run: biome check frontend/
