@@ -2,24 +2,105 @@ import type { Event } from "../../../types/event";
 
 // Upcoming events
 export const upcomingEvents: Event[] = [
-	// Add your upcoming events here
-	// Example:
-	// {
-	//   id: "event-1",
-	//   title: "GDG DevFest 2026",
-	//   date: "APR 15, 2026",
-	//   location: "Yaşar University",
-	//   city: "İzmir, TR",
-	//   type: "Conference",
-	//   description: "Join us for an amazing day of learning and networking...",
-	//   imageUrl: "/events/devfest-2026.png",
-	//   tags: ["Conference", "Networking", "Tech Talk"],
-	//   isPast: false
-	// }
+	{
+		id: "tech-summit-2026",
+		title: "Tech Summit 2026",
+		date: "Coming Soon",
+		location: "Yaşar University",
+		city: "İzmir, TR",
+		type: "Conference",
+		description: "Join us for our biggest tech event of the year! Tech Summit brings together industry leaders, innovators, and tech enthusiasts for a day of learning, networking, and inspiration.",
+		imageUrl: "/events/tech-summit-cover.png",
+		tags: ["Conference", "Networking", "Tech Talks", "Innovation"],
+		isPast: false,
+	},
 ];
 
 // Past events (will be used in About page)
 export const pastEvents: Event[] = [
-	// Add your past events here
-	// These will be displayed in the About page
+	{
+		id: "info-session",
+		title: "Info Session",
+		date: "2024",
+		location: "Yaşar University",
+		city: "İzmir, TR",
+		type: "Info Session",
+		description: "[DESCRIPTION_NEEDED]",
+		imageUrl: "/events/info-session.png",
+		tags: ["Info Session", "Introduction"],
+		isPast: true,
+	},
+	{
+		id: "tech-talks",
+		title: "Tech Talks",
+		date: "2024",
+		location: "Yaşar University",
+		city: "İzmir, TR",
+		type: "Tech Talk",
+		description: "[DESCRIPTION_NEEDED]",
+		imageUrl: "/events/tech-talks.png",
+		tags: ["Tech Talk", "Learning"],
+		isPast: true,
+	},
+	{
+		id: "build-your-circle",
+		title: "Build Your Circle",
+		date: "2024",
+		location: "Yaşar University",
+		city: "İzmir, TR",
+		type: "Networking",
+		description: "[DESCRIPTION_NEEDED]",
+		imageUrl: "/events/build-your-circle.png",
+		tags: ["Networking", "Community"],
+		isPast: true,
+	},
+	{
+		id: "ai-talks-1",
+		title: "AI Talks",
+		date: "2024",
+		location: "Yaşar University",
+		city: "İzmir, TR",
+		type: "Tech Talk",
+		description: "[DESCRIPTION_NEEDED]",
+		imageUrl: "/events/ai-talks-1.png",
+		tags: ["AI", "Tech Talk", "Machine Learning"],
+		isPast: true,
+	},
+	{
+		id: "batuhan-gungor",
+		title: "Tech Talk with Batuhan Güngör",
+		date: "2024",
+		location: "Yaşar University",
+		city: "İzmir, TR",
+		type: "Tech Talk",
+		description: "[DESCRIPTION_NEEDED]",
+		imageUrl: "/events/batuhan-gungor.png",
+		tags: ["Tech Talk", "Guest Speaker"],
+		isPast: true,
+	},
+	{
+		id: "hard-times",
+		title: "Hard Times",
+		date: "2024",
+		location: "Yaşar University",
+		city: "İzmir, TR",
+		type: "Workshop",
+		description: "[DESCRIPTION_NEEDED]",
+		imageUrl: "/events/hard-times.jpg",
+		tags: ["Workshop", "Career"],
+		isPast: true,
+	},
+	{
+		id: "study-connect",
+		title: "Study & Connect",
+		date: "2024",
+		location: "Yaşar University",
+		city: "İzmir, TR",
+		type: "Study Session",
+		description: "[DESCRIPTION_NEEDED]",
+		imageUrl: "/events/study-connect.png",
+		tags: ["Study", "Networking", "Community"],
+		isPast: true,
+	},
 ];
+

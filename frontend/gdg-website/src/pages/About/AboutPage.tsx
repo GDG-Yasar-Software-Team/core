@@ -2,6 +2,7 @@ import type React from "react";
 import { Navigation } from "../../components/layout/Navigation";
 import { Footer } from "../../components/layout/Footer";
 import { Accordion } from "../../components/common/Accordion";
+import { PastEventsGallery } from "./components/PastEventsGallery";
 import { faqs } from "../../data/faqs";
 import "./AboutPage.css";
 
@@ -72,6 +73,8 @@ export const AboutPage: React.FC = () => {
 						</div>
 					</div>
 				</section>
+
+				<PastEventsGallery />
 
 				<section className="about-page__faq">
 					<div className="about-page__container">
