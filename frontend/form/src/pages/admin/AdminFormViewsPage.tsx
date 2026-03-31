@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AdminPasswordGate from "../../components/AdminPasswordGate";
 import { useAdminAuth } from "../../hooks/useAdminAuth";
 import {
@@ -191,7 +191,12 @@ const AdminFormViewsPage = () => {
 						<h1 className="mt-2 text-2xl font-bold text-slate-900">
 							{form?.title ?? "Form verileri yükleniyor..."}
 						</h1>
-						<p className="mt-2 text-sm text-slate-500">Form ID: {formId}</p>
+						<p className="mt-2 text-sm text-slate-500">
+							Form ID:{" "}
+							<Link to={`/forms/${formId}`} className="underline">
+								{formId}
+							</Link>
+						</p>
 					</div>
 
 					{isLoading ? (
