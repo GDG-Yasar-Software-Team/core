@@ -5,14 +5,12 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"ignore": ["**/dist", "**/node_modules", "tsconfig*.json"]
+		"ignoreUnknown": false,
+		"includes": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "**/*.json"]
 	},
 	"formatter": {
 		"enabled": true,
 		"indentStyle": "tab"
-	},
-	"organizeImports": {
-		"enabled": true
 	},
 	"linter": {
 		"enabled": true,
@@ -38,5 +36,16 @@
 		"formatter": {
 			"quoteStyle": "double"
 		}
-	}
+	},
+	"overrides": [
+		{
+			"include": ["**/dist/**", "**/node_modules/**", "tsconfig*.json"],
+			"linter": {
+				"enabled": false
+			},
+			"formatter": {
+				"enabled": false
+			}
+		}
+	]
 }
