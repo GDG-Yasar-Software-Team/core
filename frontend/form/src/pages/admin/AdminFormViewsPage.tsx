@@ -13,6 +13,7 @@ import type {
 } from "../../types";
 import { exportSubmissionsToXlsx } from "../../utils/exportSubmissions";
 import { formatAnswer, formatDateTime } from "../../utils/formatHelpers";
+import { ApiClientError } from "../../utils/apiClientError";
 
 const EMAIL_FIELD_KEYS = ["email", "e_mail", "mail"];
 
@@ -25,10 +26,10 @@ function matchesAnyKey(fieldId: string, keys: string[]): boolean {
 }
 
 function formatError(error: unknown): string {
-	if (error instanceof Error) {
-		if (error.message.includes("404")) {
-			return "Form bulunamadı.";
-		}
+	if (error instanceof ApiClientError && error.status === 404) {
+		return "Form bulunamadı.";
+	}
+	if (error instanceof ApiClientError) {
 		return "Veriler yüklenirken bir hata oluştu.";
 	}
 	return "Beklenmeyen bir hata oluştu.";

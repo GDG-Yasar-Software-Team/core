@@ -8,6 +8,7 @@ import type {
 	SubmissionCreate,
 	SubmissionResponse,
 } from "../types";
+import { throwIfNotOk } from "../utils/apiClientError";
 
 const FORM_SERVICE_URL =
 	import.meta.env.VITE_FORM_SERVICE_URL ?? "http://localhost:8002";
@@ -21,14 +22,13 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 		},
 	});
 
-	if (!response.ok) {
-		const errorText = await response.text();
-		throw new Error(
-			`Form service request failed: ${response.status} ${errorText}`,
-		);
-	}
+	await throwIfNotOk(response);
 
-	return (await response.json()) as T;
+	const text = await response.text();
+	if (!text.trim()) {
+		return undefined as T;
+	}
+	return JSON.parse(text) as T;
 }
 
 /**
@@ -76,7 +76,7 @@ export async function getSubmissionsByForm(
 		limit: String(limit),
 	});
 
-	return request<PaginatedSubmissionsResponse>(
+	return authenticatedRequest<PaginatedSubmissionsResponse>(
 		`/submissions/by-form/${encodeURIComponent(formId)}?${query.toString()}`,
 	);
 }
@@ -115,7 +115,7 @@ export async function listForms(
 		active_only: String(activeOnly),
 	});
 
-	return request<FormListResponse>(`/forms/?${query.toString()}`);
+	return authenticatedRequest<FormListResponse>(`/forms/?${query.toString()}`);
 }
 
 export async function createForm(payload: FormCreate): Promise<FormResponse> {

@@ -54,6 +54,7 @@ def mock_mongodb():
     users_collection.insert_one = AsyncMock()
     users_collection.update_one = AsyncMock()
     users_collection.find = MagicMock()
+    users_collection.create_index = AsyncMock()
 
     mock_db = MagicMock()
     mock_db.__getitem__ = MagicMock(

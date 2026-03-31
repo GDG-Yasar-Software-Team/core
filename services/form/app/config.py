@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     # SECURITY: No default value - must be set via .env file
     ADMIN_API_TOKEN: str
 
+    # User service connection (for proxying frontend requests server-side)
+    USER_SERVICE_URL: str = "http://localhost:8001"
+    USER_SERVICE_TOKEN: str = ""
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_ignore_empty=True,

@@ -1,14 +1,6 @@
 import { useCallback, useState } from "react";
 
-const AUTH_KEY = "admin_authorized";
 const TOKEN_KEY = "admin_api_token";
-
-function getStoredAuth(): boolean {
-	if (typeof window === "undefined") {
-		return false;
-	}
-	return sessionStorage.getItem(AUTH_KEY) === "true";
-}
 
 /**
  * Get the stored admin API token.
@@ -22,12 +14,13 @@ export function getAdminToken(): string | null {
 }
 
 export function useAdminAuth() {
-	const [isAuthorized, setIsAuthorized] = useState(getStoredAuth);
+	const [isAuthorized, setIsAuthorized] = useState(
+		() => sessionStorage.getItem(TOKEN_KEY) !== null,
+	);
 
 	const authorize = useCallback((token: string): boolean => {
 		if (token && token.trim().length > 0) {
 			sessionStorage.setItem(TOKEN_KEY, token.trim());
-			sessionStorage.setItem(AUTH_KEY, "true");
 			setIsAuthorized(true);
 			return true;
 		}
@@ -35,7 +28,6 @@ export function useAdminAuth() {
 	}, []);
 
 	const logout = useCallback(() => {
-		sessionStorage.removeItem(AUTH_KEY);
 		sessionStorage.removeItem(TOKEN_KEY);
 		setIsAuthorized(false);
 	}, []);
