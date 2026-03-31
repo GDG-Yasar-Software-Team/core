@@ -1,0 +1,70 @@
+/* Accordion Component - Material 3 Styling */
+
+.accordion {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-sm);
+}
+
+.accordion__item {
+	background-color: var(--color-surface);
+	border-radius: var(--radius-md);
+	border: 1px solid var(--color-on-surface-variant);
+	overflow: hidden;
+}
+
+.accordion__button {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: var(--spacing-md) var(--spacing-lg);
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+	font-family: var(--font-family);
+	font-size: var(--font-body-large-size);
+	line-height: var(--font-body-large-line-height);
+	font-weight: 500;
+	color: var(--color-on-surface);
+	text-align: left;
+	transition: background-color 0.2s ease;
+}
+
+.accordion__button:hover {
+	background-color: var(--color-hover);
+}
+
+.accordion__button:active {
+	background-color: var(--color-active);
+}
+
+.accordion__button:focus-visible {
+	outline: 2px solid var(--color-blue);
+	outline-offset: -2px;
+}
+
+.accordion__question {
+	flex: 1;
+	padding-right: var(--spacing-md);
+}
+
+.accordion__chevron {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	color: var(--color-on-surface-variant);
+}
+
+.accordion__panel {
+	overflow: hidden;
+}
+
+.accordion__content {
+	padding: 0 var(--spacing-lg) var(--spacing-md) var(--spacing-lg);
+	font-family: var(--font-family);
+	font-size: var(--font-body-medium-size);
+	line-height: var(--font-body-medium-line-height);
+	color: var(--color-on-surface-variant);
+}

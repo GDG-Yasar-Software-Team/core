@@ -1,0 +1,115 @@
+.events-page {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	background-color: #ffffff;
+}
+
+.events-page__content {
+	flex: 1;
+}
+
+.events-page__container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 var(--spacing-lg);
+}
+
+.events-page__hero {
+	padding: 120px 0 80px 0;
+	text-align: center;
+	background: #ffffff;
+	color: #202124;
+}
+
+.events-page__hero h1 {
+	font-size: 48px;
+	font-weight: 400;
+	margin: 0 0 var(--spacing-md) 0;
+	letter-spacing: -0.5px;
+}
+
+.events-page__intro {
+	font-size: 18px;
+	margin: 0;
+	color: #5f6368;
+	font-weight: 400;
+}
+
+.events-page__featured {
+	padding: var(--spacing-2xl) 0;
+	background-color: #f8f9fa;
+	border-top: 1px solid #e8eaed;
+	border-bottom: 1px solid #e8eaed;
+}
+
+.events-page__featured h2 {
+	font-size: 24px;
+	font-weight: 500;
+	color: #202124;
+	margin: 0 0 var(--spacing-xl) 0;
+	text-align: left;
+}
+
+.events-page__filters {
+	padding: var(--spacing-2xl) 0 var(--spacing-xl) 0;
+	display: flex;
+	justify-content: flex-start;
+	gap: var(--spacing-sm);
+	border-bottom: 1px solid #e8eaed;
+}
+
+.events-page__filter-button {
+	padding: 8px 16px;
+	border: none;
+	background-color: transparent;
+	color: #5f6368;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	position: relative;
+}
+
+.events-page__filter-button:hover {
+	background-color: #f1f3f4;
+	color: #202124;
+}
+
+.events-page__filter-button--active {
+	background-color: #e8f0fe;
+	color: #1967d2;
+}
+
+.events-page__filter-button--active::after {
+	content: '';
+	position: absolute;
+	bottom: -1px;
+	left: 0;
+	right: 0;
+	height: 3px;
+	background-color: #1967d2;
+}
+
+.events-page__events {
+	padding: var(--spacing-2xl) 0 var(--spacing-3xl) 0;
+}
+
+.events-page__events-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 24px;
+}
+
+@media (min-width: 768px) {
+	.events-page__events-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (min-width: 1024px) {
+	.events-page__events-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
