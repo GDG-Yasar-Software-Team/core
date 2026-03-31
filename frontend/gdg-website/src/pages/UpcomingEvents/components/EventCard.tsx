@@ -1,6 +1,5 @@
 import type React from "react";
-import type { Event } from "../../../types/event";
-import "./EventCard.css";
+import type { Event } from "../../../types";
 
 interface EventCardProps {
 	event: Event;

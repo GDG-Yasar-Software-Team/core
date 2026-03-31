@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
-import './FlowingMenu.css';
 
 interface FlowingMenuProps {
 	items: Array<{ link: string; text: string; image: string }>;

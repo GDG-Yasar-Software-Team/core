@@ -4,7 +4,6 @@ import { Footer } from "../../components/layout/Footer";
 import { Accordion } from "../../components/common/Accordion";
 import { PastEventsGallery } from "./components/PastEventsGallery";
 import { faqs } from "./faqs.data";
-import "./AboutPage.css";
 
 export const AboutPage: React.FC = () => {
 	return (

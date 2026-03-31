@@ -1,6 +1,5 @@
 import type React from "react";
 import type { TeamMember } from "../../types";
-import "./TeamMemberCard.css";
 
 export interface TeamMemberCardProps {
 	member: TeamMember;

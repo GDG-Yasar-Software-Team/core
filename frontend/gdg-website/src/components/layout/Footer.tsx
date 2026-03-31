@@ -1,6 +1,5 @@
 import type React from "react";
 import { AnimatedSocialDock } from "../features/AnimatedSocialDock";
-import "./Footer.css";
 
 export interface FooterProps {
 	className?: string;

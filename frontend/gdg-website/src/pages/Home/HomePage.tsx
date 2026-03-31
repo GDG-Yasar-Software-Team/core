@@ -6,7 +6,6 @@ import { HighlightCard } from "../../components/features/HighlightCard";
 import { EventCard } from "../UpcomingEvents/components/EventCard";
 import { highlights } from "./highlights.data";
 import { upcomingEvents } from "../UpcomingEvents/data/events";
-import "./HomePage.css";
 
 export const HomePage: React.FC = () => {
 	const recentEvents = upcomingEvents

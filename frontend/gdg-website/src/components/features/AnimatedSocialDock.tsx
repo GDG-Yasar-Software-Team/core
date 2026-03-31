@@ -7,7 +7,6 @@ import {
 	useSpring,
 	useTransform,
 } from "framer-motion";
-import "./AnimatedSocialDock.css";
 
 interface SocialLink {
 	title: string;

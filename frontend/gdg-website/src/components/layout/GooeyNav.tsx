@@ -1,5 +1,4 @@
 import { useRef, useEffect, useState } from "react";
-import "./GooeyNav.css";
 
 interface GooeyNavItem {
 	label: string;

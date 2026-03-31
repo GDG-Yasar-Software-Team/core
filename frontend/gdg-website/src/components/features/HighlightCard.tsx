@@ -1,6 +1,5 @@
 import type React from "react";
 import type { Highlight } from "../../types";
-import "./HighlightCard.css";
 
 export interface HighlightCardProps {
 	highlight: Highlight;

@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import GooeyNav from "./GooeyNav";
-import "./Navigation.css";
 
 export interface NavigationProps {
 	className?: string;

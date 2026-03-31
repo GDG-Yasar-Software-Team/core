@@ -1,6 +1,5 @@
 import type React from "react";
 import { pastEvents } from "../../UpcomingEvents/data/events";
-import "./PastEventsGallery.css";
 
 export const PastEventsGallery: React.FC = () => {
 	return (

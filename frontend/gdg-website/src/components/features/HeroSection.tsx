@@ -1,5 +1,4 @@
 import type React from "react";
-import "./HeroSection.css";
 
 export interface HeroSectionProps {
 	title: string;

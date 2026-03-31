@@ -5,7 +5,6 @@ import { TeamMemberCard } from "../../components/features/TeamMemberCard";
 import FlowingMenu from "../../components/features/FlowingMenu";
 import LightPillar from "../../components/features/LightPillar";
 import { teamMembers } from "./team.data";
-import "./TeamPage.css";
 
 export const TeamPage: React.FC = () => {
 	const leaders = teamMembers.filter((m) => m.role === "leader");

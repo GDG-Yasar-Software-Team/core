@@ -4,7 +4,6 @@ import { Navigation } from "../../components/layout/Navigation";
 import { Footer } from "../../components/layout/Footer";
 import { EventCard } from "./components/EventCard";
 import { upcomingEvents } from "./data/events";
-import "./UpcomingEventsPage.css";
 
 export const UpcomingEventsPage: React.FC = () => {
 	const [searchQuery, setSearchQuery] = useState("");
