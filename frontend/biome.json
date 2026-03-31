@@ -6,8 +6,7 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"include": ["**"],
-		"ignore": ["**/dist/**"]
+		"includes": ["**", "!!**/dist"]
 	},
 	"formatter": {
 		"enabled": true,
