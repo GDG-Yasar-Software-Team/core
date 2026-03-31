@@ -1,13 +1,13 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.4.6/schema.json",
-	"root": false,
+	"$schema": "https://biomejs.dev/schemas/2.4.10/schema.json",
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",
 		"useIgnoreFile": true
 	},
 	"files": {
-		"includes": ["**", "!!**/dist"]
+		"include": ["**"],
+		"ignore": ["**/dist/**"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -57,7 +57,7 @@
 			"enabled": true
 		}
 	},
-	"assist": {
+	"assists": {
 		"enabled": true,
 		"actions": {
 			"source": {
