@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getFormById } from "../services/formService";
 import type { FormResponse } from "../types";
+import { ApiClientError } from "../utils/apiClientError";
 
 interface UseFormDetailsReturn {
 	form: FormResponse | null;
@@ -9,10 +10,10 @@ interface UseFormDetailsReturn {
 }
 
 function formatError(error: unknown): string {
-	if (error instanceof Error) {
-		if (error.message.includes("404")) {
-			return "Form bulunamadı.";
-		}
+	if (error instanceof ApiClientError && error.status === 404) {
+		return "Form bulunamadı.";
+	}
+	if (error instanceof ApiClientError) {
 		return "Form yüklenirken bir hata oluştu.";
 	}
 	return "Form yüklenemedi.";

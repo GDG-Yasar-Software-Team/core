@@ -88,7 +88,7 @@ async def get_form(
         raise HTTPException(status_code=500, detail="Database error occurred")
 
 
-@router.get("/")
+@router.get("/", dependencies=[Depends(verify_api_key)])
 async def list_forms(
     skip: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(ge=1, le=100)] = 10,
@@ -126,7 +126,7 @@ async def list_forms(
 
     except ValueError as e:
         logger.warning(f"Invalid pagination parameters: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail="Invalid pagination parameters")
     except PyMongoError as e:
         logger.error(f"Database error while listing forms: {e}")
         raise HTTPException(status_code=500, detail="Database error occurred")

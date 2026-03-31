@@ -17,6 +17,7 @@ import type {
 	FormResponse,
 	FormUpdate,
 } from "../../types";
+import { ApiClientError } from "../../utils/apiClientError";
 
 type FormValues = Record<string, unknown>;
 
@@ -196,7 +197,11 @@ const FormEditorPage = () => {
 				reset(defaults);
 			} catch (err) {
 				if (isCancelled) return;
-				setLoadError(err instanceof Error ? err.message : "Form yüklenemedi");
+				if (err instanceof ApiClientError && err.status === 404) {
+					setLoadError("Form bulunamadı.");
+				} else {
+					setLoadError("Form yüklenirken bir hata oluştu.");
+				}
 			} finally {
 				if (!isCancelled) setIsLoading(false);
 			}
@@ -305,7 +310,13 @@ const FormEditorPage = () => {
 
 			navigate("/admin/forms");
 		} catch (err) {
-			setSaveError(err instanceof Error ? err.message : "Kaydetme başarısız");
+			if (err instanceof ApiClientError && err.status === 401) {
+				setSaveError("Oturum süresi doldu veya yetkiniz yok.");
+			} else if (err instanceof ApiClientError) {
+				setSaveError("Kaydetme başarısız. Lütfen tekrar deneyin.");
+			} else {
+				setSaveError("Kaydetme başarısız.");
+			}
 		} finally {
 			setIsSaving(false);
 		}

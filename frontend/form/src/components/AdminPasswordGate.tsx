@@ -1,5 +1,5 @@
-import { type FormEvent, useState } from "react";
-import { useAdminAuth } from "../hooks/useAdminAuth";
+import { type FormEvent, useEffect, useState } from "react";
+import { getAdminToken, useAdminAuth } from "../hooks/useAdminAuth";
 import { verifyToken } from "../services/formService";
 
 interface AdminTokenGateProps {
@@ -7,10 +7,36 @@ interface AdminTokenGateProps {
 }
 
 const AdminTokenGate = ({ children }: AdminTokenGateProps) => {
-	const { isAuthorized, authorize } = useAdminAuth();
+	const { isAuthorized, authorize, logout } = useAdminAuth();
 	const [token, setToken] = useState("");
 	const [authError, setAuthError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
+
+	// On mount, if a token is already stored verify it server-side.
+	// This prevents anyone from manually setting sessionStorage to bypass auth.
+	const [isVerifying, setIsVerifying] = useState(isAuthorized);
+
+	useEffect(() => {
+		if (!isAuthorized) {
+			setIsVerifying(false);
+			return;
+		}
+
+		const storedToken = getAdminToken();
+		if (!storedToken) {
+			logout();
+			setIsVerifying(false);
+			return;
+		}
+
+		verifyToken(storedToken).then((result) => {
+			if (!result.valid) {
+				logout();
+			}
+			setIsVerifying(false);
+		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const onUnlock = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -35,6 +61,14 @@ const AdminTokenGate = ({ children }: AdminTokenGateProps) => {
 		authorize(trimmedToken);
 		setIsLoading(false);
 	};
+
+	if (isVerifying) {
+		return (
+			<div className="min-h-screen bg-slate-100 flex items-center justify-center">
+				<div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
+			</div>
+		);
+	}
 
 	if (isAuthorized) {
 		return <>{children}</>;

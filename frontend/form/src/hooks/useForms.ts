@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { listForms } from "../services/formService";
 import type { FormPreview } from "../types";
+import { ApiClientError } from "../utils/apiClientError";
 
 interface UseFormsResult {
 	forms: FormPreview[];
@@ -36,7 +37,11 @@ export function useForms(skip = 0, limit = 20): UseFormsResult {
 				}
 			} catch (err) {
 				if (!isCancelled) {
-					setError(err instanceof Error ? err.message : "Failed to load forms");
+					if (err instanceof ApiClientError && err.status === 401) {
+						setError("Oturum doğrulanamadı. Lütfen tekrar giriş yapın.");
+					} else {
+						setError("Formlar yüklenirken bir hata oluştu.");
+					}
 				}
 			} finally {
 				if (!isCancelled) {
