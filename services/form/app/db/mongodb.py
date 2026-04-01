@@ -1,6 +1,8 @@
 import asyncio
 
+from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo.errors import PyMongoError
 from app.config import settings
 from app.utils.logger import logger
 
@@ -13,7 +15,12 @@ class MongoDB:
     async def connect(cls):
         try:
             logger.info("Connecting to MongoDB...")
-            cls.client = AsyncIOMotorClient(settings.MONGODB_URI)
+            cls.client = AsyncIOMotorClient(
+                settings.MONGODB_URI,
+                connectTimeoutMS=settings.MONGODB_CONNECT_TIMEOUT_MS,
+                serverSelectionTimeoutMS=settings.MONGODB_SERVER_SELECTION_TIMEOUT_MS,
+                socketTimeoutMS=settings.MONGODB_SOCKET_TIMEOUT_MS,
+            )
             # Verify connection
             await cls.client.admin.command("ping")
             logger.success("Successfully connected to MongoDB")
@@ -51,5 +58,9 @@ class MongoDB:
 
 
 async def get_database():
-    await MongoDB.ensure_connected()
+    try:
+        await MongoDB.ensure_connected()
+    except PyMongoError as e:
+        logger.error(f"Database unavailable while resolving request dependency: {e}")
+        raise HTTPException(status_code=503, detail="Database unavailable")
     return MongoDB.get_db()

@@ -4,6 +4,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     MONGODB_URI: str
     DATABASE_NAME: str = "form_db"
+    MONGODB_CONNECT_TIMEOUT_MS: int = 5000
+    MONGODB_SERVER_SELECTION_TIMEOUT_MS: int = 5000
+    MONGODB_SOCKET_TIMEOUT_MS: int = 5000
     HOST: str = "0.0.0.0"
     PORT: int = 8002
     ENV: str = "development"
