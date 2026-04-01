@@ -154,6 +154,37 @@
 	color: #fbbc05;
 }
 
+.event-detail-page__speaker {
+	margin-top: var(--spacing-xl);
+}
+
+.event-detail-page__speaker h3 {
+	font-size: var(--font-size-xl);
+	font-weight: var(--font-weight-bold);
+	color: var(--on-surface);
+	margin: 0 0 var(--spacing-lg) 0;
+}
+
+.event-detail-page__speaker-card {
+	padding: var(--spacing-lg);
+	background-color: #f8f9fa;
+	border-radius: 12px;
+	border: 1px solid #e8eaed;
+}
+
+.event-detail-page__speaker-info h4 {
+	font-size: var(--font-size-lg);
+	font-weight: var(--font-weight-bold);
+	color: var(--on-surface);
+	margin: 0 0 var(--spacing-xs) 0;
+}
+
+.event-detail-page__speaker-info p {
+	font-size: var(--font-size-base);
+	color: var(--on-surface-variant);
+	margin: 0;
+}
+
 @media (max-width: 768px) {
 	.event-detail-page__title {
 		font-size: var(--font-size-2xl);

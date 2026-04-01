@@ -83,15 +83,37 @@ export const EventDetailPage: React.FC = () => {
 					<div className="event-detail-page__body">
 						<h2>About This Event</h2>
 						<div className="event-detail-page__content-wrapper">
-							<div className="event-detail-page__image-card">
-								<img
-									src={event.imageUrl}
-									alt={event.title}
-									className="event-detail-page__content-image"
-								/>
-							</div>
+							{event.id === "design-patterns-hepsiburada" ? (
+								<div className="event-detail-page__image-card">
+									<img
+										src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/6-batuhan-gungor.png"
+										alt="Batuhan Güngör"
+										className="event-detail-page__content-image"
+									/>
+								</div>
+							) : (
+								<div className="event-detail-page__image-card">
+									<img
+										src={event.imageUrl}
+										alt={event.title}
+										className="event-detail-page__content-image"
+									/>
+								</div>
+							)}
 							<div className="event-detail-page__description-wrapper">
 								<p className="event-detail-page__description">{event.description}</p>
+								
+								{event.id === "design-patterns-hepsiburada" && (
+									<div className="event-detail-page__speaker">
+										<h3>Speaker</h3>
+										<div className="event-detail-page__speaker-card">
+											<div className="event-detail-page__speaker-info">
+												<h4>Batuhan Güngör</h4>
+												<p>Software Engineering Manager at Hepsiburada / Hepsipay</p>
+											</div>
+										</div>
+									</div>
+								)}
 								
 								{event.isPast && (
 									<div className="event-detail-page__past-notice">

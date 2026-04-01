@@ -107,7 +107,7 @@ export const teamMembers: TeamMember[] = [
 		role: "member",
 		team: "marketing",
 		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/marketing_team/Yagmur_sabirli.jpeg",
-		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/ya%C4%9Fmur-bayram/" }],
+		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/yagmur-sabirli/" }],
 	},
 	{
 		id: "marketing-2",
