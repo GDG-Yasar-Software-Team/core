@@ -10,8 +10,8 @@ from fastapi.responses import JSONResponse
 
 from app.clients import user_client
 from app.config import settings
-from app.db.mongodb import MongoDB
 from app.routers import forms_router
+from app.routers.auth import router as auth_router
 from app.routers import submissions
 from app.routers import users
 from app.utils.logger import logger
@@ -20,10 +20,8 @@ from app.utils.logger import logger
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan context manager for the FastAPI application."""
-    await MongoDB.connect()
     yield
     await user_client.close()
-    await MongoDB.close()
 
 
 _is_dev = settings.ENV == "development"
@@ -64,6 +62,7 @@ async def request_validation_exception_handler(
 
 
 # Include routers
+app.include_router(auth_router)
 app.include_router(submissions.router)
 app.include_router(forms_router)
 app.include_router(users.router)

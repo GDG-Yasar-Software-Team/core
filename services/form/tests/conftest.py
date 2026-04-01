@@ -38,7 +38,8 @@ def mock_settings():
     with patch("app.config.settings", test_settings):
         with patch("app.db.mongodb.settings", test_settings):
             with patch("app.auth.api_key.settings", test_settings):
-                yield test_settings
+                with patch("app.main.settings", test_settings):
+                    yield test_settings
 
 
 @pytest.fixture
@@ -181,8 +182,8 @@ async def async_client(mock_mongodb) -> AsyncGenerator[AsyncClient, None]:
     """Async HTTP client for API testing."""
     from app.main import app
 
-    with patch("app.main.MongoDB.connect", new_callable=AsyncMock):
-        with patch("app.main.MongoDB.close", new_callable=AsyncMock):
+    with patch("app.db.mongodb.MongoDB.connect", new_callable=AsyncMock):
+        with patch("app.db.mongodb.MongoDB.close", new_callable=AsyncMock):
             async with AsyncClient(
                 transport=ASGITransport(app=app),
                 base_url="http://test",
@@ -195,7 +196,7 @@ def sync_client(mock_mongodb) -> Generator[TestClient, None, None]:
     """Sync HTTP client for API testing."""
     from app.main import app
 
-    with patch("app.main.MongoDB.connect", new_callable=AsyncMock):
-        with patch("app.main.MongoDB.close", new_callable=AsyncMock):
+    with patch("app.db.mongodb.MongoDB.connect", new_callable=AsyncMock):
+        with patch("app.db.mongodb.MongoDB.close", new_callable=AsyncMock):
             with TestClient(app) as client:
                 yield client
