@@ -14,6 +14,9 @@ export default defineConfig({
 			"@/styles": path.resolve(__dirname, "./src/styles"),
 		},
 	},
+	optimizeDeps: {
+		include: ["motion/react", "gsap", "three"],
+	},
 	server: {
 		port: 3001,
 	},

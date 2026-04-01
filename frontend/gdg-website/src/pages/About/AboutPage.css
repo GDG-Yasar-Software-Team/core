@@ -1,0 +1,29 @@
+.about-page {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.about-page__content {
+	flex: 1;
+	padding: var(--spacing-3xl) 0;
+}
+
+.about-page__container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 var(--spacing-lg);
+	text-align: center;
+}
+
+.about-page__container h1 {
+	font-size: var(--font-size-3xl);
+	font-weight: var(--font-weight-bold);
+	color: var(--on-surface);
+	margin: 0 0 var(--spacing-xl) 0;
+}
+
+.about-page__container p {
+	font-size: var(--font-size-lg);
+	color: var(--on-surface-variant);
+}

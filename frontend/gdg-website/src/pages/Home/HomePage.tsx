@@ -1,55 +1,80 @@
 import type React from "react";
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 import { Navigation } from "../../components/layout/Navigation";
 import { Footer } from "../../components/layout/Footer";
 import { EventCard } from "../UpcomingEvents/components/EventCard";
 import { upcomingEvents } from "../UpcomingEvents/data/events";
 
-const pastEvents = [
+const pastEventsDisplay = [
 	{
-		id: 1,
+		id: "info-session",
 		title: "Info Session",
 		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/1-info-session.png",
 	},
 	{
-		id: 2,
+		id: "tech-talks",
 		title: "Tech Talks",
 		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/2-tech-talks.png",
 	},
 	{
-		id: 3,
+		id: "build-your-circle",
 		title: "Build Your Circle",
 		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/3-build-your-circle.png",
 	},
 	{
-		id: 4,
+		id: "ai-talks-25",
 		title: "AI Talks 25",
 		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/4-ai-talks-25.png",
 	},
 	{
-		id: 6,
+		id: "batuhan-gungor",
 		title: "Batuhan Güngör",
 		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/6-batuhan-gungor.png",
 	},
 	{
-		id: 7,
+		id: "emre-danisan",
 		title: "Emre Danışan",
 		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/7-emre-danisan.png",
 	},
 	{
-		id: 8,
+		id: "fikirden-gelecege",
 		title: "Fikirden Geleceğe",
 		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/8-fikirden-gelecege-event.png",
 	},
 	{
-		id: 9,
+		id: "hard-times",
 		title: "Hard Times",
 		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/9-hard-times.jpg",
 	},
 	{
-		id: 10,
+		id: "study-connect",
 		title: "Study Connect",
 		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/10-study-connect.png",
+	},
+];
+
+const missionCards = [
+	{
+		id: 1,
+		title: "Learn",
+		description: "Expand your knowledge through workshops, tech talks, and hands-on sessions with industry experts.",
+		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/4-ai-talks-25.png",
+		color: "#4285F4", // Blue
+	},
+	{
+		id: 2,
+		title: "Connect",
+		description: "Build meaningful relationships with fellow developers and tech enthusiasts in our community.",
+		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/10-study-connect.png",
+		color: "#34A853", // Green
+	},
+	{
+		id: 3,
+		title: "Build",
+		description: "Create innovative projects and bring your ideas to life with the support of our community.",
+		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/7-emre-danisan.png",
+		color: "#EA4335", // Red
 	},
 ];
 
@@ -97,6 +122,27 @@ export const HomePage: React.FC = () => {
 							share, and build amazing things. Join us for workshops,
 							hackathons, and tech talks!
 						</p>
+						<div className="home-page__mission-cards">
+							{missionCards.map((card) => (
+								<div key={card.id} className="home-page__mission-card">
+									<div className="home-page__mission-card-image-wrapper">
+										<img
+											src={card.image}
+											alt={card.title}
+											className="home-page__mission-card-image"
+										/>
+										<div
+											className="home-page__mission-card-overlay"
+											style={{ backgroundColor: `${card.color}CC` }}
+										/>
+									</div>
+									<div className="home-page__mission-card-content">
+										<h3 style={{ color: card.color }}>{card.title}</h3>
+										<p>{card.description}</p>
+									</div>
+								</div>
+							))}
+						</div>
 					</div>
 				</section>
 
@@ -131,14 +177,18 @@ export const HomePage: React.FC = () => {
 							className="home-page__past-events-scroll"
 							ref={scrollContainerRef}
 						>
-							{pastEvents.map((event) => (
-								<div key={event.id} className="home-page__past-event-card">
+							{pastEventsDisplay.map((event) => (
+								<Link
+									key={event.id}
+									to={`/events/${event.id}`}
+									className="home-page__past-event-card"
+								>
 									<img
 										src={event.image}
 										alt={event.title}
 										className="home-page__past-event-image"
 									/>
-								</div>
+								</Link>
 							))}
 						</div>
 						<button
@@ -168,7 +218,7 @@ export const HomePage: React.FC = () => {
 
 				<section className="home-page__events">
 					<div className="home-page__container">
-						<h2>Upcoming Events</h2>
+						<h2>	Events</h2>
 						<div className="home-page__events-grid">
 							{recentEvents.map((event) => (
 								<EventCard key={event.id} event={event} />

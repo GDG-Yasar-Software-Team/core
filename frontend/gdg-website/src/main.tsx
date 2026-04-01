@@ -17,6 +17,8 @@ import "./components/layout/Footer.css";
 import "./components/layout/Navigation.css";
 
 // Page styles
+import "./pages/About/AboutPage.css";
+import "./pages/EventDetail/EventDetailPage.css";
 import "./pages/Home/HomePage.css";
 import "./pages/Team/TeamPage.css";
 import "./pages/UpcomingEvents/UpcomingEventsPage.css";

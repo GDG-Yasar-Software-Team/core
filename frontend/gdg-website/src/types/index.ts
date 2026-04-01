@@ -21,15 +21,17 @@ export interface Event {
 	id: string;
 	title: string;
 	description: string;
-	date: string; // ISO 8601 format
-	time: string; // "HH:MM" format
+	date: string;
 	location: string;
-	type: "workshop" | "hackathon" | "talk" | "meetup";
-	status: "upcoming" | "past";
-	featured: boolean;
-	speakers: Speaker[];
+	city: string;
+	type: string;
+	imageUrl: string;
+	tags: string[];
+	isPast: boolean;
+	time?: string;
+	featured?: boolean;
+	speakers?: Speaker[];
 	rsvpUrl?: string;
-	imageUrl?: string;
 }
 
 /**

@@ -1,4 +1,5 @@
 import type React from "react";
+import { Link } from "react-router-dom";
 import type { Event } from "../../../types";
 
 interface EventCardProps {
@@ -35,9 +36,9 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
 
 				<p className="event-card__description">{event.description}</p>
 
-				<button type="button" className="event-card__button">
+				<Link to={`/events/${event.id}`} className="event-card__button">
 					View details
-				</button>
+				</Link>
 			</div>
 		</article>
 	);

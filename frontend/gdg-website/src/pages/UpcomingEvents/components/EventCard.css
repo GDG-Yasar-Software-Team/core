@@ -97,6 +97,8 @@
 	font-weight: 500;
 	cursor: pointer;
 	transition: background 0.2s ease;
+	text-decoration: none;
+	display: inline-block;
 }
 
 .event-card__button:hover {

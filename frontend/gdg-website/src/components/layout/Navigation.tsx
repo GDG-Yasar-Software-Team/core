@@ -9,6 +9,7 @@ export interface NavigationProps {
 
 const navLinks = [
 	{ path: "/team", label: "Team" },
+	{ path: "/about", label: "About" },
 	{ path: "/upcoming-events", label: "Upcoming Events" },
 ];
 
