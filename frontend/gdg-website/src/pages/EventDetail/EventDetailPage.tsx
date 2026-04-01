@@ -1,12 +1,12 @@
 import type React from "react";
-import { useParams, Link } from "react-router-dom";
-import { Navigation } from "../../components/layout/Navigation";
+import { Link, useParams } from "react-router-dom";
 import { Footer } from "../../components/layout/Footer";
-import { upcomingEvents, pastEvents } from "../UpcomingEvents/data/events";
+import { Navigation } from "../../components/layout/Navigation";
+import { pastEvents, upcomingEvents } from "../UpcomingEvents/data/events";
 
 export const EventDetailPage: React.FC = () => {
 	const { eventId } = useParams<{ eventId: string }>();
-	
+
 	const allEvents = [...upcomingEvents, ...pastEvents];
 	const event = allEvents.find((e) => e.id === eventId);
 
@@ -40,7 +40,7 @@ export const EventDetailPage: React.FC = () => {
 					<div className="event-detail-page__header">
 						<span className="event-detail-page__type">{event.type}</span>
 						<h1 className="event-detail-page__title">{event.title}</h1>
-						
+
 						<div className="event-detail-page__meta">
 							<div className="event-detail-page__meta-item">
 								<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -67,7 +67,9 @@ export const EventDetailPage: React.FC = () => {
 										strokeWidth="1.5"
 									/>
 								</svg>
-								<span>{event.location}, {event.city}</span>
+								<span>
+									{event.location}, {event.city}
+								</span>
 							</div>
 						</div>
 
@@ -101,20 +103,24 @@ export const EventDetailPage: React.FC = () => {
 								</div>
 							)}
 							<div className="event-detail-page__description-wrapper">
-								<p className="event-detail-page__description">{event.description}</p>
-								
+								<p className="event-detail-page__description">
+									{event.description}
+								</p>
+
 								{event.id === "design-patterns-hepsiburada" && (
 									<div className="event-detail-page__speaker">
 										<h3>Speaker</h3>
 										<div className="event-detail-page__speaker-card">
 											<div className="event-detail-page__speaker-info">
 												<h4>Batuhan Güngör</h4>
-												<p>Software Engineering Manager at Hepsiburada / Hepsipay</p>
+												<p>
+													Software Engineering Manager at Hepsiburada / Hepsipay
+												</p>
 											</div>
 										</div>
 									</div>
 								)}
-								
+
 								{event.isPast && (
 									<div className="event-detail-page__past-notice">
 										<svg width="24" height="24" viewBox="0 0 24 24" fill="none">

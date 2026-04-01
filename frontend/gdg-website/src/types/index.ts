@@ -60,7 +60,15 @@ export interface TeamMember {
 	name: string;
 	title: string;
 	role: "leader" | "team-leader" | "core" | "member";
-	team: "leadership" | "organization" | "marketing" | "sponsorship" | "software" | "technical" | "operations" | "design";
+	team:
+		| "leadership"
+		| "organization"
+		| "marketing"
+		| "sponsorship"
+		| "software"
+		| "technical"
+		| "operations"
+		| "design";
 	photoUrl: string;
 	bio?: string;
 	socialLinks: SocialLink[];

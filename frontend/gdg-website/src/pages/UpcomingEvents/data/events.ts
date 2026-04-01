@@ -9,8 +9,10 @@ export const upcomingEvents: Event[] = [
 		location: "Yaşar University",
 		city: "İzmir, TR",
 		type: "Conference",
-		description: "Join us for our biggest tech event of the year! Tech Summit brings together industry leaders, innovators, and tech enthusiasts for a day of learning, networking, and inspiration.",
-		imageUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/11-tech-summit.png",
+		description:
+			"Join us for our biggest tech event of the year! Tech Summit brings together industry leaders, innovators, and tech enthusiasts for a day of learning, networking, and inspiration.",
+		imageUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/11-tech-summit.png",
 		tags: ["Conference", "Networking", "Tech Talks", "Innovation"],
 		isPast: false,
 	},
@@ -25,8 +27,10 @@ export const pastEvents: Event[] = [
 		location: "Yaşar University",
 		city: "İzmir, TR",
 		type: "Info Session",
-		description: "Welcome to GDG on Campus Yaşar University! This introductory session is designed for students who want to learn more about our community and what we do. We'll cover our mission, upcoming events, team structure, and how you can get involved. Whether you're a beginner or an experienced developer, there's a place for you in our community. Join us to meet fellow tech enthusiasts, learn about exciting opportunities, and start your journey with GDG. We'll also share information about our workshops, hackathons, tech talks, and networking events planned for the semester.",
-		imageUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/1-info-session.png",
+		description:
+			"Welcome to GDG on Campus Yaşar University! This introductory session is designed for students who want to learn more about our community and what we do. We'll cover our mission, upcoming events, team structure, and how you can get involved. Whether you're a beginner or an experienced developer, there's a place for you in our community. Join us to meet fellow tech enthusiasts, learn about exciting opportunities, and start your journey with GDG. We'll also share information about our workshops, hackathons, tech talks, and networking events planned for the semester.",
+		imageUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/1-info-session.png",
 		tags: ["Info Session", "Introduction", "Community"],
 		isPast: true,
 	},
@@ -37,8 +41,10 @@ export const pastEvents: Event[] = [
 		location: "Yaşar University",
 		city: "İzmir, TR",
 		type: "Tech Talk",
-		description: "Join us for an engaging series of tech talks covering the latest trends and innovations in technology. Our speakers will dive deep into topics like cloud computing, web development, mobile applications, and emerging technologies. Each session is designed to provide practical insights and real-world examples that you can apply to your own projects. Whether you're interested in frontend, backend, DevOps, or any other tech domain, you'll find valuable content in our tech talks series. Network with speakers and attendees, ask questions, and expand your technical knowledge.",
-		imageUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/2-tech-talks.png",
+		description:
+			"Join us for an engaging series of tech talks covering the latest trends and innovations in technology. Our speakers will dive deep into topics like cloud computing, web development, mobile applications, and emerging technologies. Each session is designed to provide practical insights and real-world examples that you can apply to your own projects. Whether you're interested in frontend, backend, DevOps, or any other tech domain, you'll find valuable content in our tech talks series. Network with speakers and attendees, ask questions, and expand your technical knowledge.",
+		imageUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/2-tech-talks.png",
 		tags: ["Tech Talk", "Learning", "Technology"],
 		isPast: true,
 	},
@@ -49,8 +55,10 @@ export const pastEvents: Event[] = [
 		location: "Yaşar University",
 		city: "İzmir, TR",
 		type: "Networking",
-		description: "Networking is a crucial skill for any professional, especially in the tech industry. Build Your Circle is a dedicated networking event where you can connect with like-minded individuals, share ideas, and form meaningful professional relationships. Meet students from different departments, exchange experiences, discuss projects, and find potential collaborators for your next big idea. This event features structured networking activities, group discussions, and plenty of opportunities for one-on-one conversations. Build your professional network and create lasting connections within the GDG community.",
-		imageUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/3-build-your-circle.png",
+		description:
+			"Networking is a crucial skill for any professional, especially in the tech industry. Build Your Circle is a dedicated networking event where you can connect with like-minded individuals, share ideas, and form meaningful professional relationships. Meet students from different departments, exchange experiences, discuss projects, and find potential collaborators for your next big idea. This event features structured networking activities, group discussions, and plenty of opportunities for one-on-one conversations. Build your professional network and create lasting connections within the GDG community.",
+		imageUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/3-build-your-circle.png",
 		tags: ["Networking", "Community", "Professional Development"],
 		isPast: true,
 	},
@@ -61,8 +69,10 @@ export const pastEvents: Event[] = [
 		location: "Yaşar University",
 		city: "İzmir, TR",
 		type: "Tech Talk",
-		description: "Artificial Intelligence is transforming every industry, and it's essential to stay updated with the latest developments. AI Talks 2025 brings together experts and enthusiasts to explore the cutting-edge world of AI and machine learning. Learn about neural networks, deep learning, natural language processing, computer vision, and AI ethics. Our speakers will share their experiences working with AI technologies, discuss real-world applications, and provide insights into the future of AI. Whether you're new to AI or already working with machine learning models, this event will expand your understanding and inspire new ideas.",
-		imageUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/4-ai-talks-25.png",
+		description:
+			"Artificial Intelligence is transforming every industry, and it's essential to stay updated with the latest developments. AI Talks 2025 brings together experts and enthusiasts to explore the cutting-edge world of AI and machine learning. Learn about neural networks, deep learning, natural language processing, computer vision, and AI ethics. Our speakers will share their experiences working with AI technologies, discuss real-world applications, and provide insights into the future of AI. Whether you're new to AI or already working with machine learning models, this event will expand your understanding and inspire new ideas.",
+		imageUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/4-ai-talks-25.png",
 		tags: ["AI", "Tech Talk", "Machine Learning", "Innovation"],
 		isPast: true,
 	},
@@ -73,8 +83,10 @@ export const pastEvents: Event[] = [
 		location: "Yaşar University",
 		city: "İzmir, TR",
 		type: "Tech Talk",
-		description: "We're honored to host Batuhan Güngör for an inspiring tech talk session. Batuhan will share his journey in the tech industry, from his early days as a student to becoming a successful professional. Learn about the challenges he faced, the decisions that shaped his career, and the lessons he learned along the way. This session covers topics like career planning, skill development, staying motivated, and navigating the job market. Batuhan will also discuss current trends in software development and provide valuable advice for students starting their tech careers. Don't miss this opportunity to learn from an experienced professional and get your questions answered.",
-		imageUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/6-batuhan-gungor.png",
+		description:
+			"We're honored to host Batuhan Güngör for an inspiring tech talk session. Batuhan will share his journey in the tech industry, from his early days as a student to becoming a successful professional. Learn about the challenges he faced, the decisions that shaped his career, and the lessons he learned along the way. This session covers topics like career planning, skill development, staying motivated, and navigating the job market. Batuhan will also discuss current trends in software development and provide valuable advice for students starting their tech careers. Don't miss this opportunity to learn from an experienced professional and get your questions answered.",
+		imageUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/6-batuhan-gungor.png",
 		tags: ["Tech Talk", "Guest Speaker", "Career Development"],
 		isPast: true,
 	},
@@ -85,8 +97,10 @@ export const pastEvents: Event[] = [
 		location: "Yaşar University",
 		city: "İzmir, TR",
 		type: "Tech Talk",
-		description: "Join us for an engaging session with Emre Danışan, an experienced software developer and technology innovator. Emre will share his expertise in modern software development practices, including agile methodologies, clean code principles, and effective team collaboration. Learn about his experiences working on large-scale projects, the tools and technologies he recommends, and best practices for writing maintainable code. This talk is perfect for students who want to improve their development skills and understand what it takes to succeed in professional software development. Emre will also discuss the importance of continuous learning and staying updated with industry trends.",
-		imageUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/7-emre-danisan.png",
+		description:
+			"Join us for an engaging session with Emre Danışan, an experienced software developer and technology innovator. Emre will share his expertise in modern software development practices, including agile methodologies, clean code principles, and effective team collaboration. Learn about his experiences working on large-scale projects, the tools and technologies he recommends, and best practices for writing maintainable code. This talk is perfect for students who want to improve their development skills and understand what it takes to succeed in professional software development. Emre will also discuss the importance of continuous learning and staying updated with industry trends.",
+		imageUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/7-emre-danisan.png",
 		tags: ["Tech Talk", "Guest Speaker", "Software Development"],
 		isPast: true,
 	},
@@ -97,8 +111,10 @@ export const pastEvents: Event[] = [
 		location: "Yaşar University",
 		city: "İzmir, TR",
 		type: "Workshop",
-		description: "Transform your innovative ideas into successful projects with Fikirden Geleceğe (From Idea to Future). This comprehensive workshop guides you through the entire process of turning a concept into reality. Learn about ideation techniques, market research, prototyping, MVP development, and pitching your idea to stakeholders. Our experienced mentors will work with you to refine your ideas, identify potential challenges, and create actionable plans. Whether you're interested in starting a tech startup, building a side project, or contributing to open source, this workshop provides the framework and guidance you need. Bring your ideas and leave with a clear roadmap for implementation.",
-		imageUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/8-fikirden-gelecege-event.png",
+		description:
+			"Transform your innovative ideas into successful projects with Fikirden Geleceğe (From Idea to Future). This comprehensive workshop guides you through the entire process of turning a concept into reality. Learn about ideation techniques, market research, prototyping, MVP development, and pitching your idea to stakeholders. Our experienced mentors will work with you to refine your ideas, identify potential challenges, and create actionable plans. Whether you're interested in starting a tech startup, building a side project, or contributing to open source, this workshop provides the framework and guidance you need. Bring your ideas and leave with a clear roadmap for implementation.",
+		imageUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/8-fikirden-gelecege-event.png",
 		tags: ["Workshop", "Innovation", "Entrepreneurship", "Project Development"],
 		isPast: true,
 	},
@@ -109,8 +125,10 @@ export const pastEvents: Event[] = [
 		location: "Yaşar University",
 		city: "İzmir, TR",
 		type: "Workshop",
-		description: "The tech industry can be challenging, and everyone faces difficult times in their career. Hard Times is a workshop focused on building resilience and developing strategies to overcome obstacles. Learn how to handle job rejections, deal with imposter syndrome, manage burnout, and stay motivated during tough periods. Our speakers will share their personal experiences with career challenges and the strategies they used to overcome them. This workshop covers mental health in tech, work-life balance, continuous learning during setbacks, and finding support within the community. Remember, every successful person has faced challenges – it's how you respond that matters.",
-		imageUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/9-hard-times.jpg",
+		description:
+			"The tech industry can be challenging, and everyone faces difficult times in their career. Hard Times is a workshop focused on building resilience and developing strategies to overcome obstacles. Learn how to handle job rejections, deal with imposter syndrome, manage burnout, and stay motivated during tough periods. Our speakers will share their personal experiences with career challenges and the strategies they used to overcome them. This workshop covers mental health in tech, work-life balance, continuous learning during setbacks, and finding support within the community. Remember, every successful person has faced challenges – it's how you respond that matters.",
+		imageUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/9-hard-times.jpg",
 		tags: ["Workshop", "Career", "Mental Health", "Resilience"],
 		isPast: true,
 	},
@@ -121,10 +139,11 @@ export const pastEvents: Event[] = [
 		location: "Yaşar University",
 		city: "İzmir, TR",
 		type: "Study Session",
-		description: "Study & Connect is our regular collaborative study session where students come together to learn, share knowledge, and support each other's growth. Whether you're working on coursework, preparing for exams, learning a new technology, or building a personal project, this is the perfect environment for focused study and peer learning. Bring your questions, share your expertise, and learn from others. We provide a structured yet flexible environment where you can work independently or collaborate with others. These sessions also include short knowledge-sharing segments where participants can present what they're learning or working on. Join us to be part of a supportive learning community.",
-		imageUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/10-study-connect.png",
+		description:
+			"Study & Connect is our regular collaborative study session where students come together to learn, share knowledge, and support each other's growth. Whether you're working on coursework, preparing for exams, learning a new technology, or building a personal project, this is the perfect environment for focused study and peer learning. Bring your questions, share your expertise, and learn from others. We provide a structured yet flexible environment where you can work independently or collaborate with others. These sessions also include short knowledge-sharing segments where participants can present what they're learning or working on. Join us to be part of a supportive learning community.",
+		imageUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/10-study-connect.png",
 		tags: ["Study", "Networking", "Community", "Peer Learning"],
 		isPast: true,
 	},
 ];
-

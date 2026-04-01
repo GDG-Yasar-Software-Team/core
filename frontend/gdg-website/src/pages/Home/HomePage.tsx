@@ -1,8 +1,8 @@
 import type React from "react";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { Navigation } from "../../components/layout/Navigation";
 import { Footer } from "../../components/layout/Footer";
+import { Navigation } from "../../components/layout/Navigation";
 import { EventCard } from "../UpcomingEvents/components/EventCard";
 import { upcomingEvents } from "../UpcomingEvents/data/events";
 
@@ -10,47 +10,56 @@ const pastEventsDisplay = [
 	{
 		id: "info-session",
 		title: "Info Session",
-		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/1-info-session.png",
+		image:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/1-info-session.png",
 	},
 	{
 		id: "tech-talks",
 		title: "Tech Talks",
-		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/2-tech-talks.png",
+		image:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/2-tech-talks.png",
 	},
 	{
 		id: "build-your-circle",
 		title: "Build Your Circle",
-		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/3-build-your-circle.png",
+		image:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/3-build-your-circle.png",
 	},
 	{
 		id: "ai-talks-25",
 		title: "AI Talks 25",
-		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/4-ai-talks-25.png",
+		image:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/4-ai-talks-25.png",
 	},
 	{
 		id: "batuhan-gungor",
 		title: "Batuhan Güngör",
-		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/6-batuhan-gungor.png",
+		image:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/6-batuhan-gungor.png",
 	},
 	{
 		id: "emre-danisan",
 		title: "Emre Danışan",
-		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/7-emre-danisan.png",
+		image:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/7-emre-danisan.png",
 	},
 	{
 		id: "fikirden-gelecege",
 		title: "Fikirden Geleceğe",
-		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/8-fikirden-gelecege-event.png",
+		image:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/8-fikirden-gelecege-event.png",
 	},
 	{
 		id: "hard-times",
 		title: "Hard Times",
-		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/9-hard-times.jpg",
+		image:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/9-hard-times.jpg",
 	},
 	{
 		id: "study-connect",
 		title: "Study Connect",
-		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/10-study-connect.png",
+		image:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/10-study-connect.png",
 	},
 ];
 
@@ -58,31 +67,35 @@ const missionCards = [
 	{
 		id: 1,
 		title: "Learn",
-		description: "Expand your knowledge through workshops, tech talks, and hands-on sessions with industry experts.",
-		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/4-ai-talks-25.png",
+		description:
+			"Expand your knowledge through workshops, tech talks, and hands-on sessions with industry experts.",
+		image:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/4-ai-talks-25.png",
 		color: "#4285F4", // Blue
 	},
 	{
 		id: 2,
 		title: "Connect",
-		description: "Build meaningful relationships with fellow developers and tech enthusiasts in our community.",
-		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/10-study-connect.png",
+		description:
+			"Build meaningful relationships with fellow developers and tech enthusiasts in our community.",
+		image:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/10-study-connect.png",
 		color: "#34A853", // Green
 	},
 	{
 		id: 3,
 		title: "Build",
-		description: "Create innovative projects and bring your ideas to life with the support of our community.",
-		image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/7-emre-danisan.png",
+		description:
+			"Create innovative projects and bring your ideas to life with the support of our community.",
+		image:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/7-emre-danisan.png",
 		color: "#EA4335", // Red
 	},
 ];
 
 export const HomePage: React.FC = () => {
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
-	const recentEvents = upcomingEvents
-		.filter((e) => !e.isPast)
-		.slice(0, 3);
+	const recentEvents = upcomingEvents.filter((e) => !e.isPast).slice(0, 3);
 
 	const scroll = (direction: "left" | "right") => {
 		if (scrollContainerRef.current) {
@@ -218,7 +231,7 @@ export const HomePage: React.FC = () => {
 
 				<section className="home-page__events">
 					<div className="home-page__container">
-						<h2>	Events</h2>
+						<h2> Events</h2>
 						<div className="home-page__events-grid">
 							{recentEvents.map((event) => (
 								<EventCard key={event.id} event={event} />

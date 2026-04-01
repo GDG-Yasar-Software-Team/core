@@ -1,5 +1,3 @@
-import type React from "react";
-import { useRef } from "react";
 import {
 	type MotionValue,
 	motion,
@@ -7,6 +5,8 @@ import {
 	useSpring,
 	useTransform,
 } from "motion/react";
+import type React from "react";
+import { useRef } from "react";
 
 interface SocialLink {
 	title: string;
@@ -107,11 +107,7 @@ function DockIcon({
 			rel="noopener noreferrer"
 			className="dock-icon-link"
 		>
-			<motion.div
-				ref={ref}
-				style={{ width, height }}
-				className="dock-icon"
-			>
+			<motion.div ref={ref} style={{ width, height }} className="dock-icon">
 				<motion.div
 					style={{ width: iconWidth, height: iconHeight }}
 					className="dock-icon-content"

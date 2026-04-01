@@ -1,7 +1,7 @@
 import type React from "react";
 import { Link } from "react-router-dom";
-import { Navigation } from "../../components/layout/Navigation";
 import { Footer } from "../../components/layout/Footer";
+import { Navigation } from "../../components/layout/Navigation";
 import "./AboutPage.css";
 
 export const AboutPage: React.FC = () => {
@@ -46,13 +46,17 @@ export const AboutPage: React.FC = () => {
 							</div>
 							<h2>Join Our Next Event</h2>
 							<p>
-								Design Patterns with Hepsiburada is back with industry expert sessions. 
-								Learn from a Software Engineering Manager at Hepsiburada/Hepsipay about 
-								real-world applications of design patterns in large-scale systems. 
-								Don't just watch the tech revolution—drive it by learning best practices 
-								and architectural patterns used by leading tech companies.
+								Design Patterns with Hepsiburada is back with industry expert
+								sessions. Learn from a Software Engineering Manager at
+								Hepsiburada/Hepsipay about real-world applications of design
+								patterns in large-scale systems. Don't just watch the tech
+								revolution—drive it by learning best practices and architectural
+								patterns used by leading tech companies.
 							</p>
-							<Link to="/events/design-patterns-hepsiburada" className="about-page__hero-button">
+							<Link
+								to="/events/design-patterns-hepsiburada"
+								className="about-page__hero-button"
+							>
 								View details
 							</Link>
 						</div>
@@ -66,8 +70,7 @@ export const AboutPage: React.FC = () => {
 					</div>
 				</section>
 
-				<div className="about-page__container">
-				</div>
+				<div className="about-page__container"></div>
 
 				<section className="about-page__tech-summit-banner">
 					<div className="about-page__banner-container">

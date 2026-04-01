@@ -49,9 +49,9 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 }) => {
 	const isLeader = member.role === "leader";
 	const isTeamLeader = member.role === "team-leader";
-	
+
 	return (
-		<div 
+		<div
 			className={`team-member-card ${isLeader ? "team-member-card--leader" : ""} ${className}`}
 			data-role={member.role}
 		>

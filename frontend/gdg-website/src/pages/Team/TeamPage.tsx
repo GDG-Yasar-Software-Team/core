@@ -1,9 +1,9 @@
 import type React from "react";
-import { Navigation } from "../../components/layout/Navigation";
-import { Footer } from "../../components/layout/Footer";
-import { TeamMemberCard } from "../../components/features/TeamMemberCard";
 import FlowingMenu from "../../components/features/FlowingMenu";
 import LightPillar from "../../components/features/LightPillar";
+import { TeamMemberCard } from "../../components/features/TeamMemberCard";
+import { Footer } from "../../components/layout/Footer";
+import { Navigation } from "../../components/layout/Navigation";
 import { teamMembers } from "./team.data";
 
 export const TeamPage: React.FC = () => {
@@ -17,48 +17,68 @@ export const TeamPage: React.FC = () => {
 	const teamMenus = [
 		{
 			items: [
-				{ link: "#", text: "ORGANIZATION TEAM", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='75' font-size='75'%3E📋%3C/text%3E%3C/svg%3E" }
+				{
+					link: "#",
+					text: "ORGANIZATION TEAM",
+					image:
+						"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='75' font-size='75'%3E📋%3C/text%3E%3C/svg%3E",
+				},
 			],
 			bgColor: "transparent",
 			textColor: "#ea4335",
 			marqueeBgColor: "transparent",
 			marqueeTextColor: "#ea4335",
 			borderColor: "transparent",
-			fontClass: "marquee--font-bebas"
+			fontClass: "marquee--font-bebas",
 		},
 		{
 			items: [
-				{ link: "#", text: "MARKETING TEAM", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='75' font-size='75'%3E📱%3C/text%3E%3C/svg%3E" }
+				{
+					link: "#",
+					text: "MARKETING TEAM",
+					image:
+						"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='75' font-size='75'%3E📱%3C/text%3E%3C/svg%3E",
+				},
 			],
 			bgColor: "transparent",
 			textColor: "#FBBC05",
 			marqueeBgColor: "transparent",
 			marqueeTextColor: "#FBBC05",
 			borderColor: "transparent",
-			fontClass: "marquee--font-righteous"
+			fontClass: "marquee--font-righteous",
 		},
 		{
 			items: [
-				{ link: "#", text: "SPONSORSHIP TEAM", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='75' font-size='75'%3E💼%3C/text%3E%3C/svg%3E" }
+				{
+					link: "#",
+					text: "SPONSORSHIP TEAM",
+					image:
+						"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='75' font-size='75'%3E💼%3C/text%3E%3C/svg%3E",
+				},
 			],
 			bgColor: "transparent",
 			textColor: "#4285f4",
 			marqueeBgColor: "transparent",
 			marqueeTextColor: "#4285f4",
 			borderColor: "transparent",
-			fontClass: "marquee--font-orbitron"
+			fontClass: "marquee--font-orbitron",
 		},
 		{
 			items: [
-				{ link: "#", text: "SOFTWARE TEAM", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='75' font-size='75'%3E💻%3C/text%3E%3C/svg%3E" }
+				{
+					link: "#",
+					text: "SOFTWARE TEAM",
+					image:
+						"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='75' font-size='75'%3E💻%3C/text%3E%3C/svg%3E",
+				},
 			],
 			bgColor: "transparent",
 			textColor: "#34a853",
 			marqueeBgColor: "transparent",
 			marqueeTextColor: "#34a853",
 			borderColor: "transparent",
-			fontClass: "marquee--font-bungee"
-		}
+			fontClass: "marquee--font-bungee",
+		},
 	];
 
 	return (

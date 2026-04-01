@@ -1,7 +1,7 @@
 import type React from "react";
-import { useState, useMemo } from "react";
-import { Navigation } from "../../components/layout/Navigation";
+import { useMemo, useState } from "react";
 import { Footer } from "../../components/layout/Footer";
+import { Navigation } from "../../components/layout/Navigation";
 import { EventCard } from "./components/EventCard";
 import { upcomingEvents } from "./data/events";
 

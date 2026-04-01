@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { Suspense, lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
 
 const HomePage = lazy(() => import("./pages/Home/HomePage"));
@@ -7,7 +7,9 @@ const AboutPage = lazy(() => import("./pages/About/AboutPage"));
 const UpcomingEventsPage = lazy(
 	() => import("./pages/UpcomingEvents/UpcomingEventsPage"),
 );
-const EventDetailPage = lazy(() => import("./pages/EventDetail/EventDetailPage"));
+const EventDetailPage = lazy(
+	() => import("./pages/EventDetail/EventDetailPage"),
+);
 
 function App() {
 	return (

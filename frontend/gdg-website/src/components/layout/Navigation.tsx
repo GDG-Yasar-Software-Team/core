@@ -1,7 +1,7 @@
+import { AnimatePresence, motion } from "motion/react";
 import type React from "react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
-import { motion, AnimatePresence } from "motion/react";
 
 export interface NavigationProps {
 	className?: string;
@@ -32,13 +32,14 @@ export const Navigation: React.FC<NavigationProps> = ({ className = "" }) => {
 	};
 
 	return (
-		<nav 
-			className={`navigation ${className}`} 
-			aria-label="Main navigation"
-		>
+		<nav className={`navigation ${className}`} aria-label="Main navigation">
 			<div className="navigation__container">
 				<Link to="/" className="navigation__logo">
-					<img src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/core/refs/heads/main/frontend/form/public/gdg-logo.png" alt="GDG Logo" className="navigation__logo-img" />
+					<img
+						src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/core/refs/heads/main/frontend/form/public/gdg-logo.png"
+						alt="GDG Logo"
+						className="navigation__logo-img"
+					/>
 					GDG on Campus Yaşar University
 				</Link>
 

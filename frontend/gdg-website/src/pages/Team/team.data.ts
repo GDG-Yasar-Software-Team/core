@@ -8,9 +8,13 @@ export const teamMembers: TeamMember[] = [
 		title: "Organizer",
 		role: "leader",
 		team: "leadership",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organizers/toprak_uckun.png",
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organizers/toprak_uckun.png",
 		socialLinks: [
-			{ platform: "linkedin", url: "https://www.linkedin.com/in/toprak-uckun/" },
+			{
+				platform: "linkedin",
+				url: "https://www.linkedin.com/in/toprak-uckun/",
+			},
 		],
 	},
 	{
@@ -19,9 +23,13 @@ export const teamMembers: TeamMember[] = [
 		title: "Co-Organizer",
 		role: "leader",
 		team: "leadership",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organizers/goktug_yucel.png",
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organizers/goktug_yucel.png",
 		socialLinks: [
-			{ platform: "linkedin", url: "https://www.linkedin.com/in/goktug-yucel-28b823296/" },
+			{
+				platform: "linkedin",
+				url: "https://www.linkedin.com/in/goktug-yucel-28b823296/",
+			},
 		],
 	},
 
@@ -32,8 +40,14 @@ export const teamMembers: TeamMember[] = [
 		title: "Organization Team Leader",
 		role: "team-leader",
 		team: "organization",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organization_team/sirac_ketenoglu.png",
-		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/siracketenoglu/" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organization_team/sirac_ketenoglu.png",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://www.linkedin.com/in/siracketenoglu/",
+			},
+		],
 	},
 	{
 		id: "org-1",
@@ -41,8 +55,11 @@ export const teamMembers: TeamMember[] = [
 		title: "Organization Team",
 		role: "member",
 		team: "organization",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organization_team/ezgi_oz.png",
-		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/ezgi-oz-mis/" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organization_team/ezgi_oz.png",
+		socialLinks: [
+			{ platform: "linkedin", url: "https://www.linkedin.com/in/ezgi-oz-mis/" },
+		],
 	},
 	{
 		id: "org-2",
@@ -50,8 +67,14 @@ export const teamMembers: TeamMember[] = [
 		title: "Organization Team",
 		role: "member",
 		team: "organization",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organization_team/rustem_avci.png",
-		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/r%C3%BCstem-avc%C4%B1/" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organization_team/rustem_avci.png",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://www.linkedin.com/in/r%C3%BCstem-avc%C4%B1/",
+			},
+		],
 	},
 	{
 		id: "org-3",
@@ -59,8 +82,14 @@ export const teamMembers: TeamMember[] = [
 		title: "Organization Team",
 		role: "member",
 		team: "organization",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organization_team/ahmet_ozgur_korkmaz.png",
-		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/aozgurkorkmaz/" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organization_team/ahmet_ozgur_korkmaz.png",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://www.linkedin.com/in/aozgurkorkmaz/",
+			},
+		],
 	},
 	{
 		id: "org-4",
@@ -68,8 +97,14 @@ export const teamMembers: TeamMember[] = [
 		title: "Organization Team",
 		role: "member",
 		team: "organization",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organization_team/nisanas_turan.png",
-		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/nisanas-turan-863b85351/" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organization_team/nisanas_turan.png",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://www.linkedin.com/in/nisanas-turan-863b85351/",
+			},
+		],
 	},
 	{
 		id: "org-5",
@@ -77,8 +112,14 @@ export const teamMembers: TeamMember[] = [
 		title: "Organization Team",
 		role: "member",
 		team: "organization",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organization_team/ezgi_aynal.png",
-		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/ezgi-aynal-7b022a2a3/" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organization_team/ezgi_aynal.png",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://www.linkedin.com/in/ezgi-aynal-7b022a2a3/",
+			},
+		],
 	},
 	{
 		id: "org-6",
@@ -86,8 +127,14 @@ export const teamMembers: TeamMember[] = [
 		title: "Organization Team",
 		role: "member",
 		team: "organization",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organization_team/selinay_berna_basihos.png",
-		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/selinay-berna-ba%C5%9F%C4%B1ho%C5%9F-b5960a26b/" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organization_team/selinay_berna_basihos.png",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://www.linkedin.com/in/selinay-berna-ba%C5%9F%C4%B1ho%C5%9F-b5960a26b/",
+			},
+		],
 	},
 
 	// Reklam ve Tanıtım Takımı
@@ -97,8 +144,14 @@ export const teamMembers: TeamMember[] = [
 		title: "Marketing Team Leader",
 		role: "team-leader",
 		team: "marketing",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/marketing_team/cansin_mat.png",
-		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/cans%C4%B1n-mat-96b607362/" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/marketing_team/cansin_mat.png",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://www.linkedin.com/in/cans%C4%B1n-mat-96b607362/",
+			},
+		],
 	},
 	{
 		id: "marketing-1",
@@ -106,8 +159,14 @@ export const teamMembers: TeamMember[] = [
 		title: "Marketing Team",
 		role: "member",
 		team: "marketing",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/marketing_team/Yagmur_sabirli.jpeg",
-		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/yagmur-sabirli/" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/marketing_team/Yagmur_sabirli.jpeg",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://www.linkedin.com/in/yagmur-sabirli/",
+			},
+		],
 	},
 	{
 		id: "marketing-2",
@@ -115,8 +174,14 @@ export const teamMembers: TeamMember[] = [
 		title: "Marketing Team",
 		role: "member",
 		team: "marketing",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/marketing_team/elif_altin.png",
-		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/elif-alt%C4%B1n-326a76376/" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/marketing_team/elif_altin.png",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://www.linkedin.com/in/elif-alt%C4%B1n-326a76376/",
+			},
+		],
 	},
 	{
 		id: "marketing-3",
@@ -124,8 +189,11 @@ export const teamMembers: TeamMember[] = [
 		title: "Marketing Team",
 		role: "member",
 		team: "marketing",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/marketing_team/sultan_esen_murat.png",
-		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/esen-murat/" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/marketing_team/sultan_esen_murat.png",
+		socialLinks: [
+			{ platform: "linkedin", url: "https://www.linkedin.com/in/esen-murat/" },
+		],
 	},
 	{
 		id: "marketing-4",
@@ -133,8 +201,14 @@ export const teamMembers: TeamMember[] = [
 		title: "Marketing Team",
 		role: "member",
 		team: "marketing",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/marketing_team/yagmur_korucu.png",
-		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/ya%C4%9Fmur-korucu-494902389/" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/marketing_team/yagmur_korucu.png",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://www.linkedin.com/in/ya%C4%9Fmur-korucu-494902389/",
+			},
+		],
 	},
 
 	// Sponsorluk Takımı
@@ -144,8 +218,14 @@ export const teamMembers: TeamMember[] = [
 		title: "Sponsorship Team Leader",
 		role: "team-leader",
 		team: "sponsorship",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/sponsorship_team/selin_erol.jpeg",
-		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/zehra-selin-erol-4094a5330/" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/sponsorship_team/selin_erol.jpeg",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://www.linkedin.com/in/zehra-selin-erol-4094a5330/",
+			},
+		],
 	},
 	{
 		id: "sponsorship-1",
@@ -153,8 +233,14 @@ export const teamMembers: TeamMember[] = [
 		title: "Sponsorship Team",
 		role: "member",
 		team: "sponsorship",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/sponsorship_team/sude_erdogan.jpeg",
-		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/sude-erdo%C4%9Fan-441201311/" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/sponsorship_team/sude_erdogan.jpeg",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://www.linkedin.com/in/sude-erdo%C4%9Fan-441201311/",
+			},
+		],
 	},
 	{
 		id: "sponsorship-2",
@@ -162,8 +248,14 @@ export const teamMembers: TeamMember[] = [
 		title: "Sponsorship Team",
 		role: "member",
 		team: "sponsorship",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/sponsorship_team/emirhan_sezgin.png",
-		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/emirhan-sezgin-078476388/" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/sponsorship_team/emirhan_sezgin.png",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://www.linkedin.com/in/emirhan-sezgin-078476388/",
+			},
+		],
 	},
 	{
 		id: "sponsorship-3",
@@ -171,8 +263,14 @@ export const teamMembers: TeamMember[] = [
 		title: "Sponsorship Team",
 		role: "member",
 		team: "sponsorship",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/sponsorship_team/%C4%B1rmak_dindar.png",
-		socialLinks: [{ platform: "linkedin", url: "https://www.linkedin.com/in/irmak-dindar-10b4a4286/" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/sponsorship_team/%C4%B1rmak_dindar.png",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://www.linkedin.com/in/irmak-dindar-10b4a4286/",
+			},
+		],
 	},
 
 	// Yazılım Takımı
@@ -182,8 +280,11 @@ export const teamMembers: TeamMember[] = [
 		title: "Software Team Leader",
 		role: "team-leader",
 		team: "software",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/software_team/berat_olmez.png",
-		socialLinks: [{ platform: "linkedin", url: "https://tr.linkedin.com/in/seberatolmez" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/software_team/berat_olmez.png",
+		socialLinks: [
+			{ platform: "linkedin", url: "https://tr.linkedin.com/in/seberatolmez" },
+		],
 	},
 	{
 		id: "software-1",
@@ -191,8 +292,14 @@ export const teamMembers: TeamMember[] = [
 		title: "Software Team",
 		role: "member",
 		team: "software",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/software_team/emirhan_kotan.png",
-		socialLinks: [{ platform: "linkedin", url: "https://tr.linkedin.com/in/emirhan-kotan-ba3842379" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/software_team/emirhan_kotan.png",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://tr.linkedin.com/in/emirhan-kotan-ba3842379",
+			},
+		],
 	},
 	{
 		id: "software-2",
@@ -200,8 +307,11 @@ export const teamMembers: TeamMember[] = [
 		title: "Software Team",
 		role: "member",
 		team: "software",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/software_team/dogukan_urker.png",
-		socialLinks: [{ platform: "linkedin", url: "https://tr.linkedin.com/in/dogukanurker" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/software_team/dogukan_urker.png",
+		socialLinks: [
+			{ platform: "linkedin", url: "https://tr.linkedin.com/in/dogukanurker" },
+		],
 	},
 	{
 		id: "software-3",
@@ -209,8 +319,11 @@ export const teamMembers: TeamMember[] = [
 		title: "Software Team",
 		role: "member",
 		team: "software",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/software_team/sude_tuncu.png",
-		socialLinks: [{ platform: "linkedin", url: "https://tr.linkedin.com/in/sude-tuncu" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/software_team/sude_tuncu.png",
+		socialLinks: [
+			{ platform: "linkedin", url: "https://tr.linkedin.com/in/sude-tuncu" },
+		],
 	},
 	{
 		id: "software-4",
@@ -218,8 +331,14 @@ export const teamMembers: TeamMember[] = [
 		title: "Software Team",
 		role: "member",
 		team: "software",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/software_team/murat_muzaffer.png",
-		socialLinks: [{ platform: "linkedin", url: "https://tr.linkedin.com/in/murat-muzaffer" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/software_team/murat_muzaffer.png",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://tr.linkedin.com/in/murat-muzaffer",
+			},
+		],
 	},
 	{
 		id: "software-5",
@@ -227,8 +346,13 @@ export const teamMembers: TeamMember[] = [
 		title: "Software Team",
 		role: "member",
 		team: "software",
-		photoUrl: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/software_team/burak_kaya.jpg",
-		socialLinks: [{ platform: "linkedin", url: "https://tr.linkedin.com/in/burak-kaya-984b09380" }],
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/software_team/burak_kaya.jpg",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://tr.linkedin.com/in/burak-kaya-984b09380",
+			},
+		],
 	},
 ];
-

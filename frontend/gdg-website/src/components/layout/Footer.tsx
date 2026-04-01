@@ -61,7 +61,9 @@ export const Footer: React.FC<FooterProps> = ({ className = "" }) => {
 					>
 						Code of Conduct
 					</a>
-					<p className="footer__google-branding">Powered by Google Developers</p>
+					<p className="footer__google-branding">
+						Powered by Google Developers
+					</p>
 				</div>
 			</div>
 		</footer>
