@@ -1,7 +1,6 @@
 import type React from "react";
 import { Navigation } from "../../components/layout/Navigation";
 import { Footer } from "../../components/layout/Footer";
-import { HeroSection } from "../../components/features/HeroSection";
 import { HighlightCard } from "../../components/features/HighlightCard";
 import { EventCard } from "../UpcomingEvents/components/EventCard";
 import { highlights } from "./highlights.data";
@@ -15,10 +14,13 @@ export const HomePage: React.FC = () => {
 	return (
 		<div className="home-page">
 			<Navigation />
-			<HeroSection
-				title="GDG on Campus Yaşar University"
-				subtitle="Building a community of developers and tech enthusiasts"
-			/>
+			<div className="home-page__hero-image">
+				<img
+					src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/home-page-title/home-picture.png"
+					alt="GDG on Campus Yaşar University"
+					className="home-page__hero-image-img"
+				/>
+			</div>
 
 			<main className="home-page__content">
 				<section className="home-page__mission">

@@ -1,15 +1,13 @@
 import type React from "react";
-import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router";
+import { useState } from "react";
+import { Link, useLocation } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
-import GooeyNav from "./GooeyNav";
 
 export interface NavigationProps {
 	className?: string;
 }
 
 const navLinks = [
-	{ path: "/about", label: "About" },
 	{ path: "/team", label: "Team" },
 	{ path: "/upcoming-events", label: "Upcoming Events" },
 ];
@@ -17,15 +15,6 @@ const navLinks = [
 export const Navigation: React.FC<NavigationProps> = ({ className = "" }) => {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const location = useLocation();
-	const navigate = useNavigate();
-	const [activeIndex, setActiveIndex] = useState(0);
-
-	useEffect(() => {
-		const index = navLinks.findIndex((link) => link.path === location.pathname);
-		if (index !== -1) {
-			setActiveIndex(index);
-		}
-	}, [location.pathname]);
 
 	const toggleMobileMenu = () => {
 		setIsMobileMenuOpen((prev) => !prev);
@@ -52,23 +41,23 @@ export const Navigation: React.FC<NavigationProps> = ({ className = "" }) => {
 					GDG on Campus Yaşar University
 				</Link>
 
-				{/* Desktop Navigation with GooeyNav */}
-				<div className="navigation__gooey-wrapper">
-					<GooeyNav
-						items={navLinks.map((link) => ({
-							label: link.label,
-							href: link.path,
-						}))}
-						initialActiveIndex={activeIndex}
-						onNavigate={(href) => navigate(href)}
-						particleCount={25}
-						particleDistances={[90, 10]}
-						particleR={1000}
-						animationTime={600}
-						timeVariance={2000}
-						colors={[1, 2, 3, 1, 2, 3, 1, 4]}
-					/>
-				</div>
+				{/* Desktop Navigation */}
+				<ul className="navigation__links">
+					{navLinks.map((link) => (
+						<li key={link.path}>
+							<Link
+								to={link.path}
+								className={`navigation__link ${
+									location.pathname === link.path
+										? "navigation__link--active"
+										: ""
+								}`}
+							>
+								{link.label}
+							</Link>
+						</li>
+					))}
+				</ul>
 
 				{/* Mobile Menu Button */}
 				<button

@@ -4,6 +4,18 @@
 	flex-direction: column;
 }
 
+.home-page__hero-image {
+	width: 100%;
+	overflow: hidden;
+}
+
+.home-page__hero-image-img {
+	width: 100%;
+	height: auto;
+	display: block;
+	object-fit: cover;
+}
+
 .home-page__content {
 	flex: 1;
 }
