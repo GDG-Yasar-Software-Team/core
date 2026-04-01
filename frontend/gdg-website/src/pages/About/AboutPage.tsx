@@ -70,7 +70,7 @@ export const AboutPage: React.FC = () => {
 					</div>
 				</section>
 
-				<div className="about-page__container"></div>
+				<div className="about-page__container" />
 
 				<section className="about-page__tech-summit-banner">
 					<div className="about-page__banner-container">

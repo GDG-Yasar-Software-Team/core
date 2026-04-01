@@ -90,6 +90,9 @@ function MenuItem({
 	};
 
 	useEffect(() => {
+		const inner = marqueeInnerRef.current;
+		if (!inner) return;
+
 		const calculateRepetitions = () => {
 			if (!marqueeInnerRef.current) return;
 			const marqueeContent = marqueeInnerRef.current.querySelector(
@@ -103,11 +106,19 @@ function MenuItem({
 		};
 
 		calculateRepetitions();
+		const resizeObserver = new ResizeObserver(calculateRepetitions);
+		resizeObserver.observe(inner);
 		window.addEventListener("resize", calculateRepetitions);
-		return () => window.removeEventListener("resize", calculateRepetitions);
-	}, [text, image]);
+		return () => {
+			resizeObserver.disconnect();
+			window.removeEventListener("resize", calculateRepetitions);
+		};
+	}, []);
 
 	useEffect(() => {
+		const inner = marqueeInnerRef.current;
+		if (!inner) return;
+
 		const setupMarquee = () => {
 			if (!marqueeInnerRef.current || !marqueeRef.current) return;
 			const marqueeContent = marqueeInnerRef.current.querySelector(
@@ -134,15 +145,27 @@ function MenuItem({
 			});
 		};
 
-		// Delay to ensure DOM is ready
-		const timer = setTimeout(setupMarquee, 100);
+		let debounceId: ReturnType<typeof setTimeout> | null = null;
+		const scheduleSetup = () => {
+			if (debounceId) clearTimeout(debounceId);
+			debounceId = setTimeout(() => {
+				debounceId = null;
+				setupMarquee();
+			}, 100);
+		};
+
+		scheduleSetup();
+		const resizeObserver = new ResizeObserver(scheduleSetup);
+		resizeObserver.observe(inner);
+
 		return () => {
-			clearTimeout(timer);
+			if (debounceId) clearTimeout(debounceId);
+			resizeObserver.disconnect();
 			if (animationRef.current) {
 				animationRef.current.kill();
 			}
 		};
-	}, [text, image, repetitions, speed]);
+	}, [speed]);
 
 	const handleMouseEnter = (ev: React.MouseEvent) => {
 		if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current)

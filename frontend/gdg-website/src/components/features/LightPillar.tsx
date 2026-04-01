@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 interface LightPillarProps {
@@ -12,7 +12,7 @@ interface LightPillarProps {
 	pillarWidth?: number;
 	pillarHeight?: number;
 	noiseIntensity?: number;
-	mixBlendMode?: string;
+	mixBlendMode?: CSSProperties["mixBlendMode"];
 	pillarRotation?: number;
 	quality?: "low" | "medium" | "high";
 }
@@ -53,6 +53,9 @@ const LightPillar: React.FC<LightPillarProps> = ({
 		}
 	}, []);
 
+	// Full WebGL scene is recreated only when support/quality tier changes; uniform
+	// updates for colors, sizing, etc. are applied in the effects below.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional — avoid disposing the renderer on every visual prop change.
 	useEffect(() => {
 		if (!containerRef.current || !webGLSupported) return;
 
@@ -105,7 +108,7 @@ const LightPillar: React.FC<LightPillarProps> = ({
 		const settings =
 			qualitySettings[effectiveQuality] || qualitySettings.medium;
 
-		let renderer;
+		let renderer: THREE.WebGLRenderer | undefined;
 		try {
 			renderer = new THREE.WebGLRenderer({
 				antialias: false,
@@ -426,7 +429,7 @@ const LightPillar: React.FC<LightPillarProps> = ({
 		return (
 			<div
 				className={`light-pillar-fallback ${className}`}
-				style={{ mixBlendMode: mixBlendMode as any }}
+				style={{ mixBlendMode }}
 			>
 				WebGL not supported
 			</div>
@@ -437,7 +440,7 @@ const LightPillar: React.FC<LightPillarProps> = ({
 		<div
 			ref={containerRef}
 			className={`light-pillar-container ${className}`}
-			style={{ mixBlendMode: mixBlendMode as any }}
+			style={{ mixBlendMode }}
 		/>
 	);
 };
