@@ -165,6 +165,104 @@ class TestCreateSubmissionAPI:
         assert response.json()["detail"]["code"] == "required_answer_incomplete"
 
 
+class TestCreateSubmissionDryRunAPI:
+    """Test POST /submissions/?dry_run=true endpoint."""
+
+    def test_dry_run_returns_201_without_persisting(self, sync_client, mock_mongodb):
+        """POST /submissions/?dry_run=true returns 201 but does not write to DB."""
+        form_doc = _make_active_form_doc()
+        mock_mongodb["forms"].find_one = AsyncMock(return_value=form_doc)
+        mock_mongodb["submissions"].insert_one = AsyncMock()
+        mock_mongodb["forms"].update_one = AsyncMock()
+
+        with patch(
+            "app.services.submission_service.MongoDB.get_db",
+            return_value=mock_mongodb["db"],
+        ):
+            response = sync_client.post(
+                "/submissions/?dry_run=true",
+                json={
+                    "form_id": str(SAMPLE_FORM_ID),
+                    "answers": {"q1": "answer"},
+                    "respondent_email": "test@example.com",
+                },
+            )
+
+        assert response.status_code == 201
+        data = response.json()
+        assert data["respondent_email"] == "test@example.com"
+        mock_mongodb["submissions"].insert_one.assert_not_awaited()
+        mock_mongodb["forms"].update_one.assert_not_awaited()
+
+    def test_dry_run_still_returns_404_for_missing_form(
+        self, sync_client, mock_mongodb
+    ):
+        """POST /submissions/?dry_run=true returns 404 when form does not exist."""
+        mock_mongodb["forms"].find_one = AsyncMock(return_value=None)
+
+        with patch(
+            "app.services.submission_service.MongoDB.get_db",
+            return_value=mock_mongodb["db"],
+        ):
+            response = sync_client.post(
+                "/submissions/?dry_run=true",
+                json={
+                    "form_id": str(SAMPLE_FORM_ID),
+                    "answers": {"q1": "answer"},
+                    "respondent_email": "test@example.com",
+                },
+            )
+
+        assert response.status_code == 404
+
+    def test_dry_run_still_returns_400_for_missing_required_field(
+        self, sync_client, mock_mongodb
+    ):
+        """POST /submissions/?dry_run=true returns 400 when required answer is empty."""
+        form_doc = _make_active_form_doc()
+        mock_mongodb["forms"].find_one = AsyncMock(return_value=form_doc)
+
+        with patch(
+            "app.services.submission_service.MongoDB.get_db",
+            return_value=mock_mongodb["db"],
+        ):
+            response = sync_client.post(
+                "/submissions/?dry_run=true",
+                json={
+                    "form_id": str(SAMPLE_FORM_ID),
+                    "answers": {"q1": ""},
+                    "respondent_email": "test@example.com",
+                },
+            )
+
+        assert response.status_code == 400
+        assert response.json()["detail"]["code"] == "required_answer_incomplete"
+
+    def test_dry_run_false_still_persists(self, sync_client, mock_mongodb):
+        """POST /submissions/?dry_run=false behaves like default (persists to DB)."""
+        form_doc = _make_active_form_doc()
+        mock_mongodb["forms"].find_one = AsyncMock(return_value=form_doc)
+        mock_mongodb["submissions"].insert_one = AsyncMock()
+        mock_mongodb["forms"].update_one = AsyncMock()
+
+        with patch(
+            "app.services.submission_service.MongoDB.get_db",
+            return_value=mock_mongodb["db"],
+        ):
+            response = sync_client.post(
+                "/submissions/?dry_run=false",
+                json={
+                    "form_id": str(SAMPLE_FORM_ID),
+                    "answers": {"q1": "answer"},
+                    "respondent_email": "test@example.com",
+                },
+            )
+
+        assert response.status_code == 201
+        mock_mongodb["submissions"].insert_one.assert_awaited_once()
+        mock_mongodb["forms"].update_one.assert_awaited_once()
+
+
 class TestGetSubmissionAPI:
     """Test GET /submissions/{submission_id} endpoint."""
 
