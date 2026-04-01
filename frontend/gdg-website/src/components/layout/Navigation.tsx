@@ -37,7 +37,7 @@ export const Navigation: React.FC<NavigationProps> = ({ className = "" }) => {
 		>
 			<div className="navigation__container">
 				<Link to="/" className="navigation__logo">
-					<img src="/gdg-logo.png" alt="GDG Logo" className="navigation__logo-img" />
+					<img src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/core/refs/heads/main/frontend/form/public/gdg-logo.png" alt="GDG Logo" className="navigation__logo-img" />
 					GDG on Campus Yaşar University
 				</Link>
 
