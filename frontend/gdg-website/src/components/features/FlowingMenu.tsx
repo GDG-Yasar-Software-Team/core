@@ -1,6 +1,16 @@
 import { gsap } from "gsap";
 import { useEffect, useRef, useState } from "react";
 
+/** Former FlowingMenu.css font modifiers; TeamPage passes these `fontClass` keys. */
+const FLOWING_MENU_FONT_TW: Record<string, string> = {
+	"marquee--font-bebas":
+		"font-['Bebas_Neue',sans-serif] [&_span]:tracking-[0.05em]",
+	"marquee--font-righteous": "font-['Righteous',sans-serif]",
+	"marquee--font-orbitron":
+		"font-['Orbitron',sans-serif] [&_span]:tracking-[0.1em]",
+	"marquee--font-bungee": "font-['Bungee',sans-serif]",
+};
+
 interface FlowingMenuProps {
 	items: Array<{ link: string; text: string; image: string }>;
 	speed?: number;
@@ -23,8 +33,8 @@ function FlowingMenu({
 	fontClass = "",
 }: FlowingMenuProps) {
 	return (
-		<div className="menu-wrap" style={{ backgroundColor: bgColor }}>
-			<nav className="menu">
+		<div className="w-full h-full overflow-hidden" style={{ backgroundColor: bgColor }}>
+			<nav className="flex flex-col h-full m-0 p-0">
 				{items.map((item, idx) => (
 					<MenuItem
 						key={idx}
@@ -55,11 +65,11 @@ interface MenuItemProps {
 }
 
 function MenuItem({
-	link,
+	link: _link,
 	text,
 	image,
 	speed,
-	textColor,
+	textColor: _textColor,
 	marqueeBgColor,
 	marqueeTextColor,
 	borderColor,
@@ -196,28 +206,38 @@ function MenuItem({
 			.to(marqueeInnerRef.current, { y: edge === "top" ? "101%" : "-101%" }, 0);
 	};
 
+	const innerFontTw =
+		FLOWING_MENU_FONT_TW[fontClass] ??
+		(fontClass && !FLOWING_MENU_FONT_TW[fontClass] ? fontClass : "");
+
 	return (
-		<div className="menu__item" ref={itemRef} style={{ borderColor }}>
+		<div
+			ref={itemRef}
+			className="flex-1 relative overflow-hidden text-center border-t border-solid bg-transparent first:border-t-0 pointer-events-auto"
+			style={{ borderColor }}
+			onMouseEnter={handleMouseEnter}
+			onMouseLeave={handleMouseLeave}
+		>
 			<div
-				className="marquee marquee--always-visible"
 				ref={marqueeRef}
+				className="relative overflow-hidden w-full h-full bg-transparent pointer-events-none [transform:translate3d(0,0,0)]"
 				style={{ backgroundColor: marqueeBgColor }}
 			>
-				<div className="marquee__inner-wrap">
+				<div className="h-full w-full overflow-hidden">
 					<div
-						className={`marquee__inner ${fontClass}`}
 						ref={marqueeInnerRef}
+						className={`flex items-center relative h-full w-fit will-change-transform [&_span]:whitespace-nowrap [&_span]:uppercase [&_span]:font-normal [&_span]:text-[4vh] [&_span]:leading-none [&_span]:px-[1vw] ${innerFontTw}`}
 						aria-hidden="true"
 					>
 						{[...Array(repetitions)].map((_, idx) => (
 							<div
-								className="marquee__part"
+								className="flex items-center shrink-0"
 								key={idx}
 								style={{ color: marqueeTextColor }}
 							>
 								<span>{text}</span>
 								<div
-									className="marquee__img"
+									className="w-20 h-20 mx-[2vw] rounded-full bg-[length:60%] bg-no-repeat bg-center shrink-0"
 									style={{ backgroundImage: `url(${image})` }}
 								/>
 							</div>

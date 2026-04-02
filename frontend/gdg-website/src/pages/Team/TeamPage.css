@@ -51,6 +51,8 @@ html {
 	margin: -30px auto 0 auto;
 	position: relative;
 	z-index: 1;
+	justify-items: center;
+	align-items: start;
 }
 
 
@@ -141,6 +143,7 @@ html {
 .team-page__team-row > * {
 	flex: 0 0 auto;
 	width: 180px;
+	min-width: 0; /* flex öğesi içerik genişliğinde sıkışabilsin; foto taşması önlenir */
 }
 
 @media (min-width: 1024px) {

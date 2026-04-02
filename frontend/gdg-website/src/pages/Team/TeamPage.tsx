@@ -134,10 +134,10 @@ export const TeamPage: React.FC = () => {
 												<TeamMemberCard key={member.id} member={member} />
 											))}
 									</div>
-									<div className="team-page__team-row team-page__team-row--4">
+									<div className="team-page__team-row team-page__team-row--3">
 										{organizationTeam
 											.filter((m) => m.role === "member")
-											.slice(3, 7)
+											.slice(3, 6)
 											.map((member) => (
 												<TeamMemberCard key={member.id} member={member} />
 											))}
@@ -173,18 +173,9 @@ export const TeamPage: React.FC = () => {
 										))}
 								</div>
 								<div className="team-page__team-members">
-									<div className="team-page__team-row team-page__team-row--3">
-										{marketingTeam
-											.filter((m) => m.role === "member")
-											.slice(0, 2)
-											.map((member) => (
-												<TeamMemberCard key={member.id} member={member} />
-											))}
-									</div>
 									<div className="team-page__team-row team-page__team-row--4">
 										{marketingTeam
 											.filter((m) => m.role === "member")
-											.slice(2, 5)
 											.map((member) => (
 												<TeamMemberCard key={member.id} member={member} />
 											))}
@@ -223,15 +214,6 @@ export const TeamPage: React.FC = () => {
 									<div className="team-page__team-row team-page__team-row--3">
 										{sponsorshipTeam
 											.filter((m) => m.role === "member")
-											.slice(0, 3)
-											.map((member) => (
-												<TeamMemberCard key={member.id} member={member} />
-											))}
-									</div>
-									<div className="team-page__team-row team-page__team-row--4">
-										{sponsorshipTeam
-											.filter((m) => m.role === "member")
-											.slice(3, 7)
 											.map((member) => (
 												<TeamMemberCard key={member.id} member={member} />
 											))}
@@ -270,15 +252,15 @@ export const TeamPage: React.FC = () => {
 									<div className="team-page__team-row team-page__team-row--3">
 										{softwareTeam
 											.filter((m) => m.role === "member")
-											.slice(0, 2)
+											.slice(0, 3)
 											.map((member) => (
 												<TeamMemberCard key={member.id} member={member} />
 											))}
 									</div>
-									<div className="team-page__team-row team-page__team-row--4">
+									<div className="team-page__team-row team-page__team-row--3">
 										{softwareTeam
 											.filter((m) => m.role === "member")
-											.slice(2, 5)
+											.slice(3, 5)
 											.map((member) => (
 												<TeamMemberCard key={member.id} member={member} />
 											))}

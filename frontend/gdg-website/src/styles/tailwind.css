@@ -1,0 +1,2 @@
+/* Utility layer only — global reset lives in global.css */
+@tailwind utilities;

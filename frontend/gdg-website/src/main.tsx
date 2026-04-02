@@ -3,16 +3,10 @@ import { createRoot } from "react-dom/client";
 
 // Global styles
 import "./styles/global.css";
+import "./styles/tailwind.css";
 import "./styles/tokens.css";
 
 // Component styles
-import "./components/common/Card.css";
-import "./components/features/AnimatedSocialDock.css";
-import "./components/features/FlowingMenu.css";
-import "./components/features/HeroSection.css";
-import "./components/features/HighlightCard.css";
-import "./components/features/LightPillar.css";
-import "./components/features/TeamMemberCard.css";
 import "./components/layout/Footer.css";
 import "./components/layout/Navigation.css";
 

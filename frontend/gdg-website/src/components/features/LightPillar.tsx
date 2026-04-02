@@ -428,7 +428,7 @@ const LightPillar: React.FC<LightPillarProps> = ({
 	if (!webGLSupported) {
 		return (
 			<div
-				className={`light-pillar-fallback ${className}`}
+				className={`w-full h-full absolute inset-0 flex items-center justify-center bg-black/10 text-[#888] text-sm z-0 ${className}`}
 				style={{ mixBlendMode }}
 			>
 				WebGL not supported
@@ -439,7 +439,7 @@ const LightPillar: React.FC<LightPillarProps> = ({
 	return (
 		<div
 			ref={containerRef}
-			className={`light-pillar-container ${className}`}
+			className={`w-full h-full absolute top-0 left-0 pointer-events-none z-[1] [&_canvas]:!block [&_canvas]:!w-full [&_canvas]:!h-full ${className}`}
 			style={{ mixBlendMode }}
 		/>
 	);

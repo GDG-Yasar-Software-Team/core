@@ -50,28 +50,71 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 	const isLeader = member.role === "leader";
 	const isTeamLeader = member.role === "team-leader";
 
+	/** Piksel hedefi; inline stil — Tailwind sırasına / önbelleğe bağlı kalmadan aynı daire kırpması */
+	const photoBoxPx = isLeader ? 196 : isTeamLeader ? 169 : 131;
+
+	const nameClass =
+		isLeader || isTeamLeader
+			? "text-[length:var(--font-size-lg)]"
+			: "text-[length:var(--font-size-md)]";
+
+	const memberTitleClass =
+		isLeader || isTeamLeader
+			? "text-[length:var(--font-size-md)]"
+			: "text-[length:var(--font-size-sm)]";
+
 	return (
 		<div
-			className={`team-member-card ${isLeader ? "team-member-card--leader" : ""} ${className}`}
+			className={`flex min-w-0 w-full flex-col items-center bg-transparent rounded-[var(--border-radius-md)] px-2 py-4 sm:px-4 sm:py-6 shadow-none transition-none hover:shadow-none hover:translate-y-0 hover:bg-transparent ${className}`}
 			data-role={member.role}
 		>
-			<img
-				src={member.photoUrl}
-				alt={member.name}
-				className="team-member-card__photo"
-			/>
-			<h3 className="team-member-card__name">{member.name}</h3>
-			<p className="team-member-card__title">{member.title}</p>
+			<div
+				className="mx-auto mb-2 shrink-0"
+				style={{
+					width: `min(${photoBoxPx}px, 100%)`,
+					aspectRatio: "1",
+					borderRadius: "9999px",
+					overflow: "hidden",
+					backgroundColor: "rgba(0, 0, 0, 0.06)",
+				}}
+			>
+				<img
+					src={member.photoUrl}
+					alt={member.name}
+					width={photoBoxPx}
+					height={photoBoxPx}
+					loading="lazy"
+					decoding="async"
+					style={{
+						width: "100%",
+						height: "100%",
+						objectFit: "cover",
+						objectPosition: "center",
+						display: "block",
+						maxWidth: "none",
+					}}
+				/>
+			</div>
+			<h3
+				className={`font-bold text-[var(--on-surface)] mb-1 m-0 text-center ${nameClass}`}
+			>
+				{member.name}
+			</h3>
+			<p
+				className={`${memberTitleClass} text-[var(--on-surface-variant)] mb-2 m-0 text-center`}
+			>
+				{member.title}
+			</p>
 
 			{member.socialLinks.length > 0 && (
-				<div className="team-member-card__social">
+				<div className="flex gap-2 mt-2">
 					{member.socialLinks.map((link) => (
 						<a
 							key={link.platform}
 							href={link.url}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="team-member-card__social-link"
+							className="flex items-center justify-center w-9 h-9 rounded-[var(--border-radius-full)] bg-transparent text-[var(--on-surface)] transition-all duration-200 ease-in-out hover:bg-black/10"
 							aria-label={`${member.name}'s ${link.platform}`}
 						>
 							{getSocialIcon(link.platform)}

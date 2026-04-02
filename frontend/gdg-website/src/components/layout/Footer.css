@@ -59,7 +59,6 @@
 .footer__social-link:hover {
 	background-color: var(--primary);
 	color: var(--on-primary);
-	transform: translateY(-2px);
 }
 
 .footer__bottom {
