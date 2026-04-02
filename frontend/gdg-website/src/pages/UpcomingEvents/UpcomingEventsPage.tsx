@@ -25,31 +25,33 @@ export const UpcomingEventsPage: React.FC = () => {
 	}, [searchQuery]);
 
 	return (
-		<div className="upcoming-events-page">
+		<div className="min-h-screen flex flex-col bg-white">
 			<Navigation />
 
-			<main className="upcoming-events-page__content">
-				<div className="upcoming-events-page__container">
-					<header className="upcoming-events-page__header">
-						<h1 className="upcoming-events-page__title">Upcoming events</h1>
-						<p className="upcoming-events-page__subtitle">
+			<main className="flex-1 py-16 px-8 md:py-16 md:px-8">
+				<div className="max-w-[1200px] mx-auto">
+					<header className="mb-12">
+						<h1 className="text-[2rem] md:text-[2.5rem] font-normal text-[#202124] m-0 mb-4">
+							Upcoming events
+						</h1>
+						<p className="text-sm md:text-base text-[#5f6368] leading-relaxed max-w-[800px] m-0 italic">
 							We can't wait to see you at an upcoming event! On this page, you
 							can advance search by location, select event types (how you want
 							to join the event), and/or pick out topics of your interest!
 						</p>
 					</header>
 
-					<div className="upcoming-events-page__search">
-						<div className="upcoming-events-page__search-container">
+					<div className="flex justify-center mb-12">
+						<div className="relative w-full max-w-[600px]">
 							<input
 								type="text"
 								placeholder="Search for events"
 								value={searchQuery}
 								onChange={(e) => setSearchQuery(e.target.value)}
-								className="upcoming-events-page__search-input"
+								className="w-full py-3.5 pr-12 pl-4 text-sm md:text-base border border-[#dadce0] rounded-3xl outline-none transition-all duration-200 focus:border-[#4285F4] focus:shadow-[0_1px_6px_rgba(66,133,244,0.3)]"
 							/>
 							<svg
-								className="upcoming-events-page__search-icon"
+								className="absolute right-4 top-1/2 -translate-y-1/2 text-[#5f6368] pointer-events-none"
 								width="20"
 								height="20"
 								viewBox="0 0 20 20"
@@ -67,20 +69,20 @@ export const UpcomingEventsPage: React.FC = () => {
 						</div>
 					</div>
 
-					<div className="upcoming-events-page__events">
+					<div className="flex flex-col gap-6">
 						{filteredEvents.length > 0 ? (
 							filteredEvents.map((event) => (
 								<EventCard key={event.id} event={event} />
 							))
 						) : (
-							<div className="upcoming-events-page__empty">
+							<div className="text-center py-16 px-8 text-[#5f6368] text-lg">
 								<p>No events found matching your search.</p>
 							</div>
 						)}
 					</div>
 
 					{filteredEvents.length === 0 && upcomingEvents.length === 0 && (
-						<div className="upcoming-events-page__no-events">
+						<div className="text-center py-16 px-8 text-[#5f6368] text-lg">
 							<p>No upcoming events at the moment. Check back soon!</p>
 						</div>
 					)}

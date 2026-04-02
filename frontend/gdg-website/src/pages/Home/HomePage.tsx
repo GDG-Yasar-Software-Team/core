@@ -116,42 +116,42 @@ export const HomePage: React.FC = () => {
 	};
 
 	return (
-		<div className="home-page">
+		<div className="min-h-screen flex flex-col">
 			<Navigation />
-			<div className="home-page__hero-image">
+			<div className="w-full overflow-hidden">
 				<img
 					src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/home-page-title/home-picture.png"
 					alt="GDG on Campus Yaşar University"
-					className="home-page__hero-image-img"
+					className="w-full h-auto block object-cover"
 				/>
 			</div>
 
-			<main className="home-page__content">
-				<section className="home-page__mission">
-					<div className="home-page__container">
-						<h2>Our Mission</h2>
-						<p>
+			<main className="flex-1">
+				<section className="py-24 text-center">
+					<div className="max-w-[1200px] mx-auto px-6">
+						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-6">Our Mission</h2>
+						<p className="text-lg text-[#5f6368] max-w-[800px] mx-auto mb-24 leading-relaxed">
 							We bring together students passionate about technology to learn,
 							share, and build amazing things. Join us for workshops,
 							hackathons, and tech talks!
 						</p>
-						<div className="home-page__mission-cards">
+						<div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
 							{missionCards.map((card) => (
-								<div key={card.id} className="home-page__mission-card">
-									<div className="home-page__mission-card-image-wrapper">
+								<div key={card.id} className="bg-white rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(60,64,67,0.15)] transition-all duration-300 cursor-pointer hover:-translate-y-2 hover:shadow-[0_8px_24px_rgba(60,64,67,0.25)]">
+									<div className="relative w-full h-60 overflow-hidden">
 										<img
 											src={card.image}
 											alt={card.title}
-											className="home-page__mission-card-image"
+											className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
 										/>
 										<div
-											className="home-page__mission-card-overlay"
+											className="absolute top-0 left-0 right-0 bottom-0 opacity-30 transition-opacity duration-300 hover:opacity-50"
 											style={{ backgroundColor: `${card.color}CC` }}
 										/>
 									</div>
-									<div className="home-page__mission-card-content">
-										<h3 style={{ color: card.color }}>{card.title}</h3>
-										<p>{card.description}</p>
+									<div className="p-8">
+										<h3 className="text-xl font-bold m-0 mb-4" style={{ color: card.color }}>{card.title}</h3>
+										<p className="text-base text-[#5f6368] leading-relaxed m-0">{card.description}</p>
 									</div>
 								</div>
 							))}
@@ -159,14 +159,14 @@ export const HomePage: React.FC = () => {
 					</div>
 				</section>
 
-				<section className="home-page__past-events">
-					<div className="home-page__container">
-						<h2>What We Do</h2>
+				<section className="py-24 bg-[#f5f5f5] overflow-hidden">
+					<div className="max-w-[1200px] mx-auto px-6">
+						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-16 text-center">What We Do</h2>
 					</div>
-					<div className="home-page__past-events-wrapper">
+					<div className="relative max-w-[1600px] mx-auto px-[60px] md:px-[60px]">
 						<button
 							type="button"
-							className="home-page__scroll-button home-page__scroll-button--left"
+							className="absolute top-1/2 -translate-y-1/2 left-0 w-12 h-12 rounded-full bg-white border-none shadow-[0_2px_4px_0_rgba(60,64,67,0.3),0_1px_6px_1px_rgba(60,64,67,0.15)] cursor-pointer flex items-center justify-center text-[#5f6368] transition-all duration-200 z-10 hover:bg-[#f8f9fa] hover:shadow-[0_4px_8px_0_rgba(60,64,67,0.3),0_2px_8px_2px_rgba(60,64,67,0.15)] hover:text-[#202124] active:scale-95 md:flex hidden"
 							onClick={() => scroll("left")}
 							aria-label="Scroll left"
 						>
@@ -187,26 +187,26 @@ export const HomePage: React.FC = () => {
 							</svg>
 						</button>
 						<div
-							className="home-page__past-events-scroll"
+							className="flex gap-6 overflow-x-auto md:overflow-x-hidden overflow-y-hidden scroll-smooth [-webkit-overflow-scrolling:touch] [scrollbar-width:thin] md:[scrollbar-width:none] [scrollbar-color:#dadce0_transparent] md:[&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar]:block [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#dadce0] [&::-webkit-scrollbar-thumb]:rounded"
 							ref={scrollContainerRef}
 						>
 							{pastEventsDisplay.map((event) => (
 								<Link
 									key={event.id}
 									to={`/events/${event.id}`}
-									className="home-page__past-event-card"
+									className="flex-[0_0_auto] w-[280px] bg-white rounded-xl overflow-hidden shadow-[0_1px_2px_0_rgba(60,64,67,0.3),0_1px_3px_1px_rgba(60,64,67,0.15)] transition-all duration-200 cursor-pointer no-underline block hover:-translate-y-1 hover:shadow-[0_4px_8px_0_rgba(60,64,67,0.3),0_2px_6px_2px_rgba(60,64,67,0.15)]"
 								>
 									<img
 										src={event.image}
 										alt={event.title}
-										className="home-page__past-event-image"
+										className="w-full h-[280px] object-cover block"
 									/>
 								</Link>
 							))}
 						</div>
 						<button
 							type="button"
-							className="home-page__scroll-button home-page__scroll-button--right"
+							className="absolute top-1/2 -translate-y-1/2 right-0 w-12 h-12 rounded-full bg-white border-none shadow-[0_2px_4px_0_rgba(60,64,67,0.3),0_1px_6px_1px_rgba(60,64,67,0.15)] cursor-pointer flex items-center justify-center text-[#5f6368] transition-all duration-200 z-10 hover:bg-[#f8f9fa] hover:shadow-[0_4px_8px_0_rgba(60,64,67,0.3),0_2px_8px_2px_rgba(60,64,67,0.15)] hover:text-[#202124] active:scale-95 md:flex hidden"
 							onClick={() => scroll("right")}
 							aria-label="Scroll right"
 						>
@@ -229,10 +229,10 @@ export const HomePage: React.FC = () => {
 					</div>
 				</section>
 
-				<section className="home-page__events">
-					<div className="home-page__container">
-						<h2> Events</h2>
-						<div className="home-page__events-grid">
+				<section className="py-24">
+					<div className="max-w-[1200px] mx-auto px-6">
+						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-16 text-center"> Events</h2>
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 							{recentEvents.map((event) => (
 								<EventCard key={event.id} event={event} />
 							))}

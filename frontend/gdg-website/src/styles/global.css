@@ -3,179 +3,24 @@
 @import "./tokens.css";
 
 /* ========================================
-   CSS Reset
+   Minimal Global Styles
+   Note: Most styles now handled by Tailwind
    ======================================== */
 
-*,
-*::before,
-*::after {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
-}
-
+/* Font smoothing */
 html {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	text-rendering: optimizeLegibility;
 }
 
+/* Body defaults */
 body {
 	font-family: var(--font-family);
-	font-size: var(--font-body-large-size);
-	line-height: var(--font-body-large-line-height);
-	color: var(--color-on-surface);
-	background-color: var(--color-background);
 	min-height: 100vh;
 }
 
-img,
-picture,
-video,
-canvas,
-svg {
-	display: block;
-	max-width: 100%;
-}
-
-input,
-button,
-textarea,
-select {
-	font: inherit;
-}
-
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	overflow-wrap: break-word;
-}
-
-ul,
-ol {
-	list-style: none;
-}
-
-a {
-	text-decoration: none;
-	color: inherit;
-}
-
-button {
-	border: none;
-	background: none;
-	cursor: pointer;
-}
-
-/* ========================================
-   Base Styles
-   ======================================== */
-
-#root {
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-}
-
-main {
-	flex: 1;
-}
-
-/* Typography */
-h1 {
-	font-size: var(--font-display-small-size);
-	line-height: var(--font-display-small-line-height);
-	font-weight: var(--font-display-small-weight);
-}
-
-h2 {
-	font-size: var(--font-headline-large-size);
-	line-height: var(--font-headline-large-line-height);
-	font-weight: var(--font-headline-large-weight);
-}
-
-h3 {
-	font-size: var(--font-headline-medium-size);
-	line-height: var(--font-headline-medium-line-height);
-	font-weight: var(--font-headline-medium-weight);
-}
-
-h4 {
-	font-size: var(--font-headline-small-size);
-	line-height: var(--font-headline-small-line-height);
-	font-weight: var(--font-headline-small-weight);
-}
-
-/* Focus indicators for accessibility */
-:focus-visible {
-	outline: 2px solid var(--color-blue);
-	outline-offset: 2px;
-	border-radius: 2px;
-}
-
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
-	outline: 2px solid var(--primary);
-	outline-offset: 2px;
-}
-
-/* Smooth scrolling */
-html {
-	scroll-behavior: smooth;
-}
-
-/* ========================================
-   Responsive Breakpoints
-   ======================================== */
-
-/* Mobile-first approach: Base styles are for mobile (< 768px) */
-
-/* Tablet: 768px - 1024px */
-@media (min-width: 768px) {
-	h1 {
-		font-size: var(--font-display-medium-size);
-		line-height: var(--font-display-medium-line-height);
-	}
-}
-
-/* Desktop: > 1024px */
-@media (min-width: 1024px) {
-	h1 {
-		font-size: var(--font-display-large-size);
-		line-height: var(--font-display-large-line-height);
-	}
-}
-
-/* ========================================
-   Utility Classes
-   ======================================== */
-
-.container {
-	width: 100%;
-	max-width: 1200px;
-	margin: 0 auto;
-	padding: 0 var(--spacing-md);
-}
-
-@media (min-width: 768px) {
-	.container {
-		padding: 0 var(--spacing-lg);
-	}
-}
-
-@media (min-width: 1024px) {
-	.container {
-		padding: 0 var(--spacing-xl);
-	}
-}
-
+/* Accessibility - Screen reader only */
 .visually-hidden {
 	position: absolute;
 	width: 1px;

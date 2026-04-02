@@ -12,13 +12,13 @@ export const EventDetailPage: React.FC = () => {
 
 	if (!event) {
 		return (
-			<div className="event-detail-page">
+			<div className="min-h-screen flex flex-col">
 				<Navigation />
-				<main className="event-detail-page__content">
-					<div className="event-detail-page__container">
+				<main className="flex-1 pt-16">
+					<div className="max-w-[900px] mx-auto py-24 px-6">
 						<h1>Event Not Found</h1>
 						<p>The event you're looking for doesn't exist.</p>
-						<Link to="/" className="event-detail-page__back-link">
+						<Link to="/" className="inline-flex items-center gap-2 text-[#5f6368] no-underline text-base font-medium mb-8 transition-colors duration-200 hover:text-[#4285F4]">
 							Back to Home
 						</Link>
 					</div>
@@ -29,21 +29,25 @@ export const EventDetailPage: React.FC = () => {
 	}
 
 	return (
-		<div className="event-detail-page">
+		<div className="min-h-screen flex flex-col">
 			<Navigation />
-			<main className="event-detail-page__content">
-				<div className="event-detail-page__container">
-					<Link to="/" className="event-detail-page__back-link">
+			<main className="flex-1 pt-16">
+				<div className="max-w-[900px] mx-auto py-24 px-6">
+					<Link to="/" className="inline-flex items-center gap-2 text-[#5f6368] no-underline text-base font-medium mb-8 transition-colors duration-200 hover:text-[#4285F4]">
 						← Back to Home
 					</Link>
 
-					<div className="event-detail-page__header">
-						<span className="event-detail-page__type">{event.type}</span>
-						<h1 className="event-detail-page__title">{event.title}</h1>
+					<div className="mb-24">
+						<span className="inline-block py-1 px-4 bg-[#e8f0fe] text-[#1967d2] rounded-full text-sm font-medium mb-4">
+							{event.type}
+						</span>
+						<h1 className="text-3xl md:text-4xl font-bold text-[#1f1f1f] m-0 mb-8 leading-tight">
+							{event.title}
+						</h1>
 
-						<div className="event-detail-page__meta">
-							<div className="event-detail-page__meta-item">
-								<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+						<div className="flex flex-col md:flex-row md:flex-wrap gap-4 md:gap-8 mb-6">
+							<div className="flex items-center gap-2 text-[#5f6368] text-base">
+								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-[#5f6368]">
 									<path
 										d="M8 2v3M16 2v3M3.5 9.09h17M21 8.5V17c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V8.5c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5z"
 										stroke="currentColor"
@@ -54,8 +58,8 @@ export const EventDetailPage: React.FC = () => {
 								</svg>
 								<span>{event.date}</span>
 							</div>
-							<div className="event-detail-page__meta-item">
-								<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+							<div className="flex items-center gap-2 text-[#5f6368] text-base">
+								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-[#5f6368]">
 									<path
 										d="M12 13.43a3.12 3.12 0 1 0 0-6.24 3.12 3.12 0 0 0 0 6.24z"
 										stroke="currentColor"
@@ -73,47 +77,47 @@ export const EventDetailPage: React.FC = () => {
 							</div>
 						</div>
 
-						<div className="event-detail-page__tags">
+						<div className="flex flex-wrap gap-2">
 							{event.tags.map((tag) => (
-								<span key={tag} className="event-detail-page__tag">
+								<span key={tag} className="py-1 px-4 bg-[#f1f3f4] text-[#5f6368] rounded-full text-sm font-medium">
 									{tag}
 								</span>
 							))}
 						</div>
 					</div>
 
-					<div className="event-detail-page__body">
-						<h2>About This Event</h2>
-						<div className="event-detail-page__content-wrapper">
+					<div className="border-t border-[#e8eaed] pt-16">
+						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-16">About This Event</h2>
+						<div className="grid grid-cols-1 md:grid-cols-[400px_1fr] gap-16 items-start">
 							{event.id === "design-patterns-hepsiburada" ? (
-								<div className="event-detail-page__image-card">
+								<div className="relative rounded-2xl overflow-hidden shadow-[0_4px_12px_rgba(60,64,67,0.15)] bg-gradient-to-br from-[#4285F4] via-[#EA4335] via-[#FBBC05] via-[#34A853] to-[#4285F4] p-1">
 									<img
 										src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/6-batuhan-gungor.png"
 										alt="Batuhan Güngör"
-										className="event-detail-page__content-image"
+										className="w-full h-auto block rounded-xl bg-white"
 									/>
 								</div>
 							) : (
-								<div className="event-detail-page__image-card">
+								<div className="relative rounded-2xl overflow-hidden shadow-[0_4px_12px_rgba(60,64,67,0.15)] bg-gradient-to-br from-[#4285F4] via-[#EA4335] via-[#FBBC05] via-[#34A853] to-[#4285F4] p-1">
 									<img
 										src={event.imageUrl}
 										alt={event.title}
-										className="event-detail-page__content-image"
+										className="w-full h-auto block rounded-xl bg-white"
 									/>
 								</div>
 							)}
-							<div className="event-detail-page__description-wrapper">
-								<p className="event-detail-page__description">
+							<div className="flex flex-col gap-8">
+								<p className="text-base text-[#5f6368] leading-relaxed m-0">
 									{event.description}
 								</p>
 
 								{event.id === "design-patterns-hepsiburada" && (
-									<div className="event-detail-page__speaker">
-										<h3>Speaker</h3>
-										<div className="event-detail-page__speaker-card">
-											<div className="event-detail-page__speaker-info">
-												<h4>Batuhan Güngör</h4>
-												<p>
+									<div className="mt-8">
+										<h3 className="text-xl font-bold text-[#1f1f1f] m-0 mb-6">Speaker</h3>
+										<div className="p-6 bg-[#f8f9fa] rounded-xl border border-[#e8eaed]">
+											<div>
+												<h4 className="text-lg font-bold text-[#1f1f1f] m-0 mb-1">Batuhan Güngör</h4>
+												<p className="text-base text-[#5f6368] m-0">
 													Software Engineering Manager at Hepsiburada / Hepsipay
 												</p>
 											</div>
@@ -122,8 +126,8 @@ export const EventDetailPage: React.FC = () => {
 								)}
 
 								{event.isPast && (
-									<div className="event-detail-page__past-notice">
-										<svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+									<div className="flex items-center gap-4 p-6 bg-[#fef7e0] border-l-4 border-[#FBBC05] rounded text-[#5f6368] text-base">
+										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="flex-shrink-0 text-[#FBBC05]">
 											<path
 												d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10z"
 												stroke="currentColor"

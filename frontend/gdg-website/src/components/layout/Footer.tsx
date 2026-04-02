@@ -37,31 +37,31 @@ const socialLinks = [
 
 export const Footer: React.FC<FooterProps> = ({ className = "" }) => {
 	return (
-		<footer className={`footer ${className}`}>
-			<div className="footer__container">
-				<div className="footer__content">
-					<div className="footer__brand">
-						<h3 className="footer__title">GDG on Campus Yaşar University</h3>
-						<p className="footer__description">
+		<footer className={`bg-[#f5f5f5] px-6 py-16 mt-24 ${className}`}>
+			<div className="max-w-[1200px] mx-auto">
+				<div className="flex flex-col md:flex-row md:justify-between gap-8 mb-8">
+					<div className="flex-1">
+						<h3 className="text-lg font-bold text-[#1f1f1f] m-0 mb-2">GDG on Campus Yaşar University</h3>
+						<p className="text-[#5f6368] m-0">
 							Building a community of developers and tech enthusiasts
 						</p>
 					</div>
 
-					<div className="footer__social">
+					<div>
 						<AnimatedSocialDock items={socialLinks} />
 					</div>
 				</div>
 
-				<div className="footer__bottom">
+				<div className="flex flex-col md:flex-row md:justify-between gap-4 pt-8 border-t border-[#dadce0] text-center md:text-left">
 					<a
 						href="https://gdg.community.dev/gdg-on-campus-yasar-university-izmir-turkey/"
 						target="_blank"
 						rel="noopener noreferrer"
-						className="footer__coc-link"
+						className="text-[#4285F4] no-underline font-medium hover:underline"
 					>
 						Code of Conduct
 					</a>
-					<p className="footer__google-branding">
+					<p className="text-[#5f6368] text-sm m-0">
 						Powered by Google Developers
 					</p>
 				</div>

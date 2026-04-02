@@ -1,2 +1,23 @@
-/* Utility layer only — global reset lives in global.css */
+@tailwind base;
+@tailwind components;
 @tailwind utilities;
+
+@layer base {
+	/* Smooth scrolling for Team page */
+	html {
+		scroll-behavior: smooth;
+		scroll-snap-type: y mandatory;
+		scroll-padding: 0;
+	}
+	
+	/* Root layout */
+	#root {
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+	}
+	
+	main {
+		flex: 1;
+	}
+}
