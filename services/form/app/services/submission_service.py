@@ -221,13 +221,14 @@ class SubmissionService:
 
     @classmethod
     async def create_submission(
-        cls, submission_data: SubmissionCreate
+        cls, submission_data: SubmissionCreate, *, dry_run: bool = False
     ) -> SubmissionInDB:
         """
         Create a new submission.
 
         Args:
             submission_data: Submission data to create
+            dry_run: If True, validate only — skip DB insert and submission_count increment.
 
         Returns:
             Created SubmissionInDB instance
@@ -246,6 +247,13 @@ class SubmissionService:
         submission_doc["submitted_at"] = datetime.now(timezone.utc)
         # Ensure form_id is stored as ObjectId, not string
         submission_doc["form_id"] = cls._to_object_id(submission_data.form_id)
+
+        if dry_run:
+            logger.info(
+                "Dry-run submission validated (not persisted)",
+                form_id=str(submission_data.form_id),
+            )
+            return cls._document_to_submission(submission_doc)
 
         object_id = cls._to_object_id(submission_data.form_id)
         submissions_collection = cls._get_submissions_collection()

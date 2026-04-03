@@ -24,14 +24,20 @@ router = APIRouter(prefix="/submissions", tags=["submissions"])
 @router.post("/", response_model=SubmissionResponse, status_code=201)
 async def create_submission(
     submission_data: SubmissionCreate,
+    dry_run: Annotated[bool, Query(alias="dry_run")] = False,
 ) -> SubmissionResponse:
     """
     Create a new form submission.
 
     Validates that the form exists, is active, has started, and deadline has not passed.
+
+    When `dry_run=true`, the payload is fully validated but nothing is
+    persisted to the database.
     """
     try:
-        submission = await SubmissionService.create_submission(submission_data)
+        submission = await SubmissionService.create_submission(
+            submission_data, dry_run=dry_run
+        )
         return SubmissionResponse.from_db(submission)
     except FormNotFoundError:
         raise HTTPException(status_code=404, detail={"code": "form_not_found"})
