@@ -64,9 +64,9 @@ const AdminFormListPage = () => {
 
 	return (
 		<AdminPasswordGate>
-			<div className="min-h-screen bg-slate-100 px-4 py-8">
+			<div className="min-h-screen bg-slate-100 px-4 py-4 md:py-8 overflow-x-hidden">
 				<div className="mx-auto max-w-6xl space-y-6">
-					<div className="flex items-center justify-between">
+					<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 						<div>
 							<h1 className="text-2xl font-semibold text-slate-900">
 								Form Yönetimi
@@ -78,7 +78,7 @@ const AdminFormListPage = () => {
 						<button
 							type="button"
 							onClick={() => navigate("/admin/forms/editor")}
-							className="rounded-lg bg-[#4285F4] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#3367D6]"
+							className="w-full sm:w-auto rounded-lg bg-[#4285F4] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#3367D6]"
 						>
 							Yeni Form Oluştur
 						</button>
@@ -107,129 +107,131 @@ const AdminFormListPage = () => {
 							</div>
 						) : (
 							<>
-								<table className="w-full">
-									<thead className="border-b border-slate-100 bg-slate-50">
-										<tr>
-											<th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-												Başlık
-											</th>
-											<th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-												Durum
-											</th>
-											<th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-												Son Tarih
-											</th>
-											<th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-												Oluşturulma
-											</th>
-											<th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
-												İşlemler
-											</th>
-										</tr>
-									</thead>
-									<tbody className="divide-y divide-slate-100">
-										{forms.map((form) => (
-											<tr key={form.id} className="hover:bg-slate-50">
-												<td className="px-6 py-4">
-													<span className="font-medium text-slate-900">
-														{form.title}
-													</span>
-													{form.description && (
-														<p className="mt-0.5 text-xs text-slate-500 truncate max-w-xs">
-															{form.description}
-														</p>
-													)}
-												</td>
-												<td className="px-6 py-4">
-													{form.is_active ? (
-														<span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">
-															Aktif
-														</span>
-													) : (
-														<span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-500">
-															Pasif
-														</span>
-													)}
-												</td>
-												<td className="px-6 py-4 text-sm text-slate-600">
-													{formatDate(form.deadline)}
-												</td>
-												<td className="px-6 py-4 text-sm text-slate-600">
-													{formatDate(form.created_at)}
-												</td>
-												<td className="px-6 py-4">
-													<div className="flex items-center justify-end gap-2">
-														{confirmDeleteId === form.id ? (
-															<>
-																<span className="text-xs text-red-600 font-medium mr-1">
-																	Silmek istediğinize emin misiniz?
-																</span>
-																<button
-																	type="button"
-																	onClick={() => handleDeleteClick(form.id)}
-																	disabled={deletingId === form.id}
-																	className="rounded px-2 py-1 text-xs font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50"
-																>
-																	{deletingId === form.id
-																		? "Siliniyor..."
-																		: "Evet, Sil"}
-																</button>
-																<button
-																	type="button"
-																	onClick={handleCancelDelete}
-																	disabled={deletingId === form.id}
-																	className="rounded px-2 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100 disabled:opacity-50"
-																>
-																	İptal
-																</button>
-															</>
-														) : (
-															<>
-																<button
-																	type="button"
-																	onClick={() =>
-																		navigate(`/admin/views/${form.id}`)
-																	}
-																	className="rounded px-2 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100"
-																	title="Yanıtları Görüntüle"
-																>
-																	Yanıtlar
-																</button>
-																<button
-																	type="button"
-																	onClick={() =>
-																		navigate(
-																			`/admin/forms/editor?id=${form.id}`,
-																		)
-																	}
-																	className="rounded px-2 py-1 text-xs font-medium text-blue-600 hover:bg-blue-50"
-																>
-																	Düzenle
-																</button>
-																<button
-																	type="button"
-																	onClick={() => handleDeleteClick(form.id)}
-																	disabled={deletingId === form.id}
-																	className="rounded px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
-																>
-																	Sil
-																</button>
-															</>
-														)}
-													</div>
-													{deleteError && confirmDeleteId === form.id && (
-														<p className="mt-1 text-xs text-red-600 text-right">
-															{deleteError}
-														</p>
-													)}
-												</td>
+								<div className="w-full overflow-x-auto">
+									<table className="min-w-max w-full">
+										<thead className="border-b border-slate-100 bg-slate-50">
+											<tr>
+												<th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+													Başlık
+												</th>
+												<th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+													Durum
+												</th>
+												<th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+													Son Tarih
+												</th>
+												<th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+													Oluşturulma
+												</th>
+												<th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+													İşlemler
+												</th>
 											</tr>
-										))}
-									</tbody>
-								</table>
+										</thead>
+										<tbody className="divide-y divide-slate-100">
+											{forms.map((form) => (
+												<tr key={form.id} className="hover:bg-slate-50">
+													<td className="px-6 py-4">
+														<span className="font-medium text-slate-900">
+															{form.title}
+														</span>
+														{form.description && (
+															<p className="mt-0.5 text-xs text-slate-500 truncate max-w-xs">
+																{form.description}
+															</p>
+														)}
+													</td>
+													<td className="px-6 py-4">
+														{form.is_active ? (
+															<span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">
+																Aktif
+															</span>
+														) : (
+															<span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-500">
+																Pasif
+															</span>
+														)}
+													</td>
+													<td className="px-6 py-4 text-sm text-slate-600">
+														{formatDate(form.deadline)}
+													</td>
+													<td className="px-6 py-4 text-sm text-slate-600">
+														{formatDate(form.created_at)}
+													</td>
+													<td className="px-6 py-4">
+														<div className="flex items-center justify-end gap-2">
+															{confirmDeleteId === form.id ? (
+																<>
+																	<span className="text-xs text-red-600 font-medium mr-1">
+																		Silmek istediğinize emin misiniz?
+																	</span>
+																	<button
+																		type="button"
+																		onClick={() => handleDeleteClick(form.id)}
+																		disabled={deletingId === form.id}
+																		className="rounded px-2 py-1 text-xs font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50"
+																	>
+																		{deletingId === form.id
+																			? "Siliniyor..."
+																			: "Evet, Sil"}
+																	</button>
+																	<button
+																		type="button"
+																		onClick={handleCancelDelete}
+																		disabled={deletingId === form.id}
+																		className="rounded px-2 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100 disabled:opacity-50"
+																	>
+																		İptal
+																	</button>
+																</>
+															) : (
+																<>
+																	<button
+																		type="button"
+																		onClick={() =>
+																			navigate(`/admin/views/${form.id}`)
+																		}
+																		className="rounded px-2 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100"
+																		title="Yanıtları Görüntüle"
+																	>
+																		Yanıtlar
+																	</button>
+																	<button
+																		type="button"
+																		onClick={() =>
+																			navigate(
+																				`/admin/forms/editor?id=${form.id}`,
+																			)
+																		}
+																		className="rounded px-2 py-1 text-xs font-medium text-blue-600 hover:bg-blue-50"
+																	>
+																		Düzenle
+																	</button>
+																	<button
+																		type="button"
+																		onClick={() => handleDeleteClick(form.id)}
+																		disabled={deletingId === form.id}
+																		className="rounded px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
+																	>
+																		Sil
+																	</button>
+																</>
+															)}
+														</div>
+														{deleteError && confirmDeleteId === form.id && (
+															<p className="mt-1 text-xs text-red-600 text-right">
+																{deleteError}
+															</p>
+														)}
+													</td>
+												</tr>
+											))}
+										</tbody>
+									</table>
+								</div>
 
 								{totalPages > 1 && (
-									<div className="flex items-center justify-between border-t border-slate-100 px-6 py-3">
+									<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-slate-100 px-4 sm:px-6 py-3">
 										<p className="text-sm text-slate-500">
 											Toplam {total} form
 										</p>
