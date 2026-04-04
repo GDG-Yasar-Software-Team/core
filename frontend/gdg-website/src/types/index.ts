@@ -22,13 +22,7 @@ export interface Event {
 	date: string; // ISO datetime string from backend
 	place: string;
 	speakers: Speaker[];
-	image_url: string | null;
-	created_at: string; // ISO datetime string
-	updated_at: string | null; // ISO datetime string
-}
-
-/**
- * Social media platform types
+        tags: string[];
  */
 export type SocialPlatform =
 	| "linkedin"

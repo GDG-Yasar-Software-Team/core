@@ -17,6 +17,9 @@ class EventCreate(BaseModel):
     date: datetime
     place: str = Field(min_length=1, max_length=200)
     speakers: list[Speaker] = Field(default_factory=list)
+    tags: list[str] = Field(default_factory=list)
+    event_type: str | None = None
+    registration_form_url: str | None = None
     image_url: str | None = None
     tags: list[str] = Field(default_factory=list)
     registration_form_url: str | None = None
@@ -33,11 +36,14 @@ class EventCreate(BaseModel):
 
 
 class EventUpdate(BaseModel):
-    title: str | None = Field(default=None, min_length=1, max_length=200)
+    title: str | None = Field(default=None, min_length=1, max_length=200)       
     description: str | None = Field(default=None, min_length=1)
     date: datetime | None = None
-    place: str | None = Field(default=None, min_length=1, max_length=200)
+    place: str | None = Field(default=None, min_length=1, max_length=200)       
     speakers: list[Speaker] | None = None
+    tags: list[str] | None = None
+    event_type: str | None = None
+    registration_form_url: str | None = None
     image_url: str | None = None
     tags: list[str] = Field(default_factory=list)
     registration_form_url: str | None = None
@@ -54,7 +60,6 @@ class EventUpdate(BaseModel):
                 raise ValueError(msg)
         return v
 
-
 class EventInDB(BaseModel):
     id: PyObjectId = Field(alias="_id")
     title: str
@@ -62,6 +67,9 @@ class EventInDB(BaseModel):
     date: datetime
     place: str
     speakers: list[Speaker] = Field(default_factory=list)
+    tags: list[str] = Field(default_factory=list)
+    event_type: str | None = None
+    registration_form_url: str | None = None
     image_url: str | None = None
     tags: list[str] = Field(default_factory=list)
     registration_form_url: str | None = None
@@ -69,7 +77,7 @@ class EventInDB(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime | None = None
 
-    model_config = {"populate_by_name": True, "arbitrary_types_allowed": True}
+    model_config = {"populate_by_name": True, "arbitrary_types_allowed": True}  
 
 
 class EventResponse(BaseModel):
@@ -79,6 +87,9 @@ class EventResponse(BaseModel):
     date: datetime
     place: str
     speakers: list[Speaker]
+    tags: list[str]
+    event_type: str | None = None
+    registration_form_url: str | None = None
     image_url: str | None
     tags: list[str]
     registration_form_url: str | None
@@ -97,6 +108,9 @@ class EventResponse(BaseModel):
             date=event.date,
             place=event.place,
             speakers=event.speakers,
+            tags=event.tags,
+            event_type=event.event_type,
+            registration_form_url=event.registration_form_url,
             image_url=event.image_url,
             tags=event.tags,
             registration_form_url=event.registration_form_url,
