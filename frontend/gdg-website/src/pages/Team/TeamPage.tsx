@@ -106,7 +106,7 @@ export const TeamPage: React.FC = () => {
 									{organizationTeam
 										.filter((m) => m.role === "member")
 										.map((member, idx) => (
-											<div key={member.id} className="w-[130px] sm:w-[150px] md:w-[170px] ">
+											<div key={member.id} className="w-[130px] sm:w-[150px] md:w-[160px] ">
 												<TeamMemberCard member={member} index={idx + 1} />
 											</div>
 										))}
@@ -154,7 +154,7 @@ export const TeamPage: React.FC = () => {
 									{marketingTeam
 										.filter((m) => m.role === "member")
 										.map((member, idx) => (
-											<div key={member.id} className="w-[130px] sm:w-[150px] md:w-[170px] ">
+											<div key={member.id} className="w-[130px] sm:w-[150px] md:w-[160px] ">
 												<TeamMemberCard member={member} index={idx + 1} />
 											</div>
 										))}
@@ -202,7 +202,7 @@ export const TeamPage: React.FC = () => {
 									{sponsorshipTeam
 										.filter((m) => m.role === "member")
 										.map((member, idx) => (
-											<div key={member.id} className="w-[130px] sm:w-[150px] md:w-[170px] ">
+											<div key={member.id} className="w-[130px] sm:w-[150px] md:w-[160px] ">
 												<TeamMemberCard member={member} index={idx + 1} />
 											</div>
 										))}
@@ -250,7 +250,7 @@ export const TeamPage: React.FC = () => {
 									{softwareTeam
 										.filter((m) => m.role === "member")
 										.map((member, idx) => (
-											<div key={member.id} className="w-[130px] sm:w-[150px] md:w-[170px] ">
+											<div key={member.id} className="w-[130px] sm:w-[150px] md:w-[160px] ">
 												<TeamMemberCard member={member} index={idx + 1} />
 											</div>
 										))}

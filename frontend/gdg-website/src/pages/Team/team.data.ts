@@ -130,6 +130,20 @@ export const teamMembers: TeamMember[] = [
 			},
 		],
 	},
+	{
+		id: "org-7",
+		name: "Irmak Dindar",
+		role: "member",
+		team: "organization",
+		photoUrl:
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/sponsorship_team/%C4%B1rmak_dindar.png",
+		socialLinks: [
+			{
+				platform: "linkedin",
+				url: "https://www.linkedin.com/in/irmak-dindar-10b4a4286/",
+			},
+		],
+	},
 
 	// Reklam ve TanÄ±tÄ±m TakÄ±mÄ±
 	{
