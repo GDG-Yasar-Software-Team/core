@@ -144,12 +144,21 @@ export async function deleteForm(formId: string): Promise<void> {
 	});
 }
 
+/** User-facing copy when verify cannot be completed (network / non-401 HTTP errors). */
+const ADMIN_VERIFY_UNAVAILABLE =
+	"Giriş şu anda doğrulanamıyor. İnternet bağlantınızı kontrol edip bir süre sonra tekrar deneyin.";
+
+export interface VerifyTokenResult {
+	valid: boolean;
+	error?: string;
+	/** When true, UI may offer a support mailto (token invalid vs unreachable). */
+	suggestSupportContact?: boolean;
+}
+
 /**
  * Verify if an API token is valid without touching the database.
  */
-export async function verifyToken(
-	token: string,
-): Promise<{ valid: boolean; error?: string }> {
+export async function verifyToken(token: string): Promise<VerifyTokenResult> {
 	try {
 		const response = await fetch(`${FORM_SERVICE_URL}/auth/verify`, {
 			method: "GET",
@@ -161,15 +170,27 @@ export async function verifyToken(
 
 		if (response.status === 401) {
 			const data = await response.json();
-			return { valid: false, error: data.detail || "Geçersiz API token" };
+			return {
+				valid: false,
+				error: data.detail || "Geçersiz API token",
+				suggestSupportContact: false,
+			};
 		}
 
 		if (!response.ok) {
-			return { valid: false, error: "Sunucuya bağlanılamadı" };
+			return {
+				valid: false,
+				error: ADMIN_VERIFY_UNAVAILABLE,
+				suggestSupportContact: true,
+			};
 		}
 
 		return { valid: true };
 	} catch {
-		return { valid: false, error: "Sunucuya bağlanılamadı" };
+		return {
+			valid: false,
+			error: ADMIN_VERIFY_UNAVAILABLE,
+			suggestSupportContact: true,
+		};
 	}
 }

@@ -1,6 +1,7 @@
 import { type FormEvent, useEffect, useState } from "react";
 import { getAdminToken, useAdminAuth } from "../hooks/useAdminAuth";
 import { verifyToken } from "../services/formService";
+import { getSupportEmail } from "../utils/publicFormMessages";
 
 interface AdminTokenGateProps {
 	children: React.ReactNode;
@@ -10,6 +11,7 @@ const AdminTokenGate = ({ children }: AdminTokenGateProps) => {
 	const { isAuthorized, authorize, logout } = useAdminAuth();
 	const [token, setToken] = useState("");
 	const [authError, setAuthError] = useState<string | null>(null);
+	const [showAuthSupportContact, setShowAuthSupportContact] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
 	// On mount, if a token is already stored verify it server-side.
@@ -44,21 +46,25 @@ const AdminTokenGate = ({ children }: AdminTokenGateProps) => {
 		const trimmedToken = token.trim();
 		if (!trimmedToken) {
 			setAuthError("Geçersiz API token.");
+			setShowAuthSupportContact(false);
 			return;
 		}
 
 		setIsLoading(true);
 		setAuthError(null);
+		setShowAuthSupportContact(false);
 
 		const result = await verifyToken(trimmedToken);
 
 		if (!result.valid) {
 			setAuthError(result.error || "Geçersiz API token.");
+			setShowAuthSupportContact(result.suggestSupportContact ?? false);
 			setIsLoading(false);
 			return;
 		}
 
 		authorize(trimmedToken);
+		setShowAuthSupportContact(false);
 		setIsLoading(false);
 	};
 
@@ -113,9 +119,21 @@ const AdminTokenGate = ({ children }: AdminTokenGateProps) => {
 				</form>
 
 				{authError && (
-					<p className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-						{authError}
-					</p>
+					<div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+						<p>{authError}</p>
+						{showAuthSupportContact && (
+							<p className="mt-2 text-red-700">
+								Sorun devam ederse{" "}
+								<a
+									href={`mailto:${getSupportEmail()}`}
+									className="font-medium text-blue-700 underline hover:text-blue-800"
+								>
+									{getSupportEmail()}
+								</a>{" "}
+								adresinden ekiple iletişime geçebilirsiniz.
+							</p>
+						)}
+					</div>
 				)}
 			</div>
 		</div>
