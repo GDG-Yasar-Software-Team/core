@@ -4,7 +4,7 @@ export const teamMembers: TeamMember[] = [
 	// Organizers (Leadership)
 	{
 		id: "organizer-1",
-		name: "Toprak UÃ§kun",
+		name: "Toprak Uçkun",
 		title: "Organizer",
 		role: "organizer",
 		team: "organization",
@@ -19,7 +19,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "organizer-2",
-		name: "GÃ¶ktuÄŸ YÃ¼cel",
+		name: "Göktüğ Yücel",
                 title: "Co-Organizer",
                 role: "co-organizer",
 		team: "organization",
@@ -36,7 +36,7 @@ export const teamMembers: TeamMember[] = [
 	// Organizasyon TakÄ±mÄ±
 	{
 		id: "org-leader",
-		name: "Sirac KetenoÄŸlu",
+		name: "Sirac Ketenoğlu",
 		title: "Team Lead",
 		role: "team_lead",
 		team: "organization",
@@ -51,7 +51,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "org-1",
-		name: "Ezgi Ã–z",
+		name: "Ezgi Öz",
 		role: "member",
 		team: "organization",
 		photoUrl:
@@ -62,7 +62,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "org-2",
-		name: "RÃ¼stem AvcÄ±",
+		name: "Rüstem Avcı",
 		role: "member",
 		team: "organization",
 		photoUrl:
@@ -76,7 +76,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "org-3",
-		name: "Ahmet Ã–zgÃ¼r",
+		name: "Ahmet Özgür",
 		role: "member",
 		team: "organization",
 		photoUrl:
@@ -118,7 +118,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "org-6",
-		name: "Berna BaÅŸÄ±hoÅŸ",
+		name: "Selinay Berna Başıhoş",
 		role: "member",
 		team: "organization",
 		photoUrl:
@@ -134,7 +134,7 @@ export const teamMembers: TeamMember[] = [
 	// Reklam ve TanÄ±tÄ±m TakÄ±mÄ±
 	{
 		id: "marketing-leader",
-		name: "CansÄ±n Mat",
+		name: "Cansın Mat",
 		title: "Team Lead",
 		role: "team_lead",
 		team: "marketing",
@@ -149,7 +149,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "marketing-1",
-		name: "YaÄŸmur SabÄ±rlÄ±",
+		name: "Yağmur Sabırlı",
 		role: "member",
 		team: "marketing",
 		photoUrl:
@@ -163,7 +163,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "marketing-2",
-		name: "Elif AltÄ±n",
+		name: "Elif Altın",
 		role: "member",
 		team: "marketing",
 		photoUrl:
@@ -188,7 +188,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "marketing-4",
-		name: "YaÄŸmur Korucu",
+		name: "Yağmur Korucu",
 		role: "member",
 		team: "marketing",
 		photoUrl:
@@ -219,7 +219,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "sponsorship-1",
-		name: "Sude ErdoÄŸan",
+		name: "Sude Erdoğan",
 		role: "member",
 		team: "sponsorship",
 		photoUrl:
@@ -263,7 +263,7 @@ export const teamMembers: TeamMember[] = [
 	// YazÄ±lÄ±m TakÄ±mÄ±
 	{
 		id: "software-leader",
-		name: "Berat Ã–lmez",
+		name: "Berat Ölmez",
 		title: "Team Lead",
 		role: "team_lead",
 		team: "software",
@@ -289,7 +289,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "software-2",
-		name: "DoÄŸukan Ãœrker",
+		name: "Doğukan Ürker",
 		role: "member",
 		team: "software",
 		photoUrl:
@@ -338,6 +338,7 @@ export const teamMembers: TeamMember[] = [
 		],
 	},
 ];
+
 
 
 
