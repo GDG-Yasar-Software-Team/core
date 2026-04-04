@@ -68,44 +68,34 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 
 	return (
 		<motion.div
-			initial={{ opacity: 0, y: 40 }}
-			whileInView={{ opacity: 1, y: 0 }}
-			viewport={{ once: true, margin: "-50px" }}
-			transition={{ duration: 0.8, delay: index * 0.15, ease: "easeOut" }}
-			className={`flex min-w-0 w-full flex-col items-center bg-transparent rounded-[var(--border-radius-md)] px-2 py-4 sm:px-4 sm:py-6 shadow-none transition-none hover:shadow-none hover:translate-y-0 hover:bg-transparent ${className}`}
+			initial={{ opacity: 0, y: 100, scale: 0.8 }}
+			whileInView={{ opacity: 1, y: 0, scale: 1 }}
+			viewport={{ once: false, amount: 0.2 }}
+			transition={{ duration: 0.8, delay: index * 0.1, type: "spring", bounce: 0.35 }}
+			className={`flex min-w-0 w-full flex-col items-center bg-transparent rounded-[var(--border-radius-md)] px-2 py-4 sm:px-4 sm:py-6 shadow-none transition-none hover:shadow-none hover:translate-y-0 hover:bg-transparent text-white ${className}`}
 			data-role={member.role}
 		>
 			<div
-				className="mx-auto mb-2 shrink-0 relative group"
+				className="relative mb-4 group"
+			>
 				<div className="absolute -inset-2 bg-gradient-to-tr from-current to-transparent rounded-full blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
-				<div
-					style={{
-						width: `min(${photoBoxPx}px, 100%)`,
-						aspectRatio: "1",
-						borderRadius: "9999px",
-						overflow: "hidden",
-						backgroundColor: "rgba(0, 0, 0, 0.06)",
-					}}
-					className="relative z-10 border-2 border-transparent group-hover:border-current transition-colors duration-300"
-				>
+				<div className={`relative z-10 rounded-full overflow-hidden bg-black/5 border-2 border-transparent group-hover:border-current transition-colors duration-300 ${isTeamLeader ? 'w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36' : 'w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32'}`}>
 					<img
 						src={member.photoUrl}
 						alt={member.name}
-						width={photoBoxPx}
-						height={photoBoxPx}
 						loading="lazy"
 						decoding="async"
-						className="w-full h-full object-cover object-center block max-w-none grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100"
+						className="w-full h-full object-cover object-center transition-all duration-700 scale-105 group-hover:scale-100"
 					/>
 				</div>
 			</div>
 			<h3
-				className={`font-bold text-[var(--on-surface)] mb-1 m-0 text-center ${nameClass}`}
+				className={`font-bold text-gray-200 group-hover:text-white transition-colors mb-1 m-0 text-center mt-4 ${nameClass}`}
 			>
 				{member.name}
 			</h3>
 			<p
-				className={`${memberTitleClass} text-[var(--on-surface-variant)] mb-2 m-0 text-center`}
+				className={`${memberTitleClass} text-gray-400 group-hover:text-gray-300 transition-colors mb-2 m-0 text-center tracking-wide`}
 			>
 				{member.title}
 			</p>
@@ -118,7 +108,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 							href={link.url}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="flex items-center justify-center w-9 h-9 rounded-[var(--border-radius-full)] bg-transparent text-[var(--on-surface)] transition-all duration-200 ease-in-out hover:bg-black/10"
+							className="mt-2 p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 transition-all text-gray-400 hover:text-[#0077b5]"
 							aria-label={`${member.name}'s ${link.platform}`}
 						>
 							{getSocialIcon(link.platform)}
@@ -129,3 +119,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 		</motion.div>
 	);
 };
+
+
+
+

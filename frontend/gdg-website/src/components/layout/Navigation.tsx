@@ -33,10 +33,10 @@ export const Navigation: React.FC<NavigationProps> = ({ className = "" }) => {
 
 	return (
 		<nav 
-			className={`sticky top-0 z-[1000] bg-white shadow-[0_1px_2px_0_rgba(60,64,67,0.3),0_1px_3px_1px_rgba(60,64,67,0.15)] border-b border-[#e8eaed] ${className}`}
+			className={`sticky top-0 w-full z-[1000] bg-white shadow-[0_1px_2px_0_rgba(60,64,67,0.3),0_1px_3px_1px_rgba(60,64,67,0.15)] border-b border-[#e8eaed] ${className}`}
 			aria-label="Main navigation"
 		>
-			<div className="max-w-[1200px] mx-auto px-6 py-3 flex justify-between items-center">
+			<div className="max-w-[1400px] w-full mx-auto px-4 md:px-8 py-3 flex justify-between items-center">
 				<Link to="/" className="flex items-center gap-3 text-lg font-medium text-[#5f6368] no-underline transition-opacity duration-200 hover:opacity-80">
 					<img
 						src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/core/refs/heads/main/frontend/form/public/gdg-logo.png"

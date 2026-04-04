@@ -19,10 +19,10 @@ export const OrganizerCard: React.FC<OrganizerCardProps> = ({ member, index }) =
 	return (
 		<motion.div
 			key={member.name}
-			initial={{ opacity: 0, y: 40 }}
-			whileInView={{ opacity: 1, y: 0 }}
-			viewport={{ once: true }}
-			transition={{ duration: 0.8, delay: 0.4 + index * 0.2, ease: "easeOut" }}
+			initial={{ opacity: 0, y: 100, scale: 0.8 }}
+			whileInView={{ opacity: 1, y: 0, scale: 1 }}
+			viewport={{ once: false, amount: 0.2 }}
+			transition={{ duration: 0.8, delay: index * 0.15, type: "spring", bounce: 0.35 }}
 			className="flex flex-col items-center group w-full"
 		>
 			<div className="relative mb-8">
@@ -34,7 +34,7 @@ export const OrganizerCard: React.FC<OrganizerCardProps> = ({ member, index }) =
 					<img
 						src={member.photoUrl}
 						alt={member.name}
-						className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-110 group-hover:scale-100"
+						className="w-full h-full object-cover transition-all duration-700 scale-110 group-hover:scale-100"
 						referrerPolicy="no-referrer"
 					/>
 				</div>
