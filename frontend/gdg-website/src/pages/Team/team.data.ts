@@ -329,7 +329,7 @@ export const teamMembers: TeamMember[] = [
 		role: "member",
 		team: "software",
 		photoUrl:
-			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/software_team/burak_kaya.jpg",
+			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/software_team/burak_kaya.PNG",
 		socialLinks: [
 			{
 				platform: "linkedin",
