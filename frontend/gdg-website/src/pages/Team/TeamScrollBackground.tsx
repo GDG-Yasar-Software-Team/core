@@ -38,40 +38,40 @@ const BACKGROUND_SHAPES = [
 		className: "absolute -top-20 -left-20 w-[40vw] h-[40vw]",
 		clipPath: "polygon(0 0, 100% 0, 80% 100%, 0 80%)",
 		gradientAngle: 135,
-		translateX: -24,
-		translateY: -16,
+		translateX: -180,
+		translateY: -120,
 		rotate: -10,
-		rotateDelta: 18,
+		rotateDelta: 60,
 		opacity: 0.82,
 	},
 	{
 		className: "absolute -top-10 -right-10 w-[35vw] h-[35vw]",
 		clipPath: "polygon(20% 0, 100% 0, 100% 80%, 0 100%)",
 		gradientAngle: 225,
-		translateX: 18,
-		translateY: -14,
+		translateX: 150,
+		translateY: -140,
 		rotate: 10,
-		rotateDelta: -16,
+		rotateDelta: -55,
 		opacity: 0.8,
 	},
 	{
 		className: "absolute -bottom-10 -left-10 w-[30vw] h-[30vw]",
 		clipPath: "polygon(0 20%, 80% 0, 100% 100%, 0 100%)",
 		gradientAngle: 45,
-		translateX: -14,
-		translateY: 18,
+		translateX: -130,
+		translateY: 170,
 		rotate: -6,
-		rotateDelta: 14,
+		rotateDelta: 50,
 		opacity: 0.7,
 	},
 	{
 		className: "absolute -bottom-20 -right-20 w-[45vw] h-[45vw]",
 		clipPath: "polygon(20% 0, 100% 20%, 100% 100%, 0 80%)",
 		gradientAngle: 315,
-		translateX: 22,
-		translateY: 22,
+		translateX: 190,
+		translateY: 200,
 		rotate: 7,
-		rotateDelta: -18,
+		rotateDelta: -65,
 		opacity: 0.78,
 	},
 ] as const;
@@ -253,7 +253,7 @@ export const TeamScrollBackground: React.FC<TeamScrollBackgroundProps> = ({
 			/>
 
 			{BACKGROUND_SHAPES.map((shape, index) => {
-				const layerFactor = (index + 1) * 0.22;
+				const layerFactor = 0.5 + (index * 0.4);
 				const palette = palettes[index];
 
 				return (
@@ -277,7 +277,7 @@ export const TeamScrollBackground: React.FC<TeamScrollBackgroundProps> = ({
 				className="absolute inset-x-0 bottom-0 h-1/2"
 				style={{
 					backgroundImage: `linear-gradient(180deg, transparent 0%, ${rgbaFromHex(globalPalette.deep, 0.22)} 100%)`,
-					transform: `translateY(${motionAmount * 18}px)`,
+					transform: `translateY(${motionAmount * 50}px)`,
 					mixBlendMode: "multiply",
 					opacity: 0.9,
 				}}
