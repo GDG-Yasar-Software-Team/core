@@ -64,6 +64,7 @@ class TestEventCreate:
             "description": "Annual developer festival.",
             "date": datetime(2025, 11, 15, 10, 0, 0, tzinfo=timezone.utc),
             "place": "Yaşar University",
+            "event_type": "conference",
         }
 
     def test_valid_event_accepted(self):
@@ -74,6 +75,9 @@ class TestEventCreate:
         assert event.place == "Yaşar University"
         assert event.speakers == []
         assert event.image_url is None
+        assert event.tags == []
+        assert event.registration_form_url is None
+        assert event.event_type == "conference"
 
     def test_valid_event_with_all_fields(self):
         """Valid event with all fields including speakers and image_url is accepted."""
@@ -82,9 +86,13 @@ class TestEventCreate:
             Speaker(name="Jane Doe", title="Engineer", company="Google")
         ]
         data["image_url"] = "https://example.com/image.jpg"
+        data["tags"] = ["devfest", "gdg"]
+        data["registration_form_url"] = "https://forms.example.com/register"
         event = EventCreate(**data)
         assert len(event.speakers) == 1
         assert event.image_url == "https://example.com/image.jpg"
+        assert event.tags == ["devfest", "gdg"]
+        assert event.registration_form_url == "https://forms.example.com/register"
 
     def test_empty_title_rejected(self):
         """Empty title raises ValidationError."""
@@ -143,6 +151,51 @@ class TestEventCreate:
         with pytest.raises(ValidationError):
             EventCreate(title="GDG DevFest")
 
+    def test_tags_defaults_to_empty_list(self):
+        """tags field defaults to empty list."""
+        event = EventCreate(**self._valid_data())
+        assert event.tags == []
+
+    def test_registration_form_url_defaults_to_none(self):
+        """registration_form_url defaults to None."""
+        event = EventCreate(**self._valid_data())
+        assert event.registration_form_url is None
+
+    def test_event_type_required(self):
+        """Missing event_type raises ValidationError."""
+        data = self._valid_data()
+        del data["event_type"]
+        with pytest.raises(ValidationError):
+            EventCreate(**data)
+
+    def test_empty_event_type_rejected(self):
+        """Empty event_type raises ValidationError."""
+        data = self._valid_data()
+        data["event_type"] = ""
+        with pytest.raises(ValidationError):
+            EventCreate(**data)
+
+    def test_event_type_max_length_exceeded_rejected(self):
+        """event_type over 100 characters raises ValidationError."""
+        data = self._valid_data()
+        data["event_type"] = "x" * 101
+        with pytest.raises(ValidationError):
+            EventCreate(**data)
+
+    def test_empty_string_tag_rejected(self):
+        """Empty string inside tags list raises ValidationError."""
+        data = self._valid_data()
+        data["tags"] = ["valid", ""]
+        with pytest.raises(ValidationError):
+            EventCreate(**data)
+
+    def test_tag_exceeding_max_length_rejected(self):
+        """Tag over 50 characters raises ValidationError."""
+        data = self._valid_data()
+        data["tags"] = ["x" * 51]
+        with pytest.raises(ValidationError):
+            EventCreate(**data)
+
 
 class TestEventUpdate:
     """Tests for EventUpdate model."""
@@ -156,6 +209,9 @@ class TestEventUpdate:
         assert update.place is None
         assert update.speakers is None
         assert update.image_url is None
+        assert update.tags is None
+        assert update.registration_form_url is None
+        assert update.event_type is None
 
     def test_partial_update_single_field(self):
         """Update with only one field provided is valid."""
@@ -186,6 +242,36 @@ class TestEventUpdate:
         with pytest.raises(ValidationError):
             EventUpdate(title="x" * 201)
 
+    def test_partial_update_tags(self):
+        """Update with tags list is valid."""
+        update = EventUpdate(tags=["new-tag"])
+        assert update.tags == ["new-tag"]
+
+    def test_partial_update_event_type(self):
+        """Update with event_type is valid."""
+        update = EventUpdate(event_type="workshop")
+        assert update.event_type == "workshop"
+
+    def test_partial_update_registration_form_url(self):
+        """Update with registration_form_url is valid."""
+        update = EventUpdate(registration_form_url="https://example.com/form")
+        assert update.registration_form_url == "https://example.com/form"
+
+    def test_empty_event_type_rejected(self):
+        """Empty event_type violates min_length."""
+        with pytest.raises(ValidationError):
+            EventUpdate(event_type="")
+
+    def test_empty_string_tag_in_update_rejected(self):
+        """Empty string inside tags list raises ValidationError."""
+        with pytest.raises(ValidationError):
+            EventUpdate(tags=["valid", ""])
+
+    def test_tag_exceeding_max_length_in_update_rejected(self):
+        """Tag over 50 characters raises ValidationError."""
+        with pytest.raises(ValidationError):
+            EventUpdate(tags=["x" * 51])
+
 
 class TestEventInDB:
     """Tests for EventInDB model."""
@@ -199,6 +285,9 @@ class TestEventInDB:
             "place": "Yaşar University",
             "speakers": [],
             "image_url": None,
+            "tags": ["devfest"],
+            "registration_form_url": "https://forms.example.com/register",
+            "event_type": "conference",
             "created_at": datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
             "updated_at": None,
         }
@@ -210,6 +299,9 @@ class TestEventInDB:
         assert event.title == "GDG DevFest 2025"
         assert event.speakers == []
         assert event.updated_at is None
+        assert event.tags == ["devfest"]
+        assert event.registration_form_url == "https://forms.example.com/register"
+        assert event.event_type == "conference"
 
     def test_string_id_converted_to_objectid(self):
         """String _id is converted to ObjectId."""
@@ -249,6 +341,24 @@ class TestEventInDB:
         assert len(event.speakers) == 1
         assert event.speakers[0].name == "Jane Doe"
 
+    def test_backward_compat_defaults_without_new_fields(self):
+        """Old documents without tags/registration_form_url/event_type still validate."""
+        doc = {
+            "_id": ObjectId("507f1f77bcf86cd799439011"),
+            "title": "Legacy Event",
+            "description": "An old event.",
+            "date": datetime(2025, 11, 15, 10, 0, 0, tzinfo=timezone.utc),
+            "place": "Somewhere",
+            "speakers": [],
+            "image_url": None,
+            "created_at": datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+            "updated_at": None,
+        }
+        event = EventInDB(**doc)
+        assert event.tags == []
+        assert event.registration_form_url is None
+        assert event.event_type == "general"
+
 
 class TestEventResponse:
     """Tests for EventResponse model."""
@@ -262,6 +372,9 @@ class TestEventResponse:
             "place": "Yaşar University",
             "speakers": [],
             "image_url": None,
+            "tags": ["devfest"],
+            "registration_form_url": "https://forms.example.com/register",
+            "event_type": "conference",
             "created_at": datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
             "updated_at": None,
         }
@@ -280,6 +393,9 @@ class TestEventResponse:
         assert response.place == "Yaşar University"
         assert response.speakers == []
         assert response.image_url is None
+        assert response.tags == ["devfest"]
+        assert response.registration_form_url == "https://forms.example.com/register"
+        assert response.event_type == "conference"
         assert response.created_at == datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
         assert response.updated_at == datetime(2025, 2, 1, 0, 0, 0, tzinfo=timezone.utc)
 
@@ -311,7 +427,23 @@ class TestEventResponse:
             speakers=[{"name": "Jane Doe", "title": "Engineer", "company": "Google"}]
         )
         response = EventResponse.from_db(db_event)
-        json_data = response.model_dump_json()
+        json_data = response.model_dump_json(by_alias=True)
         assert "507f1f77bcf86cd799439011" in json_data
         assert "GDG DevFest 2025" in json_data
         assert "Jane Doe" in json_data
+
+    def test_serialization_alias_type(self):
+        """event_type serializes as 'type' in JSON output."""
+        db_event = self._make_db_event(event_type="workshop")
+        response = EventResponse.from_db(db_event)
+        json_data = response.model_dump(by_alias=True)
+        assert "type" in json_data
+        assert json_data["type"] == "workshop"
+        assert "event_type" not in json_data
+
+    def test_from_db_with_default_event_type(self):
+        """from_db maps default event_type from legacy documents."""
+        db_event = self._make_db_event(event_type="general", tags=[])
+        response = EventResponse.from_db(db_event)
+        assert response.event_type == "general"
+        assert response.tags == []

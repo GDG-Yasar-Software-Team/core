@@ -46,6 +46,11 @@ class TestCreate:
         assert call_args["image_url"] == "https://example.com/image.jpg"
         assert len(call_args["speakers"]) == 1
         assert call_args["speakers"][0]["name"] == "Jane Doe"
+        assert call_args["tags"] == ["devfest", "gdg"]
+        assert (
+            call_args["registration_form_url"] == "https://forms.example.com/register"
+        )
+        assert call_args["event_type"] == "conference"
 
     async def test_sets_timestamps(self, mock_mongodb, sample_event_data):
         """Create sets created_at and updated_at=None."""
@@ -88,19 +93,19 @@ class TestGetById:
         assert event is not None
         assert str(event.id) == "507f1f77bcf86cd799439011"
         assert event.title == "GDG DevFest 2025"
+        assert event.tags == ["devfest", "gdg"]
+        assert event.registration_form_url == "https://forms.example.com/register"
+        assert event.event_type == "conference"
 
     async def test_returns_none_when_not_found(self, mock_mongodb):
         """get_by_id returns None when document does not exist."""
         mock_mongodb["events"].find_one.return_value = None
-
         event = await EventRepository.get_by_id("507f1f77bcf86cd799439011")
-
         assert event is None
 
     async def test_returns_none_for_invalid_id(self, mock_mongodb):
         """get_by_id returns None for invalid ObjectId string."""
         event = await EventRepository.get_by_id("invalid-id")
-
         assert event is None
         mock_mongodb["events"].find_one.assert_not_called()
 
@@ -171,7 +176,7 @@ class TestUpdate:
         mock_mongodb["events"].update_one.assert_not_called()
 
     async def test_empty_update_raises_not_found_for_missing(self, mock_mongodb):
-        """Update with no fields raises EventNotFoundError if event doesn't exist."""
+        """Update with no fields raises EventNotFoundError if missing."""
         from app.models.event import EventUpdate
 
         mock_mongodb["events"].find_one.return_value = None
@@ -201,6 +206,30 @@ class TestUpdate:
         assert len(result.speakers) == 1
         assert result.speakers[0].name == "New Speaker"
 
+    async def test_updates_tags(self, mock_mongodb, sample_event_doc):
+        """Update persists tags correctly."""
+        from app.models.event import EventUpdate
+
+        updated_doc = {**sample_event_doc, "tags": ["new-tag"]}
+        mock_mongodb["events"].update_one.return_value = MagicMock(matched_count=1)
+        mock_mongodb["events"].find_one.return_value = updated_doc
+
+        update = EventUpdate(tags=["new-tag"])
+        result = await EventRepository.update("507f1f77bcf86cd799439011", update)
+        assert result.tags == ["new-tag"]
+
+    async def test_updates_event_type(self, mock_mongodb, sample_event_doc):
+        """Update persists event_type correctly."""
+        from app.models.event import EventUpdate
+
+        updated_doc = {**sample_event_doc, "event_type": "workshop"}
+        mock_mongodb["events"].update_one.return_value = MagicMock(matched_count=1)
+        mock_mongodb["events"].find_one.return_value = updated_doc
+
+        update = EventUpdate(event_type="workshop")
+        result = await EventRepository.update("507f1f77bcf86cd799439011", update)
+        assert result.event_type == "workshop"
+
 
 class TestDelete:
     """Tests for EventRepository.delete()."""
@@ -208,9 +237,7 @@ class TestDelete:
     async def test_deletes_existing_event(self, mock_mongodb):
         """Delete removes the document when it exists."""
         mock_mongodb["events"].delete_one.return_value = MagicMock(deleted_count=1)
-
         await EventRepository.delete("507f1f77bcf86cd799439011")
-
         mock_mongodb["events"].delete_one.assert_called_once_with(
             {"_id": ObjectId("507f1f77bcf86cd799439011")}
         )
@@ -218,7 +245,6 @@ class TestDelete:
     async def test_raises_not_found_when_deleted_count_zero(self, mock_mongodb):
         """Delete raises EventNotFoundError when deleted_count is 0."""
         mock_mongodb["events"].delete_one.return_value = MagicMock(deleted_count=0)
-
         with pytest.raises(EventNotFoundError):
             await EventRepository.delete("507f1f77bcf86cd799439011")
 
@@ -226,7 +252,6 @@ class TestDelete:
         """Delete raises EventNotFoundError for invalid ObjectId."""
         with pytest.raises(EventNotFoundError):
             await EventRepository.delete("invalid-id")
-
         mock_mongodb["events"].delete_one.assert_not_called()
 
 
@@ -238,9 +263,7 @@ class TestListEvents:
         mock_mongodb["events"].find.return_value = create_async_cursor(
             sample_event_docs
         )
-
         events = await EventRepository.list_events()
-
         assert len(events) == 2
         assert events[0].title == "GDG DevFest 2025"
         assert events[1].title == "Flutter Workshop"
@@ -248,9 +271,7 @@ class TestListEvents:
     async def test_returns_empty_list(self, mock_mongodb):
         """list_events returns empty list when no events exist."""
         mock_mongodb["events"].find.return_value = create_async_cursor([])
-
         events = await EventRepository.list_events()
-
         assert events == []
 
     async def test_applies_sort_skip_limit(self, mock_mongodb):
