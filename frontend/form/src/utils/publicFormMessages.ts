@@ -1,4 +1,37 @@
+import type { FormLoadErrorKind } from "../hooks/useFormDetails";
 import { ApiClientError, getErrorCode } from "./apiClientError";
+
+const SUPPORT_EMAIL =
+	import.meta.env.VITE_SUPPORT_EMAIL || "gdgoncampus.yu@gmail.com";
+
+export function getSupportEmail(): string {
+	return SUPPORT_EMAIL;
+}
+
+export interface FormLoadMessages {
+	title: string;
+	description: string;
+	showContact: boolean;
+}
+
+export function messagesForFormLoadError(
+	kind: FormLoadErrorKind,
+): FormLoadMessages {
+	if (kind === "not_found") {
+		return {
+			title: "Form bulunamadı",
+			description:
+				"Aradığınız form mevcut değil veya kaldırılmış olabilir. Lütfen bağlantıyı kontrol edin.",
+			showContact: false,
+		};
+	}
+	return {
+		title: "Şu anda ulaşılamıyor",
+		description:
+			"Form geçici olarak yüklenemiyor. Lütfen birkaç dakika sonra tekrar deneyin.",
+		showContact: true,
+	};
+}
 
 const SUBMIT_ERROR_MESSAGES: Record<string, string> = {
 	form_not_active: "Bu form şu anda yanıt kabul etmiyor.",
