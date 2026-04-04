@@ -1,4 +1,4 @@
-import type React from "react";
+﻿import type React from "react";
 import { motion } from "motion/react";
 import type { TeamMember } from "../../types";
 
@@ -50,11 +50,8 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 	className = "",
 	index = 0,
 }) => {
-	const isLeader = member.role === "leader";
-	const isTeamLeader = member.role === "team-leader";
-
-	/** Piksel hedefi; inline stil — Tailwind sırasına / önbelleğe bağlı kalmadan aynı daire kırpması */
-	const photoBoxPx = isLeader ? 196 : isTeamLeader ? 169 : 131;
+	const isLeader = member.role === "organizer" || member.role === "co-organizer";
+	const isTeamLeader = member.role === "team_lead";
 
 	const nameClass =
 		isLeader || isTeamLeader
@@ -85,7 +82,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 						alt={member.name}
 						loading="lazy"
 						decoding="async"
-						className="w-full h-full object-cover object-center transition-all duration-700 scale-105 group-hover:scale-100"
+						className="w-full h-full object-contain object-center transition-all duration-700  group-hover:scale-100"
 					/>
 				</div>
 			</div>
@@ -94,11 +91,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 			>
 				{member.name}
 			</h3>
-			<p
-				className={`${memberTitleClass} text-gray-400 group-hover:text-gray-300 transition-colors mb-2 m-0 text-center tracking-wide`}
-			>
-				{member.title}
-			</p>
+			{member.title && (<p className={`${memberTitleClass} text-gray-400 group-hover:text-gray-300 transition-colors mb-2 m-0 text-center tracking-wide`}>{member.title}</p>)}
 
 			{member.socialLinks.length > 0 && (
 				<div className="flex gap-2 mt-2">
@@ -119,6 +112,10 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 		</motion.div>
 	);
 };
+
+
+
+
 
 
 

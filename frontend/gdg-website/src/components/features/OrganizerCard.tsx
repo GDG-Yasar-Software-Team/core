@@ -1,4 +1,4 @@
-import type React from "react";
+﻿import type React from "react";
 import { motion } from "motion/react";
 import type { TeamMember } from "../../types";
 
@@ -34,7 +34,7 @@ export const OrganizerCard: React.FC<OrganizerCardProps> = ({ member, index }) =
 					<img
 						src={member.photoUrl}
 						alt={member.name}
-						className="w-full h-full object-cover transition-all duration-700 scale-110 group-hover:scale-100"
+						className="w-full h-full object-contain transition-all duration-700  group-hover:scale-100"
 						referrerPolicy="no-referrer"
 					/>
 				</div>
@@ -44,9 +44,7 @@ export const OrganizerCard: React.FC<OrganizerCardProps> = ({ member, index }) =
 				<h3 className="text-xl md:text-2xl font-bold tracking-tight text-gray-200 group-hover:text-white transition-colors">
 					{member.name}
 				</h3>
-				<p className="text-sm md:text-base text-gray-500 font-medium tracking-wide">
-					{member.title}
-				</p>
+				{member.title && (<p className="text-sm md:text-base text-gray-500 font-medium tracking-wide">{member.title}</p>)}
 			</div>
 
 			<motion.a
@@ -63,3 +61,5 @@ export const OrganizerCard: React.FC<OrganizerCardProps> = ({ member, index }) =
 		</motion.div>
 	);
 };
+
+

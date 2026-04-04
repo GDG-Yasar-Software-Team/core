@@ -8,11 +8,11 @@ import { Navigation } from "../../components/layout/Navigation";
 import { teamMembers } from "./team.data";
 
 export const TeamPage: React.FC = () => {
-	const leaders = teamMembers.filter((m) => m.role === "leader");
-	const organizationTeam = teamMembers.filter((m) => m.team === "organization");
-	const marketingTeam = teamMembers.filter((m) => m.team === "marketing");
-	const sponsorshipTeam = teamMembers.filter((m) => m.team === "sponsorship");
-	const softwareTeam = teamMembers.filter((m) => m.team === "software");
+	const leaders = teamMembers.filter((m) => m.role === "organizer" || m.role === "co-organizer");
+	const organizationTeam = teamMembers.filter((m) => m.team === "organization" && m.role !== "organizer" && m.role !== "co-organizer");
+	const marketingTeam = teamMembers.filter((m) => m.team === "marketing" && m.role !== "organizer" && m.role !== "co-organizer");
+	const sponsorshipTeam = teamMembers.filter((m) => m.team === "sponsorship" && m.role !== "organizer" && m.role !== "co-organizer");
+	const softwareTeam = teamMembers.filter((m) => m.team === "software" && m.role !== "organizer" && m.role !== "co-organizer");
 
 	// Team menu items with matching colors and icons
 	const teamMenus = [
@@ -182,7 +182,7 @@ export const TeamPage: React.FC = () => {
 							<div className="flex-1 flex flex-col justify-center px-4 z-[2] max-w-7xl mx-auto w-full">
 								<div className="flex justify-center mb-6 md:mb-10 items-center justify-items-center">
 									{organizationTeam
-										.filter((m) => m.role === "team-leader")
+										.filter((m) => m.role === "team_lead")
 										.map((member, idx) => (
 											<TeamMemberCard key={member.id} member={member} index={idx} />
 										))}
@@ -227,7 +227,7 @@ export const TeamPage: React.FC = () => {
 							<div className="flex-1 flex flex-col justify-center px-4 z-[2] max-w-7xl mx-auto w-full">
 								<div className="flex justify-center mb-6 md:mb-10 items-center justify-items-center">
 									{marketingTeam
-										.filter((m) => m.role === "team-leader")
+										.filter((m) => m.role === "team_lead")
 										.map((member, idx) => (
 											<TeamMemberCard key={member.id} member={member} index={idx} />
 										))}
@@ -272,7 +272,7 @@ export const TeamPage: React.FC = () => {
 							<div className="flex-1 flex flex-col justify-center px-4 z-[2] max-w-7xl mx-auto w-full">
 								<div className="flex justify-center mb-6 md:mb-10 items-center justify-items-center">
 									{sponsorshipTeam
-										.filter((m) => m.role === "team-leader")
+										.filter((m) => m.role === "team_lead")
 										.map((member, idx) => (
 											<TeamMemberCard key={member.id} member={member} index={idx} />
 										))}
@@ -317,7 +317,7 @@ export const TeamPage: React.FC = () => {
 							<div className="flex-1 flex flex-col justify-center px-4 z-[2] max-w-7xl mx-auto w-full">
 								<div className="flex justify-center mb-6 md:mb-10 items-center justify-items-center">
 									{softwareTeam
-										.filter((m) => m.role === "team-leader")
+										.filter((m) => m.role === "team_lead")
 										.map((member, idx) => (
 											<TeamMemberCard key={member.id} member={member} index={idx} />
 										))}
@@ -341,5 +341,7 @@ export const TeamPage: React.FC = () => {
 };
 
 export default TeamPage;
+
+
 
 

@@ -51,30 +51,16 @@ export interface SocialLink {
 export interface TeamMember {
 	id: string;
 	name: string;
-	title: string;
-	role: "leader" | "team-leader" | "core" | "member";
-	team:
-		| "leadership"
-		| "organization"
-		| "marketing"
-		| "sponsorship"
-		| "software"
-		| "technical"
-		| "operations"
-		| "design";
-	photoUrl: string;
-	bio?: string;
-	socialLinks: SocialLink[];
-}
-
-/**
- * FAQ (Frequently Asked Questions) model
- */
-export interface FAQ {
-	id: string;
-	question: string;
-	answer: string;
-	category?: string;
+        title?: string;
+        role: "organizer" | "co-organizer" | "team_lead" | "member";
+        team:
+                | "organization"
+                | "marketing"
+                | "sponsorship"
+                | "software";
+        photoUrl: string;
+        bio?: string;
+        socialLinks: SocialLink[];
 }
 
 /**

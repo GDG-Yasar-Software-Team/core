@@ -1,13 +1,13 @@
-import type { TeamMember } from "../types";
+﻿import type { TeamMember } from "../../types";
 
 export const teamMembers: TeamMember[] = [
 	// Organizers (Leadership)
 	{
 		id: "organizer-1",
-		name: "Toprak Uçkun",
+		name: "Toprak UÃ§kun",
 		title: "Organizer",
-		role: "leader",
-		team: "leadership",
+		role: "organizer",
+		team: "organization",
 		photoUrl:
 			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organizers/toprak_uckun.png",
 		socialLinks: [
@@ -19,10 +19,10 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "organizer-2",
-		name: "Göktuğ Yücel",
-		title: "Co-Organizer",
-		role: "leader",
-		team: "leadership",
+		name: "GÃ¶ktuÄŸ YÃ¼cel",
+                title: "Co-Organizer",
+                role: "co-organizer",
+		team: "organization",
 		photoUrl:
 			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organizers/goktug_yucel.png",
 		socialLinks: [
@@ -33,12 +33,12 @@ export const teamMembers: TeamMember[] = [
 		],
 	},
 
-	// Organizasyon Takımı
+	// Organizasyon TakÄ±mÄ±
 	{
 		id: "org-leader",
-		name: "Sirac Ketenoğlu",
-		title: "Organization Team Leader",
-		role: "team-leader",
+		name: "Sirac KetenoÄŸlu",
+		title: "Team Lead",
+		role: "team_lead",
 		team: "organization",
 		photoUrl:
 			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organization_team/sirac_ketenoglu.png",
@@ -51,8 +51,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "org-1",
-		name: "Ezgi Öz",
-		title: "Organization Team",
+		name: "Ezgi Ã–z",
 		role: "member",
 		team: "organization",
 		photoUrl:
@@ -63,8 +62,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "org-2",
-		name: "Rüstem Avcı",
-		title: "Organization Team",
+		name: "RÃ¼stem AvcÄ±",
 		role: "member",
 		team: "organization",
 		photoUrl:
@@ -78,8 +76,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "org-3",
-		name: "Ahmet Özgür",
-		title: "Organization Team",
+		name: "Ahmet Ã–zgÃ¼r",
 		role: "member",
 		team: "organization",
 		photoUrl:
@@ -94,7 +91,6 @@ export const teamMembers: TeamMember[] = [
 	{
 		id: "org-4",
 		name: "Nisanas Turan",
-		title: "Organization Team",
 		role: "member",
 		team: "organization",
 		photoUrl:
@@ -109,7 +105,6 @@ export const teamMembers: TeamMember[] = [
 	{
 		id: "org-5",
 		name: "Ezgi Aynal",
-		title: "Organization Team",
 		role: "member",
 		team: "organization",
 		photoUrl:
@@ -123,8 +118,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "org-6",
-		name: "Berna Başıhoş",
-		title: "Organization Team",
+		name: "Berna BaÅŸÄ±hoÅŸ",
 		role: "member",
 		team: "organization",
 		photoUrl:
@@ -137,12 +131,12 @@ export const teamMembers: TeamMember[] = [
 		],
 	},
 
-	// Reklam ve Tanıtım Takımı
+	// Reklam ve TanÄ±tÄ±m TakÄ±mÄ±
 	{
 		id: "marketing-leader",
-		name: "Cansın Mat",
-		title: "Marketing Team Leader",
-		role: "team-leader",
+		name: "CansÄ±n Mat",
+		title: "Team Lead",
+		role: "team_lead",
 		team: "marketing",
 		photoUrl:
 			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/marketing_team/cansin_mat.png",
@@ -155,8 +149,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "marketing-1",
-		name: "Yağmur Sabırlı",
-		title: "Marketing Team",
+		name: "YaÄŸmur SabÄ±rlÄ±",
 		role: "member",
 		team: "marketing",
 		photoUrl:
@@ -170,8 +163,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "marketing-2",
-		name: "Elif Altın",
-		title: "Marketing Team",
+		name: "Elif AltÄ±n",
 		role: "member",
 		team: "marketing",
 		photoUrl:
@@ -186,7 +178,6 @@ export const teamMembers: TeamMember[] = [
 	{
 		id: "marketing-3",
 		name: "Sultan Esen Murat",
-		title: "Marketing Team",
 		role: "member",
 		team: "marketing",
 		photoUrl:
@@ -197,8 +188,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "marketing-4",
-		name: "Yağmur Korucu",
-		title: "Marketing Team",
+		name: "YaÄŸmur Korucu",
 		role: "member",
 		team: "marketing",
 		photoUrl:
@@ -211,12 +201,12 @@ export const teamMembers: TeamMember[] = [
 		],
 	},
 
-	// Sponsorluk Takımı
+	// Sponsorluk TakÄ±mÄ±
 	{
 		id: "sponsorship-leader",
 		name: "Selin Erol",
-		title: "Sponsorship Team Leader",
-		role: "team-leader",
+		title: "Team Lead",
+		role: "team_lead",
 		team: "sponsorship",
 		photoUrl:
 			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/sponsorship_team/selin_erol.jpeg",
@@ -229,8 +219,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "sponsorship-1",
-		name: "Sude Erdoğan",
-		title: "Sponsorship Team",
+		name: "Sude ErdoÄŸan",
 		role: "member",
 		team: "sponsorship",
 		photoUrl:
@@ -245,7 +234,6 @@ export const teamMembers: TeamMember[] = [
 	{
 		id: "sponsorship-2",
 		name: "Emirhan Sezgin",
-		title: "Sponsorship Team",
 		role: "member",
 		team: "sponsorship",
 		photoUrl:
@@ -260,7 +248,6 @@ export const teamMembers: TeamMember[] = [
 	{
 		id: "sponsorship-3",
 		name: "Irmak Dindar",
-		title: "Sponsorship Team",
 		role: "member",
 		team: "sponsorship",
 		photoUrl:
@@ -273,12 +260,12 @@ export const teamMembers: TeamMember[] = [
 		],
 	},
 
-	// Yazılım Takımı
+	// YazÄ±lÄ±m TakÄ±mÄ±
 	{
 		id: "software-leader",
-		name: "Berat Ölmez",
-		title: "Software Team Leader",
-		role: "team-leader",
+		name: "Berat Ã–lmez",
+		title: "Team Lead",
+		role: "team_lead",
 		team: "software",
 		photoUrl:
 			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/software_team/berat_olmez.png",
@@ -289,7 +276,6 @@ export const teamMembers: TeamMember[] = [
 	{
 		id: "software-1",
 		name: "Emirhan Kotan",
-		title: "Software Team",
 		role: "member",
 		team: "software",
 		photoUrl:
@@ -303,8 +289,7 @@ export const teamMembers: TeamMember[] = [
 	},
 	{
 		id: "software-2",
-		name: "Doğukan Ürker",
-		title: "Software Team",
+		name: "DoÄŸukan Ãœrker",
 		role: "member",
 		team: "software",
 		photoUrl:
@@ -316,7 +301,6 @@ export const teamMembers: TeamMember[] = [
 	{
 		id: "software-3",
 		name: "Sude Tuncu",
-		title: "Software Team",
 		role: "member",
 		team: "software",
 		photoUrl:
@@ -328,7 +312,6 @@ export const teamMembers: TeamMember[] = [
 	{
 		id: "software-4",
 		name: "Murat Muzaffer",
-		title: "Software Team",
 		role: "member",
 		team: "software",
 		photoUrl:
@@ -343,7 +326,6 @@ export const teamMembers: TeamMember[] = [
 	{
 		id: "software-5",
 		name: "Burak Kaya",
-		title: "Software Team",
 		role: "member",
 		team: "software",
 		photoUrl:
@@ -356,3 +338,6 @@ export const teamMembers: TeamMember[] = [
 		],
 	},
 ];
+
+
+
