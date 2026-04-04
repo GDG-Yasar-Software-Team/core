@@ -1,7 +1,7 @@
 import type React from "react";
 import { Link } from "react-router-dom";
 import type { Event } from "../../../types";
-import { formatEventDate, extractCity, extractLocation } from "../../../services/eventService";
+import { formatEventDate } from "../../../services/eventService";
 
 interface EventCardProps {
 	event: Event;
@@ -9,7 +9,6 @@ interface EventCardProps {
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
 	const formattedDate = formatEventDate(event.date);
-	const location = extractLocation(event.place);
         const imageUrl = event.image_url || 'https://via.placeholder.com/400x300?text=GDG+Event';
 
         // Use tags directly from backend

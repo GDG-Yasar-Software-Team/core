@@ -31,7 +31,9 @@ const getDataNumber = (el: HTMLElement, name: string, fallback: number) => {
 };
 
 function buildItems(pool: any[], seg: number) {
-  const xCols = Array.from({ length: seg }, (_, i) => -37 + i * 2);
+  // Automatically center the columns around 0
+  const startX = -Math.floor(seg - 1);
+  const xCols = Array.from({ length: seg }, (_, i) => startX + i * 2);
   const evenYs = [-4, -2, 0, 2, 4];
   const oddYs = [-3, -1, 1, 3, 5];
 

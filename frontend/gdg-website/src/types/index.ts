@@ -21,8 +21,13 @@ export interface Event {
 	description: string;
 	date: string; // ISO datetime string from backend
 	place: string;
+	image_url?: string;
 	speakers: Speaker[];
         tags: string[];
+}
+
+/**
+ * Platform types for social media links
  */
 export type SocialPlatform =
 	| "linkedin"

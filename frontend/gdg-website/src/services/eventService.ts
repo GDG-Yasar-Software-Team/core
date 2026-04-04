@@ -11,7 +11,7 @@ const API_BASE_URL = import.meta.env.VITE_EVENT_SERVICE_URL || 'http://localhost
  */
 export async function fetchEvents(limit = 100, offset = 0): Promise<Event[]> {
         try {
-                const url = new URL(\\/events\);
+                const url = new URL('/events', API_BASE_URL);
                 url.searchParams.append('limit', limit.toString());
                 url.searchParams.append('offset', offset.toString());
 
@@ -23,7 +23,7 @@ export async function fetchEvents(limit = 100, offset = 0): Promise<Event[]> {
                 });
 
                 if (!response.ok) {
-                        throw new Error(\Failed to fetch events: \\);
+                        throw new Error(`Failed to fetch events: ${response.statusText}`);
                 }
 
                 const events: Event[] = await response.json();
@@ -39,7 +39,7 @@ export async function fetchEvents(limit = 100, offset = 0): Promise<Event[]> {
  */
 export async function fetchEventById(eventId: string): Promise<Event> {
         try {
-                const response = await fetch(\\/events/\\, {
+                const response = await fetch(`${API_BASE_URL}/events/${eventId}`, {
                         method: 'GET',
                         headers: {
                                 'Content-Type': 'application/json'
@@ -47,13 +47,13 @@ export async function fetchEventById(eventId: string): Promise<Event> {
                 });
 
                 if (!response.ok) {
-                        throw new Error(\Failed to fetch event: \\);
+                        throw new Error(`Failed to fetch event: ${response.statusText}`);
                 }
 
                 const event: Event = await response.json();
                 return event;
         } catch (error) {
-                console.error(\Error fetching event \:\, error);
+                console.error(`Error fetching event ${eventId}:`, error);
                 throw error;
         }
 }

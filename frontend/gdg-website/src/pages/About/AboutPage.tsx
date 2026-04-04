@@ -66,7 +66,7 @@ export const AboutPage: React.FC = () => {
 										fit={0.9}
 										minRadius={350}
 										maxVerticalRotationDeg={0}
-										segments={34}
+										segments={22}
 										dragDampening={2}
 										overlayBlurColor="#ffffff"
 										grayscale={false}
