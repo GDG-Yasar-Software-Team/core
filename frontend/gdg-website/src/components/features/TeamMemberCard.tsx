@@ -1,9 +1,11 @@
 import type React from "react";
+import { motion } from "motion/react";
 import type { TeamMember } from "../../types";
 
 export interface TeamMemberCardProps {
 	member: TeamMember;
 	className?: string;
+	index?: number;
 }
 
 const getSocialIcon = (platform: string) => {
@@ -46,6 +48,7 @@ const getSocialIcon = (platform: string) => {
 export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 	member,
 	className = "",
+	index = 0,
 }) => {
 	const isLeader = member.role === "leader";
 	const isTeamLeader = member.role === "team-leader";
@@ -64,36 +67,37 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 			: "text-[length:var(--font-size-sm)]";
 
 	return (
-		<div
+		<motion.div
+			initial={{ opacity: 0, y: 40 }}
+			whileInView={{ opacity: 1, y: 0 }}
+			viewport={{ once: true, margin: "-50px" }}
+			transition={{ duration: 0.8, delay: index * 0.15, ease: "easeOut" }}
 			className={`flex min-w-0 w-full flex-col items-center bg-transparent rounded-[var(--border-radius-md)] px-2 py-4 sm:px-4 sm:py-6 shadow-none transition-none hover:shadow-none hover:translate-y-0 hover:bg-transparent ${className}`}
 			data-role={member.role}
 		>
 			<div
-				className="mx-auto mb-2 shrink-0"
-				style={{
-					width: `min(${photoBoxPx}px, 100%)`,
-					aspectRatio: "1",
-					borderRadius: "9999px",
-					overflow: "hidden",
-					backgroundColor: "rgba(0, 0, 0, 0.06)",
-				}}
-			>
-				<img
-					src={member.photoUrl}
-					alt={member.name}
-					width={photoBoxPx}
-					height={photoBoxPx}
-					loading="lazy"
-					decoding="async"
+				className="mx-auto mb-2 shrink-0 relative group"
+				<div className="absolute -inset-2 bg-gradient-to-tr from-current to-transparent rounded-full blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
+				<div
 					style={{
-						width: "100%",
-						height: "100%",
-						objectFit: "cover",
-						objectPosition: "center",
-						display: "block",
-						maxWidth: "none",
+						width: `min(${photoBoxPx}px, 100%)`,
+						aspectRatio: "1",
+						borderRadius: "9999px",
+						overflow: "hidden",
+						backgroundColor: "rgba(0, 0, 0, 0.06)",
 					}}
-				/>
+					className="relative z-10 border-2 border-transparent group-hover:border-current transition-colors duration-300"
+				>
+					<img
+						src={member.photoUrl}
+						alt={member.name}
+						width={photoBoxPx}
+						height={photoBoxPx}
+						loading="lazy"
+						decoding="async"
+						className="w-full h-full object-cover object-center block max-w-none grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100"
+					/>
+				</div>
 			</div>
 			<h3
 				className={`font-bold text-[var(--on-surface)] mb-1 m-0 text-center ${nameClass}`}
@@ -122,6 +126,6 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 					))}
 				</div>
 			)}
-		</div>
+		</motion.div>
 	);
 };
