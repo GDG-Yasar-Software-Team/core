@@ -60,6 +60,7 @@ class TestPostEvents:
                     "description": "Annual developer festival.",
                     "date": "2099-11-15T10:00:00Z",
                     "place": "Yaşar University",
+                    "event_type": "conference",
                     "speakers": [
                         {"name": "Jane Doe", "title": "Engineer", "company": "Google"}
                     ],
@@ -76,6 +77,22 @@ class TestPostEvents:
             "/events/",
             headers={"X-API-Token": valid_api_token},
             json={
+                "description": "Some event",
+                "date": "2099-11-15T10:00:00Z",
+                "place": "Somewhere",
+                "event_type": "meetup",
+            },
+        )
+
+        assert response.status_code == 422
+
+    def test_validates_missing_event_type_422(self, sync_client, valid_api_token):
+        """POST with missing event_type returns 422."""
+        response = sync_client.post(
+            "/events/",
+            headers={"X-API-Token": valid_api_token},
+            json={
+                "title": "Test Event",
                 "description": "Some event",
                 "date": "2099-11-15T10:00:00Z",
                 "place": "Somewhere",
@@ -99,6 +116,7 @@ class TestPostEvents:
                     "description": "This event is in the past.",
                     "date": "2020-01-01T00:00:00Z",
                     "place": "Nowhere",
+                    "event_type": "meetup",
                 },
             )
 
@@ -119,6 +137,9 @@ class TestGetEventById:
             place="Yaşar University",
             speakers=[Speaker(name="Jane Doe", title="Engineer", company="Google")],
             image_url="https://example.com/image.jpg",
+            tags=["devfest", "gdg"],
+            registration_form_url="https://forms.example.com/register",
+            event_type="conference",
             created_at=datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
             updated_at=None,
         )
@@ -167,6 +188,9 @@ class TestPutEvents:
             place="Yaşar University",
             speakers=[],
             image_url=None,
+            tags=[],
+            registration_form_url=None,
+            event_type="conference",
             created_at=datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
             updated_at=datetime(2025, 1, 2, 12, 0, 0, tzinfo=timezone.utc),
         )
@@ -247,6 +271,9 @@ class TestListEvents:
                 place="Yaşar University",
                 speakers=[],
                 image_url=None,
+                tags=[],
+                registration_form_url=None,
+                event_type="conference",
                 created_at=datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
                 updated_at=None,
             ),
@@ -258,6 +285,9 @@ class TestListEvents:
                 place="Engineering Building",
                 speakers=[],
                 image_url=None,
+                tags=["flutter"],
+                registration_form_url=None,
+                event_type="workshop",
                 created_at=datetime(2025, 2, 1, 0, 0, 0, tzinfo=timezone.utc),
                 updated_at=None,
             ),

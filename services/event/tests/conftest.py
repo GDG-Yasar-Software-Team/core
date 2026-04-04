@@ -82,6 +82,9 @@ def sample_event_data() -> EventCreate:
         place="Yaşar University",
         speakers=[Speaker(name="Jane Doe", title="Engineer", company="Google")],
         image_url="https://example.com/image.jpg",
+        tags=["devfest", "gdg"],
+        registration_form_url="https://forms.example.com/register",
+        event_type="conference",
     )
 
 
@@ -96,6 +99,9 @@ def sample_event_doc() -> dict[str, Any]:
         "place": "Yaşar University",
         "speakers": [{"name": "Jane Doe", "title": "Engineer", "company": "Google"}],
         "image_url": "https://example.com/image.jpg",
+        "tags": ["devfest", "gdg"],
+        "registration_form_url": "https://forms.example.com/register",
+        "event_type": "conference",
         "created_at": datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
         "updated_at": None,
     }
@@ -113,6 +119,9 @@ def sample_event_docs() -> list[dict[str, Any]]:
             "place": "Yaşar University",
             "speakers": [],
             "image_url": None,
+            "tags": [],
+            "registration_form_url": None,
+            "event_type": "conference",
             "created_at": datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
             "updated_at": None,
         },
@@ -126,6 +135,9 @@ def sample_event_docs() -> list[dict[str, Any]]:
                 {"name": "John Smith", "title": "Developer", "company": "Flutter"}
             ],
             "image_url": "https://example.com/flutter.jpg",
+            "tags": ["flutter", "mobile"],
+            "registration_form_url": "https://forms.example.com/flutter",
+            "event_type": "workshop",
             "created_at": datetime(2025, 2, 1, 0, 0, 0, tzinfo=timezone.utc),
             "updated_at": None,
         },

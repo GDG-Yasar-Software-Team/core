@@ -21,6 +21,9 @@ def _make_db_event(**kwargs) -> EventInDB:
         "place": "Yaşar University",
         "speakers": [],
         "image_url": None,
+        "tags": ["devfest"],
+        "registration_form_url": None,
+        "event_type": "conference",
         "created_at": datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
         "updated_at": None,
     }
@@ -43,6 +46,7 @@ class TestCreateEvent:
                 description="Annual developer festival.",
                 date=datetime(2099, 11, 15, 10, 0, 0, tzinfo=timezone.utc),
                 place="Yaşar University",
+                event_type="conference",
             )
             event_id = await EventService.create_event(data)
 
@@ -55,6 +59,7 @@ class TestCreateEvent:
             description="Already happened.",
             date=datetime(2020, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
             place="Somewhere",
+            event_type="meetup",
         )
 
         with pytest.raises(ValueError, match="Event date must be in the future"):
@@ -72,6 +77,7 @@ class TestCreateEvent:
                 description="A workshop.",
                 date=datetime(2099, 6, 1, 10, 0, 0, tzinfo=timezone.utc),
                 place="Lab",
+                event_type="workshop",
             )
             await EventService.create_event(data)
 
@@ -95,6 +101,7 @@ class TestGetEventById:
             assert response is not None
             assert response.id == "507f1f77bcf86cd799439011"
             assert response.title == "GDG DevFest 2025"
+            assert response.event_type == "conference"
 
     async def test_returns_none_when_not_found(self, mock_mongodb):
         """get_event_by_id returns None when event doesn't exist."""
@@ -174,6 +181,7 @@ class TestListEvents:
             _make_db_event(
                 _id=ObjectId("507f1f77bcf86cd799439012"),
                 title="Flutter Workshop",
+                event_type="workshop",
             ),
         ]
 
