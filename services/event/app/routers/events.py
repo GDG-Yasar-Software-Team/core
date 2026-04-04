@@ -8,11 +8,10 @@ from app.services.event_service import EventService
 router = APIRouter(
     prefix="/events",
     tags=["events"],
-    dependencies=[Depends(verify_api_key)],
 )
 
 
-@router.post("/", status_code=201)
+@router.post("/", status_code=201, dependencies=[Depends(verify_api_key)])
 async def create_event(event: EventCreate) -> dict[str, str]:
     """Create a new event."""
     try:
@@ -31,8 +30,8 @@ async def get_event_by_id(event_id: str) -> EventResponse:
     return event
 
 
-@router.put("/{event_id}")
-async def update_event(event_id: str, update: EventUpdate) -> EventResponse:
+@router.put("/{event_id}", dependencies=[Depends(verify_api_key)])
+async def update_event(event_id: str, update: EventUpdate) -> EventResponse:    
     """Update an event by ID. Only updates provided fields."""
     try:
         return await EventService.update_event(event_id, update)
@@ -40,7 +39,7 @@ async def update_event(event_id: str, update: EventUpdate) -> EventResponse:
         raise HTTPException(status_code=404, detail=f"Event not found: {event_id}")
 
 
-@router.delete("/{event_id}", status_code=204)
+@router.delete("/{event_id}", status_code=204, dependencies=[Depends(verify_api_key)])
 async def delete_event(event_id: str) -> None:
     """Delete an event by ID."""
     try:
