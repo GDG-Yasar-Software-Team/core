@@ -4,11 +4,11 @@ import { useEffect, useRef, useState } from "react";
 /** Former FlowingMenu.css font modifiers; TeamPage passes these `fontClass` keys. */
 const FLOWING_MENU_FONT_TW: Record<string, string> = {
 	"marquee--font-bebas":
-		"font-['Bebas_Neue',sans-serif] [&_span]:tracking-[0.05em]",
-	"marquee--font-righteous": "font-['Righteous',sans-serif]",
+		"font-bold [&_span]:tracking-[0.05em]",
+	"marquee--font-righteous": "font-medium",
 	"marquee--font-orbitron":
-		"font-['Orbitron',sans-serif] [&_span]:tracking-[0.1em]",
-	"marquee--font-bungee": "font-['Bungee',sans-serif]",
+		"font-bold [&_span]:tracking-[0.1em]",
+	"marquee--font-bungee": "font-black uppercase",
 };
 
 interface FlowingMenuProps {

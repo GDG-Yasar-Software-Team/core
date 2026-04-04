@@ -29,7 +29,7 @@ export const AnimatedSocialDock: React.FC<AnimatedSocialDockProps> = ({
 		<motion.div
 			onMouseMove={(e) => mouseXPosition.set(e.pageX)}
 			onMouseLeave={() => mouseXPosition.set(Number.POSITIVE_INFINITY)}
-			className={`flex items-end gap-4 p-4 rounded-3xl bg-white/10 backdrop-blur-[10px] border border-white/20 justify-center h-28 min-h-28 ${className}`}
+			className={`flex items-center gap-4 justify-center ${className}`}
 		>
 			{items.map((item) => (
 				<DockIcon mouseX={mouseXPosition} key={item.title} {...item} />

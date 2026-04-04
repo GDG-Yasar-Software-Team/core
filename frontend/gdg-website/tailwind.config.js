@@ -5,7 +5,11 @@ export default {
 		preflight: false,
 	},
 	theme: {
-		extend: {},
+		extend: {
+			fontFamily: {
+				sans: ['"Google Sans"', '"Noto Sans"', "Roboto", "Arial", "sans-serif"],
+			},
+		},
 	},
 	plugins: [],
 };

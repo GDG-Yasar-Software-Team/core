@@ -47,8 +47,7 @@
      ======================================== */
 
 	/* Font Family */
-	--font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI",
-		sans-serif;
+	--font-family: "Google Sans", "Noto Sans", "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
 	/* Display */
 	--font-display-large-size: 57px;

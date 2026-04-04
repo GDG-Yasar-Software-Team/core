@@ -1,6 +1,7 @@
 import type React from "react";
 import { Footer } from "../../components/layout/Footer";
 import { Navigation } from "../../components/layout/Navigation";
+import { Feedback } from "../../components/common/Feedback";
 import DomeGallery from "../../components/ui/DomeGallery";
 
 const GALLERY_IMAGES = [
@@ -112,6 +113,7 @@ export const AboutPage: React.FC = () => {
 						/>
 					</div>
 				</section>
+				<Feedback />
 			</main>
 			<Footer />
 		</div>

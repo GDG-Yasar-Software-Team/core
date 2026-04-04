@@ -36,8 +36,8 @@ export const Navigation: React.FC<NavigationProps> = ({ className = "" }) => {
 			className={`sticky top-0 w-full z-[1000] bg-white shadow-[0_1px_2px_0_rgba(60,64,67,0.3),0_1px_3px_1px_rgba(60,64,67,0.15)] border-b border-[#e8eaed] ${className}`}
 			aria-label="Main navigation"
 		>
-			<div className="max-w-[1400px] w-full mx-auto px-4 md:px-8 py-3 flex justify-between items-center">
-				<Link to="/" className="flex items-center gap-3 text-lg font-medium text-[#5f6368] no-underline transition-opacity duration-200 hover:opacity-80">
+			<div className="w-full px-4 md:px-8 py-3 flex items-center justify-between md:justify-start">
+				<Link to="/" className="flex items-center gap-3 text-lg font-medium text-[#5f6368] no-underline transition-opacity duration-200 hover:opacity-80 shrink-0">
 					<img
 						src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/core/refs/heads/main/frontend/form/public/gdg-logo.png"
 						alt="GDG Logo"
@@ -47,18 +47,21 @@ export const Navigation: React.FC<NavigationProps> = ({ className = "" }) => {
 				</Link>
 
 				{/* Desktop Navigation */}
-				<ul className="hidden md:flex list-none m-0 p-0 gap-2">
+				<ul className="hidden md:flex list-none m-0 p-0 gap-6 md:ml-12">
 					{navLinks.map((link) => (
 						<li key={link.path}>
 							<Link
 								to={link.path}
-								className={`text-[#5f6368] no-underline text-sm font-medium px-4 py-2 rounded transition-colors duration-200 hover:bg-[#f1f3f4] focus-visible:outline-2 focus-visible:outline-[#4285f4] focus-visible:outline-offset-2 ${
+								className={`relative text-sm font-medium px-2 py-1 mx-2 transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-[#4285f4] focus-visible:outline-offset-2 group ${
 									location.pathname === link.path
-										? "bg-[#e8f0fe] text-[#1967d2]"
-										: ""
+										? "text-[#1a73e8]"
+										: "text-[#5f6368] hover:text-[#1a73e8]"
 								}`}
 							>
 								{link.label}
+								<span className={`absolute left-0 -bottom-1 w-full h-[2px] bg-[#1a73e8] rounded-full transition-transform duration-300 origin-left ${
+									location.pathname === link.path ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+								}`} />
 							</Link>
 						</li>
 					))}
@@ -104,10 +107,10 @@ export const Navigation: React.FC<NavigationProps> = ({ className = "" }) => {
 									<li key={link.path}>
 										<Link
 											to={link.path}
-											className={`block text-[#5f6368] no-underline text-sm font-medium py-3 px-4 rounded transition-colors duration-200 hover:bg-[#f1f3f4] focus-visible:outline-2 focus-visible:outline-[#4285f4] focus-visible:outline-offset-2 ${
+											className={`block no-underline text-sm font-medium py-3 px-4 transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-[#4285f4] focus-visible:outline-offset-2 rounded-lg ${
 												location.pathname === link.path
-													? "bg-[#e8f0fe] text-[#1967d2]"
-													: ""
+													? "text-[#1a73e8] bg-[#f8f9fa]"
+													: "text-[#5f6368] hover:text-[#1a73e8] hover:bg-[#f8f9fa]"
 											}`}
 											onClick={closeMobileMenu}
 										>

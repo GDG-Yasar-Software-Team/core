@@ -33,37 +33,36 @@ const socialLinks = [
 			</svg>
 		),
 	},
+	{
+		title: "YouTube",
+		href: "https://www.youtube.com/@yu-gdgoncampus",
+		icon: (
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+				<path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+			</svg>
+		),
+	},
+	{
+		title: "Linkler",
+		href: "https://linktr.ee/gdg_yu",
+		icon: (
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+				<path d="M12.235 3.42l-2.072 2.062 1.93 1.95a6.471 6.471 0 1 1-9.15 9.151l2.06 2.06a9.387 9.387 0 1 0 13.275-13.273l-6.043-1.95zm.513 18.232l2.07-2.072-1.92-1.94a6.469 6.469 0 1 1 9.15-9.152l-2.06-2.06a9.385 9.385 0 1 0-13.273 13.273l6.033 1.951zM11.96 7.64l4.4 4.4L11.96 16.4l-1.41-1.4 2.98-2.99-2.98-3 1.41-1.37z" />
+			</svg>
+		),
+	},
 ];
 
 export const Footer: React.FC<FooterProps> = ({ className = "" }) => {
 	return (
-		<footer className={`bg-[#f5f5f5] px-6 py-16 mt-24 ${className}`}>
-			<div className="max-w-[1200px] mx-auto">
-				<div className="flex flex-col md:flex-row md:justify-between gap-8 mb-8">
-					<div className="flex-1">
-						<h3 className="text-lg font-bold text-[#1f1f1f] m-0 mb-2">GDG on Campus Yaşar University</h3>
-						<p className="text-[#5f6368] m-0">
-							Building a community of developers and tech enthusiasts
-						</p>
-					</div>
-
-					<div>
-						<AnimatedSocialDock items={socialLinks} />
-					</div>
+		<footer className={`bg-[#f8f9fa] border-t border-[#dadce0] px-4 py-2 mt-8 ${className}`}>
+			<div className="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
+				<div className="flex flex-col mb-2 md:mb-0">
+					<h3 className="text-xs font-bold text-[#1f1f1f] m-0">GDG on Campus Yaşar University</h3>
 				</div>
 
-				<div className="flex flex-col md:flex-row md:justify-between gap-4 pt-8 border-t border-[#dadce0] text-center md:text-left">
-					<a
-						href="https://gdg.community.dev/gdg-on-campus-yasar-university-izmir-turkey/"
-						target="_blank"
-						rel="noopener noreferrer"
-						className="text-[#4285F4] no-underline font-medium hover:underline"
-					>
-						Code of Conduct
-					</a>
-					<p className="text-[#5f6368] text-sm m-0">
-						Powered by Google Developers
-					</p>
+				<div className="flex items-center scale-75 origin-center md:origin-right">
+					<AnimatedSocialDock items={socialLinks} />
 				</div>
 			</div>
 		</footer>
