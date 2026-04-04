@@ -1,10 +1,9 @@
 ﻿import type React from "react";
 import { motion } from "motion/react";
-import FlowingMenu from "../../components/features/FlowingMenu";
-import LightPillar from "../../components/features/LightPillar";
 import { TeamMemberCard } from "../../components/features/TeamMemberCard";
 import { OrganizerCard } from "../../components/features/OrganizerCard";
 import { Navigation } from "../../components/layout/Navigation";
+import { TeamScrollBackground } from "@/pages/Team/TeamScrollBackground";
 import { teamMembers } from "./team.data";
 
 export const TeamPage: React.FC = () => {
@@ -14,105 +13,18 @@ export const TeamPage: React.FC = () => {
 	const sponsorshipTeam = teamMembers.filter((m) => m.team === "sponsorship" && m.role !== "organizer" && m.role !== "co-organizer");
 	const softwareTeam = teamMembers.filter((m) => m.team === "software" && m.role !== "organizer" && m.role !== "co-organizer");
 
-	// Team menu items with matching colors and icons
-	const teamMenus = [
-		{
-			items: [
-				{
-					link: "#",
-					text: "ORGANIZATION TEAM",
-					image:
-						"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='75' font-size='75'%3EğŸ“‹%3C/text%3E%3C/svg%3E",
-				},
-			],
-			bgColor: "transparent",
-			textColor: "#ea4335",
-			marqueeBgColor: "transparent",
-			marqueeTextColor: "#ea4335",
-			borderColor: "transparent",
-			fontClass: "marquee--font-bebas",
-		},
-		{
-			items: [
-				{
-					link: "#",
-					text: "MARKETING TEAM",
-					image:
-						"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='75' font-size='75'%3EğŸ“±%3C/text%3E%3C/svg%3E",
-				},
-			],
-			bgColor: "transparent",
-			textColor: "#FBBC05",
-			marqueeBgColor: "transparent",
-			marqueeTextColor: "#FBBC05",
-			borderColor: "transparent",
-			fontClass: "marquee--font-righteous",
-		},
-		{
-			items: [
-				{
-					link: "#",
-					text: "SPONSORSHIP TEAM",
-					image:
-						"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='75' font-size='75'%3EğŸ’¼%3C/text%3E%3C/svg%3E",
-				},
-			],
-			bgColor: "transparent",
-			textColor: "#4285f4",
-			marqueeBgColor: "transparent",
-			marqueeTextColor: "#4285f4",
-			borderColor: "transparent",
-			fontClass: "marquee--font-orbitron",
-		},
-		{
-			items: [
-				{
-					link: "#",
-					text: "SOFTWARE TEAM",
-					image:
-						"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='75' font-size='75'%3EğŸ’»%3C/text%3E%3C/svg%3E",
-				},
-			],
-			bgColor: "transparent",
-			textColor: "#34a853",
-			marqueeBgColor: "transparent",
-			marqueeTextColor: "#34a853",
-			borderColor: "transparent",
-			fontClass: "marquee--font-bungee",
-		},
-	];
-
 	return (
 		<div className="min-h-screen flex flex-col bg-[#0a0a0a] relative">
-			{/* Global Fixed Geometric Background */}
-			<div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-				{/* Top Left Shape (GDG Blue) */}
-				<div 
-					className="absolute -top-20 -left-20 w-[40vw] h-[40vw] bg-gradient-to-br from-[#4285F4] to-transparent rotate-12 opacity-80"
-					style={{ clipPath: 'polygon(0 0, 100% 0, 80% 100%, 0 80%)' }}
-				/>
-				{/* Top Right Shape (GDG Red) */}
-				<div 
-					className="absolute -top-10 -right-10 w-[35vw] h-[35vw] bg-gradient-to-bl from-[#EA4335] to-transparent -rotate-12 opacity-80"
-					style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 80%, 0 100%)' }}
-				/>
-				{/* Bottom Left Shape (GDG Yellow) */}
-				<div 
-					className="absolute -bottom-10 -left-10 w-[30vw] h-[30vw] bg-gradient-to-tr from-[#FBBC04] to-transparent -rotate-6 opacity-70"
-					style={{ clipPath: 'polygon(0 20%, 80% 0, 100% 100%, 0 100%)' }}
-				/>
-				{/* Bottom Right Shape (GDG Green) */}
-				<div 
-					className="absolute -bottom-20 -right-20 w-[45vw] h-[45vw] bg-gradient-to-tl from-[#34A853] to-transparent rotate-6 opacity-80"
-					style={{ clipPath: 'polygon(20% 0, 100% 20%, 100% 100%, 0 80%)' }}
-				/>
-			</div>
+			<TeamScrollBackground />
 
 			<Navigation />
 
 			<main className="flex-1 relative z-10 w-full">
 				{/* Organizers Section */}
-				<section className="h-[calc(100vh-74px)] snap-start w-full flex items-center justify-center relative overflow-hidden py-12 md:py-16">
+				<section
+					className="h-[calc(100vh-74px)] snap-start w-full flex items-center justify-center relative overflow-hidden py-12 md:py-16"
+					data-team-tone="organizers"
+				>
 
 					<div className="max-w-[1240px] mx-auto px-6 relative z-10 w-full">
 						<div className="flex flex-col items-center mb-20 text-center">
@@ -155,7 +67,10 @@ export const TeamPage: React.FC = () => {
 				<section className="p-0 bg-transparent">
 					<div className="max-w-full p-0 flex flex-col w-full text-white">
 						{/* Organization Team */}
-						<div className="h-[calc(100vh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-hidden">
+						<div
+							className="h-[calc(100vh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-hidden"
+							data-team-tone="organization"
+						>
 							<div className="flex flex-col items-center mb-8 md:mb-12 text-center relative z-[2]">
 								<motion.div
 									initial={{ opacity: 0, y: 50, scale: 0.8 }}
@@ -200,7 +115,10 @@ export const TeamPage: React.FC = () => {
 						</div>
 
 						{/* Marketing Team */}
-						<div className="h-[calc(100vh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-hidden">
+						<div
+							className="h-[calc(100vh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-hidden"
+							data-team-tone="marketing"
+						>
 							<div className="flex flex-col items-center mb-8 md:mb-12 text-center relative z-[2]">
 								<motion.div
 									initial={{ opacity: 0, y: 50, scale: 0.8 }}
@@ -245,7 +163,10 @@ export const TeamPage: React.FC = () => {
 						</div>
 
 						{/* Sponsorship Team */}
-						<div className="h-[calc(100vh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-hidden">
+						<div
+							className="h-[calc(100vh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-hidden"
+							data-team-tone="sponsorship"
+						>
 							<div className="flex flex-col items-center mb-8 md:mb-12 text-center relative z-[2]">
 								<motion.div
 									initial={{ opacity: 0, y: 50, scale: 0.8 }}
@@ -290,7 +211,10 @@ export const TeamPage: React.FC = () => {
 						</div>
 
 						{/* Software Team */}
-						<div className="h-[calc(100vh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-hidden">
+						<div
+							className="h-[calc(100vh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-hidden"
+							data-team-tone="software"
+						>
 							<div className="flex flex-col items-center mb-8 md:mb-12 text-center relative z-[2]">
 								<motion.div
 									initial={{ opacity: 0, y: 50, scale: 0.8 }}
