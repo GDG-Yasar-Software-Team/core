@@ -39,9 +39,9 @@ class EventUpdate(BaseModel):
     place: str | None = Field(default=None, min_length=1, max_length=200)
     speakers: list[Speaker] | None = None
     image_url: str | None = None
-    tags: list[str] | None = None
+    tags: list[str] = Field(default_factory=list)
     registration_form_url: str | None = None
-    event_type: str | None = Field(default=None, min_length=1, max_length=100)
+    event_type: str = Field(min_length=1, max_length=100)
 
     @field_validator("tags")
     @classmethod
