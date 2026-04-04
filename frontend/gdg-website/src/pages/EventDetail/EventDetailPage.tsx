@@ -1,31 +1,93 @@
 import type React from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Footer } from "../../components/layout/Footer";
 import { Navigation } from "../../components/layout/Navigation";
-import { pastEvents, upcomingEvents } from "../UpcomingEvents/data/events";
+import { fetchEventById, formatEventDate, extractCity, extractLocation, isEventPast } from "../../services/eventService";
+import type { Event } from "../../types";
 
 export const EventDetailPage: React.FC = () => {
 	const { eventId } = useParams<{ eventId: string }>();
+	const [event, setEvent] = useState<Event | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 
-	const allEvents = [...upcomingEvents, ...pastEvents];
-	const event = allEvents.find((e) => e.id === eventId);
+	useEffect(() => {
+		const loadEvent = async () => {
+			if (!eventId) {
+				setError('Event ID is missing');
+				setLoading(false);
+				return;
+			}
 
-	if (!event) {
+			try {
+				setLoading(true);
+				setError(null);
+				const eventData = await fetchEventById(eventId);
+				setEvent(eventData);
+			} catch (err) {
+				console.error('Failed to load event:', err);
+				setError('Failed to load event. Please try again later.');
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		loadEvent();
+	}, [eventId]);
+
+	if (loading) {
+		return (
+			<div className="min-h-screen flex flex-col">
+				<Navigation />
+				<main className="flex-1 pt-16">
+					<div className="max-w-[900px] mx-auto py-24 px-6 text-center">
+						<div className="inline-block w-12 h-12 border-4 border-[#4285F4] border-t-transparent rounded-full animate-spin"></div>
+						<p className="mt-4 text-[#5f6368]">Loading event...</p>
+					</div>
+				</main>
+				<Footer />
+			</div>
+		);
+	}
+
+	if (error || !event) {
 		return (
 			<div className="min-h-screen flex flex-col">
 				<Navigation />
 				<main className="flex-1 pt-16">
 					<div className="max-w-[900px] mx-auto py-24 px-6">
-						<h1>Event Not Found</h1>
-						<p>The event you're looking for doesn't exist.</p>
-						<Link to="/" className="inline-flex items-center gap-2 text-[#5f6368] no-underline text-base font-medium mb-8 transition-colors duration-200 hover:text-[#4285F4]">
-							Back to Home
+						<h1 className="text-3xl font-bold text-[#1f1f1f] mb-4">Event Not Found</h1>
+						<p className="text-[#5f6368] mb-8">{error || "The event you're looking for doesn't exist."}</p>
+						<Link to="/" className="inline-flex items-center gap-2 text-[#4285F4] no-underline text-base font-medium transition-colors duration-200 hover:text-[#3367d6]">
+							← Back to Home
 						</Link>
 					</div>
 				</main>
 				<Footer />
 			</div>
 		);
+	}
+
+	const formattedDate = formatEventDate(event.date);
+	const location = extractLocation(event.place);
+	const city = extractCity(event.place);
+	const imageUrl = event.image_url || 'https://via.placeholder.com/400x300?text=GDG+Event';
+	const isPast = isEventPast(event);
+
+	// Determine event type from title
+	let eventType = 'Event';
+	const titleLower = event.title.toLowerCase();
+	if (titleLower.includes('workshop')) eventType = 'Workshop';
+	else if (titleLower.includes('hackathon')) eventType = 'Hackathon';
+	else if (titleLower.includes('talk') || titleLower.includes('session')) eventType = 'Tech Talk';
+	else if (titleLower.includes('meetup')) eventType = 'Meetup';
+	else if (titleLower.includes('conference') || titleLower.includes('summit')) eventType = 'Conference';
+
+	// Generate tags
+	const tags: string[] = [eventType];
+	if (event.speakers.length > 0) {
+		tags.push('Guest Speaker');
 	}
 
 	return (
@@ -39,7 +101,7 @@ export const EventDetailPage: React.FC = () => {
 
 					<div className="mb-24">
 						<span className="inline-block py-1 px-4 bg-[#e8f0fe] text-[#1967d2] rounded-full text-sm font-medium mb-4">
-							{event.type}
+							{eventType}
 						</span>
 						<h1 className="text-3xl md:text-4xl font-bold text-[#1f1f1f] m-0 mb-8 leading-tight">
 							{event.title}
@@ -56,7 +118,7 @@ export const EventDetailPage: React.FC = () => {
 										strokeLinejoin="round"
 									/>
 								</svg>
-								<span>{event.date}</span>
+								<span>{formattedDate}</span>
 							</div>
 							<div className="flex items-center gap-2 text-[#5f6368] text-base">
 								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-[#5f6368]">
@@ -72,13 +134,13 @@ export const EventDetailPage: React.FC = () => {
 									/>
 								</svg>
 								<span>
-									{event.location}, {event.city}
+									{location}, {city}
 								</span>
 							</div>
 						</div>
 
 						<div className="flex flex-wrap gap-2">
-							{event.tags.map((tag) => (
+							{tags.map((tag) => (
 								<span key={tag} className="py-1 px-4 bg-[#f1f3f4] text-[#5f6368] rounded-full text-sm font-medium">
 									{tag}
 								</span>
@@ -89,43 +151,37 @@ export const EventDetailPage: React.FC = () => {
 					<div className="border-t border-[#e8eaed] pt-16">
 						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-16">About This Event</h2>
 						<div className="grid grid-cols-1 md:grid-cols-[400px_1fr] gap-16 items-start">
-							{event.id === "design-patterns-hepsiburada" ? (
-								<div className="relative rounded-2xl overflow-hidden shadow-[0_4px_12px_rgba(60,64,67,0.15)] bg-gradient-to-br from-[#4285F4] via-[#EA4335] via-[#FBBC05] via-[#34A853] to-[#4285F4] p-1">
-									<img
-										src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/6-batuhan-gungor.png"
-										alt="Batuhan Güngör"
-										className="w-full h-auto block rounded-xl bg-white"
-									/>
-								</div>
-							) : (
-								<div className="relative rounded-2xl overflow-hidden shadow-[0_4px_12px_rgba(60,64,67,0.15)] bg-gradient-to-br from-[#4285F4] via-[#EA4335] via-[#FBBC05] via-[#34A853] to-[#4285F4] p-1">
-									<img
-										src={event.imageUrl}
-										alt={event.title}
-										className="w-full h-auto block rounded-xl bg-white"
-									/>
-								</div>
-							)}
+							<div className="relative rounded-2xl overflow-hidden shadow-[0_4px_12px_rgba(60,64,67,0.15)] bg-gradient-to-br from-[#4285F4] via-[#EA4335] via-[#FBBC05] via-[#34A853] to-[#4285F4] p-1">
+								<img
+									src={imageUrl}
+									alt={event.title}
+									className="w-full h-auto block rounded-xl bg-white"
+								/>
+							</div>
 							<div className="flex flex-col gap-8">
-								<p className="text-base text-[#5f6368] leading-relaxed m-0">
+								<p className="text-base text-[#5f6368] leading-relaxed m-0 whitespace-pre-wrap">
 									{event.description}
 								</p>
 
-								{event.id === "design-patterns-hepsiburada" && (
+								{event.speakers.length > 0 && (
 									<div className="mt-8">
-										<h3 className="text-xl font-bold text-[#1f1f1f] m-0 mb-6">Speaker</h3>
-										<div className="p-6 bg-[#f8f9fa] rounded-xl border border-[#e8eaed]">
-											<div>
-												<h4 className="text-lg font-bold text-[#1f1f1f] m-0 mb-1">Batuhan Güngör</h4>
-												<p className="text-base text-[#5f6368] m-0">
-													Software Engineering Manager at Hepsiburada / Hepsipay
-												</p>
-											</div>
+										<h3 className="text-xl font-bold text-[#1f1f1f] m-0 mb-6">
+											{event.speakers.length === 1 ? 'Speaker' : 'Speakers'}
+										</h3>
+										<div className="flex flex-col gap-4">
+											{event.speakers.map((speaker, index) => (
+												<div key={index} className="p-6 bg-[#f8f9fa] rounded-xl border border-[#e8eaed]">
+													<h4 className="text-lg font-bold text-[#1f1f1f] m-0 mb-1">{speaker.name}</h4>
+													<p className="text-base text-[#5f6368] m-0">
+														{speaker.title} at {speaker.company}
+													</p>
+												</div>
+											))}
 										</div>
 									</div>
 								)}
 
-								{event.isPast && (
+								{isPast && (
 									<div className="flex items-center gap-4 p-6 bg-[#fef7e0] border-l-4 border-[#FBBC05] rounded text-[#5f6368] text-base">
 										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="flex-shrink-0 text-[#FBBC05]">
 											<path

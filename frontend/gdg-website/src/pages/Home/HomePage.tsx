@@ -1,10 +1,11 @@
 import type React from "react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Footer } from "../../components/layout/Footer";
 import { Navigation } from "../../components/layout/Navigation";
 import { EventCard } from "../UpcomingEvents/components/EventCard";
-import { upcomingEvents } from "../UpcomingEvents/data/events";
+import { fetchEvents, isEventPast } from "../../services/eventService";
+import type { Event } from "../../types";
 
 const pastEventsDisplay = [
 	{
@@ -95,7 +96,31 @@ const missionCards = [
 
 export const HomePage: React.FC = () => {
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
-	const recentEvents = upcomingEvents.filter((e) => !e.isPast).slice(0, 3);
+	const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+
+	useEffect(() => {
+		const loadEvents = async () => {
+			try {
+				setLoading(true);
+				setError(null);
+				const events = await fetchEvents();
+				// Filter for upcoming events only
+				const upcoming = events.filter((e) => !isEventPast(e));
+				setUpcomingEvents(upcoming);
+			} catch (err) {
+				console.error('Failed to load events:', err);
+				setError('Failed to load events. Please try again later.');
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		loadEvents();
+	}, []);
+
+	const recentEvents = upcomingEvents.slice(0, 3);
 
 	const scroll = (direction: "left" | "right") => {
 		if (scrollContainerRef.current) {
@@ -120,7 +145,7 @@ export const HomePage: React.FC = () => {
 			<Navigation />
 			<div className="w-full overflow-hidden">
 				<img
-					src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/home-page-title/home-picture.png"
+					src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/home-page-title/home-picture.jpg"
 					alt="GDG on Campus Yaşar University"
 					className="w-full h-auto block object-cover"
 				/>
@@ -231,12 +256,40 @@ export const HomePage: React.FC = () => {
 
 				<section className="py-24">
 					<div className="max-w-[1200px] mx-auto px-6">
-						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-16 text-center"> Events</h2>
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-							{recentEvents.map((event) => (
-								<EventCard key={event.id} event={event} />
-							))}
-						</div>
+						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-16 text-center">Upcoming Events</h2>
+						
+						{loading && (
+							<div className="text-center py-16">
+								<div className="inline-block w-12 h-12 border-4 border-[#4285F4] border-t-transparent rounded-full animate-spin"></div>
+								<p className="mt-4 text-[#5f6368]">Loading events...</p>
+							</div>
+						)}
+
+						{error && (
+							<div className="text-center py-16">
+								<p className="text-[#EA4335] mb-4">{error}</p>
+								<button
+									onClick={() => window.location.reload()}
+									className="py-2 px-6 bg-[#4285F4] text-white rounded font-medium hover:bg-[#3367d6] transition-colors"
+								>
+									Retry
+								</button>
+							</div>
+						)}
+
+						{!loading && !error && (
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+								{recentEvents.length > 0 ? (
+									recentEvents.map((event) => (
+										<EventCard key={event.id} event={event} />
+									))
+								) : (
+									<div className="col-span-full text-center py-16 text-[#5f6368]">
+										<p>No upcoming events at the moment. Check back soon!</p>
+									</div>
+								)}
+							</div>
+						)}
 					</div>
 				</section>
 			</main>

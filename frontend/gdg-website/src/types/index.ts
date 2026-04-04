@@ -4,34 +4,27 @@
  */
 
 /**
- * Speaker information for events
+ * Speaker information for events (matches backend Speaker model)
  */
 export interface Speaker {
-	id: string;
 	name: string;
 	title: string;
-	avatarUrl: string;
-	bio?: string;
+	company: string;
 }
 
 /**
- * Event model representing workshops, hackathons, talks, and meetups
+ * Event model (matches backend EventResponse model)
  */
 export interface Event {
 	id: string;
 	title: string;
 	description: string;
-	date: string;
-	location: string;
-	city: string;
-	type: string;
-	imageUrl: string;
-	tags: string[];
-	isPast: boolean;
-	time?: string;
-	featured?: boolean;
-	speakers?: Speaker[];
-	rsvpUrl?: string;
+	date: string; // ISO datetime string from backend
+	place: string;
+	speakers: Speaker[];
+	image_url: string | null;
+	created_at: string; // ISO datetime string
+	updated_at: string | null; // ISO datetime string
 }
 
 /**
