@@ -71,6 +71,19 @@
       font-weight: 700;
     }
 
+    .section-event-details {
+      padding: 22px 40px 24px 40px;
+      border-bottom: 1px solid #dde6f2;
+      background-color: #ffffff;
+    }
+
+    .event-detail-row td {
+      font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #0f0f0f;
+    }
+
     .section-speakers {
       padding: 32px 40px 32px 40px;
       border-bottom: 1px solid #dde6f2;
@@ -285,6 +298,7 @@
     @media (max-width: 600px) {
       .email-shell { width: 100% !important; max-width: 100% !important; border-radius: 0 !important; }
       .section-intro,
+      .section-event-details,
       .section-speakers,
       .section-highlights,
       .footer { padding: 24px 18px !important; }
@@ -325,6 +339,32 @@
                   <li style="margin-bottom: 0;"><strong>Agile süreçler:</strong> ritüeller ve gerçek proje hikâyeleri, teorinin ötesinde.</li>
                 </ul>
               </div>
+            </td>
+          </tr>
+
+          <!-- Tarih · Saat · Konum (konuşmacıların üstü, sola hizalı liste) -->
+          <tr>
+            <td class="section-event-details" style="padding: 22px 40px 24px 40px; border-bottom: 1px solid #dde6f2; background-color: #ffffff;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr class="event-detail-row">
+                  <td valign="top" style="width: 34px; padding: 0 12px 14px 0; font-size: 17px; line-height: 1.4; vertical-align: top;" aria-hidden="true">📅</td>
+                  <td valign="top" style="padding: 0 0 14px 0; vertical-align: top; font-family: 'DM Sans', Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #0f0f0f;">
+                    <strong style="font-weight: 700; color: #0f0f0f;">Tarih:</strong> 11 Nisan 2026
+                  </td>
+                </tr>
+                <tr class="event-detail-row">
+                  <td valign="top" style="width: 34px; padding: 0 12px 14px 0; font-size: 17px; line-height: 1.4; vertical-align: top;" aria-hidden="true">🕐</td>
+                  <td valign="top" style="padding: 0 0 14px 0; vertical-align: top; font-family: 'DM Sans', Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #0f0f0f;">
+                    <strong style="font-weight: 700; color: #0f0f0f;">Saat:</strong> 11.00–17.30
+                  </td>
+                </tr>
+                <tr class="event-detail-row">
+                  <td valign="top" style="width: 34px; padding: 0 12px 0 0; font-size: 17px; line-height: 1.4; vertical-align: top;" aria-hidden="true">📍</td>
+                  <td valign="top" style="padding: 0; vertical-align: top; font-family: 'DM Sans', Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #0f0f0f;">
+                    <strong style="font-weight: 700; color: #0f0f0f;">Konum:</strong> Y-110, Yaşar Üniversitesi
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
 
