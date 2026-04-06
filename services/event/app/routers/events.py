@@ -31,7 +31,7 @@ async def get_event_by_id(event_id: str) -> EventResponse:
 
 
 @router.put("/{event_id}", dependencies=[Depends(verify_api_key)])
-async def update_event(event_id: str, update: EventUpdate) -> EventResponse:    
+async def update_event(event_id: str, update: EventUpdate) -> EventResponse:
     """Update an event by ID. Only updates provided fields."""
     try:
         return await EventService.update_event(event_id, update)

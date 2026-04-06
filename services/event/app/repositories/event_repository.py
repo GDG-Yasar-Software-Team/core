@@ -34,9 +34,6 @@ class EventRepository:
             "event_type": event.event_type,
             "registration_form_url": event.registration_form_url,
             "image_url": event.image_url,
-            "tags": event.tags,
-            "registration_form_url": event.registration_form_url,
-            "event_type": event.event_type,
             "created_at": datetime.now(timezone.utc),
             "updated_at": None,
         }

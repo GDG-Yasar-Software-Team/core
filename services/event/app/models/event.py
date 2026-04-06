@@ -36,10 +36,10 @@ class EventCreate(BaseModel):
 
 
 class EventUpdate(BaseModel):
-    title: str | None = Field(default=None, min_length=1, max_length=200)       
+    title: str | None = Field(default=None, min_length=1, max_length=200)
     description: str | None = Field(default=None, min_length=1)
     date: datetime | None = None
-    place: str | None = Field(default=None, min_length=1, max_length=200)       
+    place: str | None = Field(default=None, min_length=1, max_length=200)
     speakers: list[Speaker] | None = None
     tags: list[str] | None = None
     event_type: str | None = None
@@ -60,6 +60,7 @@ class EventUpdate(BaseModel):
                 raise ValueError(msg)
         return v
 
+
 class EventInDB(BaseModel):
     id: PyObjectId = Field(alias="_id")
     title: str
@@ -77,7 +78,7 @@ class EventInDB(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime | None = None
 
-    model_config = {"populate_by_name": True, "arbitrary_types_allowed": True}  
+    model_config = {"populate_by_name": True, "arbitrary_types_allowed": True}
 
 
 class EventResponse(BaseModel):
@@ -112,9 +113,6 @@ class EventResponse(BaseModel):
             event_type=event.event_type,
             registration_form_url=event.registration_form_url,
             image_url=event.image_url,
-            tags=event.tags,
-            registration_form_url=event.registration_form_url,
-            event_type=event.event_type,
             created_at=event.created_at,
             updated_at=event.updated_at,
         )
