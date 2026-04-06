@@ -118,7 +118,7 @@ const LightPillar: React.FC<LightPillarProps> = ({
 				stencil: false,
 				depth: false,
 			});
-		} catch (error) {
+		} catch (_error) {
 			setWebGLSupported(false);
 			return;
 		}

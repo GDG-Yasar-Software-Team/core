@@ -55,6 +55,7 @@ export const Card: React.FC<CardProps> = ({
 	};
 
 	return (
+		// biome-ignore lint/a11y/noStaticElementInteractions: conditional role is not recognized by Biome
 		<div
 			className={classNames}
 			onClick={handleClick}

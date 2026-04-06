@@ -212,6 +212,7 @@ function MenuItem({
 		(fontClass && !FLOWING_MENU_FONT_TW[fontClass] ? fontClass : "");
 
 	return (
+		// biome-ignore lint/a11y/noStaticElementInteractions: this wrapper handles mouse interactions for visual effects
 		<div
 			ref={itemRef}
 			className="flex-1 relative overflow-hidden text-center border-t border-solid bg-transparent first:border-t-0 pointer-events-auto"
