@@ -3,11 +3,9 @@ import { useEffect, useRef, useState } from "react";
 
 /** Former FlowingMenu.css font modifiers; TeamPage passes these `fontClass` keys. */
 const FLOWING_MENU_FONT_TW: Record<string, string> = {
-	"marquee--font-bebas":
-		"font-bold [&_span]:tracking-[0.05em]",
+	"marquee--font-bebas": "font-bold [&_span]:tracking-[0.05em]",
 	"marquee--font-righteous": "font-medium",
-	"marquee--font-orbitron":
-		"font-bold [&_span]:tracking-[0.1em]",
+	"marquee--font-orbitron": "font-bold [&_span]:tracking-[0.1em]",
 	"marquee--font-bungee": "font-black uppercase",
 };
 
@@ -33,7 +31,10 @@ function FlowingMenu({
 	fontClass = "",
 }: FlowingMenuProps) {
 	return (
-		<div className="w-full h-full overflow-hidden" style={{ backgroundColor: bgColor }}>
+		<div
+			className="w-full h-full overflow-hidden"
+			style={{ backgroundColor: bgColor }}
+		>
 			<nav className="flex flex-col h-full m-0 p-0">
 				{items.map((item, idx) => (
 					<MenuItem

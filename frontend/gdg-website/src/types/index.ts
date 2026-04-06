@@ -23,7 +23,7 @@ export interface Event {
 	place: string;
 	image_url?: string;
 	speakers: Speaker[];
-        tags: string[];
+	tags: string[];
 }
 
 /**
@@ -50,16 +50,12 @@ export interface SocialLink {
 export interface TeamMember {
 	id: string;
 	name: string;
-        title?: string;
-        role: "organizer" | "co-organizer" | "team_lead" | "member";
-        team:
-                | "organization"
-                | "marketing"
-                | "sponsorship"
-                | "software";
-        photoUrl: string;
-        bio?: string;
-        socialLinks: SocialLink[];
+	title?: string;
+	role: "organizer" | "co-organizer" | "team_lead" | "member";
+	team: "organization" | "marketing" | "sponsorship" | "software";
+	photoUrl: string;
+	bio?: string;
+	socialLinks: SocialLink[];
 }
 
 /**

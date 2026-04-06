@@ -1,4 +1,4 @@
-import { type CSSProperties, useEffect, useRef, useState } from "react";
+﻿import { type CSSProperties, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 interface LightPillarProps {
@@ -55,7 +55,7 @@ const LightPillar: React.FC<LightPillarProps> = ({
 
 	// Full WebGL scene is recreated only when support/quality tier changes; uniform
 	// updates for colors, sizing, etc. are applied in the effects below.
-	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional — avoid disposing the renderer on every visual prop change.
+
 	useEffect(() => {
 		if (!containerRef.current || !webGLSupported) return;
 
@@ -262,7 +262,7 @@ const LightPillar: React.FC<LightPillarProps> = ({
 		const mesh = new THREE.Mesh(geometry, material);
 		scene.add(mesh);
 
-  let mouseMoveTimeout: ReturnType<typeof setTimeout> | null = null;
+		let mouseMoveTimeout: ReturnType<typeof setTimeout> | null = null;
 		const handleMouseMove = (event: MouseEvent) => {
 			if (!interactive) return;
 			if (mouseMoveTimeout) return;
@@ -313,7 +313,7 @@ const LightPillar: React.FC<LightPillarProps> = ({
 
 		rafRef.current = requestAnimationFrame(animate);
 
-  let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
+		let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
 		const handleResize = () => {
 			if (resizeTimeout) {
 				clearTimeout(resizeTimeout);

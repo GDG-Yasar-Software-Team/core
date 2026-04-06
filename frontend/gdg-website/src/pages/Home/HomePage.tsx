@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Footer } from "../../components/layout/Footer";
 import { Navigation } from "../../components/layout/Navigation";
-import { EventCard } from "../UpcomingEvents/components/EventCard";
 import { fetchEvents, isEventPast } from "../../services/eventService";
 import type { Event } from "../../types";
+import { EventCard } from "../UpcomingEvents/components/EventCard";
 
 const pastEventsDisplay = [
 	{
@@ -110,8 +110,8 @@ export const HomePage: React.FC = () => {
 				const upcoming = events.filter((e) => !isEventPast(e));
 				setUpcomingEvents(upcoming);
 			} catch (err) {
-				console.error('Failed to load events:', err);
-				setError('Failed to load events. Please try again later.');
+				console.error("Failed to load events:", err);
+				setError("Failed to load events. Please try again later.");
 			} finally {
 				setLoading(false);
 			}
@@ -154,7 +154,9 @@ export const HomePage: React.FC = () => {
 			<main className="flex-1">
 				<section className="py-24 text-center">
 					<div className="max-w-[1200px] mx-auto px-6">
-						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-6">Our Mission</h2>
+						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-6">
+							Our Mission
+						</h2>
 						<p className="text-lg text-[#5f6368] max-w-[800px] mx-auto mb-24 leading-relaxed">
 							We bring together students passionate about technology to learn,
 							share, and build amazing things. Join us for workshops,
@@ -162,7 +164,10 @@ export const HomePage: React.FC = () => {
 						</p>
 						<div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
 							{missionCards.map((card) => (
-								<div key={card.id} className="bg-white rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(60,64,67,0.15)] transition-all duration-300 cursor-pointer hover:-translate-y-2 hover:shadow-[0_8px_24px_rgba(60,64,67,0.25)]">
+								<div
+									key={card.id}
+									className="bg-white rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(60,64,67,0.15)] transition-all duration-300 cursor-pointer hover:-translate-y-2 hover:shadow-[0_8px_24px_rgba(60,64,67,0.25)]"
+								>
 									<div className="relative w-full h-60 overflow-hidden">
 										<img
 											src={card.image}
@@ -175,8 +180,15 @@ export const HomePage: React.FC = () => {
 										/>
 									</div>
 									<div className="p-8">
-										<h3 className="text-xl font-bold m-0 mb-4" style={{ color: card.color }}>{card.title}</h3>
-										<p className="text-base text-[#5f6368] leading-relaxed m-0">{card.description}</p>
+										<h3
+											className="text-xl font-bold m-0 mb-4"
+											style={{ color: card.color }}
+										>
+											{card.title}
+										</h3>
+										<p className="text-base text-[#5f6368] leading-relaxed m-0">
+											{card.description}
+										</p>
 									</div>
 								</div>
 							))}
@@ -186,7 +198,9 @@ export const HomePage: React.FC = () => {
 
 				<section className="py-24 bg-[#f5f5f5] overflow-hidden">
 					<div className="max-w-[1200px] mx-auto px-6">
-						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-16 text-center">What We Do</h2>
+						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-16 text-center">
+							What We Do
+						</h2>
 					</div>
 					<div className="relative max-w-[1600px] mx-auto px-[60px] md:px-[60px]">
 						<button
@@ -256,11 +270,13 @@ export const HomePage: React.FC = () => {
 
 				<section className="py-24">
 					<div className="max-w-[1200px] mx-auto px-6">
-						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-16 text-center">Upcoming Events</h2>
-						
+						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-16 text-center">
+							Upcoming Events
+						</h2>
+
 						{loading && (
 							<div className="text-center py-16">
-								<div className="inline-block w-12 h-12 border-4 border-[#4285F4] border-t-transparent rounded-full animate-spin"></div>
+								<div className="inline-block w-12 h-12 border-4 border-[#4285F4] border-t-transparent rounded-full animate-spin" />
 								<p className="mt-4 text-[#5f6368]">Loading events...</p>
 							</div>
 						)}
@@ -269,6 +285,7 @@ export const HomePage: React.FC = () => {
 							<div className="text-center py-16">
 								<p className="text-[#EA4335] mb-4">{error}</p>
 								<button
+									type="button"
 									onClick={() => window.location.reload()}
 									className="py-2 px-6 bg-[#4285F4] text-white rounded font-medium hover:bg-[#3367d6] transition-colors"
 								>

@@ -9,8 +9,7 @@ export interface CardProps {
 }
 
 const variantClasses: Record<CardProps["variant"], string> = {
-	elevated:
-		"bg-[var(--color-surface)] shadow-[var(--elevation-1)] border-0",
+	elevated: "bg-[var(--color-surface)] shadow-[var(--elevation-1)] border-0",
 	filled: "bg-[var(--color-surface-variant)] shadow-none border-0",
 	outlined:
 		"bg-[var(--color-surface)] shadow-none border border-[var(--color-on-surface-variant)]",
@@ -19,8 +18,7 @@ const variantClasses: Record<CardProps["variant"], string> = {
 const clickableClasses: Record<CardProps["variant"], string> = {
 	elevated:
 		"hover:cursor-pointer hover:shadow-[var(--elevation-2)] active:shadow-[var(--elevation-1)]",
-	filled:
-		"hover:cursor-pointer hover:bg-[#eeeeee] active:bg-[#e8e8e8]",
+	filled: "hover:cursor-pointer hover:bg-[#eeeeee] active:bg-[#e8e8e8]",
 	outlined:
 		"hover:cursor-pointer hover:bg-[var(--color-hover)] active:bg-[var(--color-active)]",
 };

@@ -1,7 +1,12 @@
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 
-type TeamTone = "organizers" | "organization" | "marketing" | "sponsorship" | "software";
+type TeamTone =
+	| "organizers"
+	| "organization"
+	| "marketing"
+	| "sponsorship"
+	| "software";
 
 interface TeamScrollBackgroundProps {
 	className?: string;
@@ -86,10 +91,10 @@ const hexToRgb = (value: string): RgbColor => {
 	const expanded =
 		normalized.length === 3
 			? normalized
-				.split("")
+					.split("")
 					.map((character) => `${character}${character}`)
 					.join("")
-				: normalized;
+			: normalized;
 
 	const parsed = Number.parseInt(expanded, 16);
 
@@ -101,13 +106,16 @@ const hexToRgb = (value: string): RgbColor => {
 };
 
 const rgbToHex = ({ r, g, b }: RgbColor) => {
-	const toHex = (component: number) =>
-		component.toString(16).padStart(2, "0");
+	const toHex = (component: number) => component.toString(16).padStart(2, "0");
 
 	return `#${toHex(Math.round(r))}${toHex(Math.round(g))}${toHex(Math.round(b))}`;
 };
 
-const mixRgb = (first: RgbColor, second: RgbColor, ratio: number): RgbColor => ({
+const mixRgb = (
+	first: RgbColor,
+	second: RgbColor,
+	ratio: number,
+): RgbColor => ({
 	r: first.r + (second.r - first.r) * ratio,
 	g: first.g + (second.g - first.g) * ratio,
 	b: first.b + (second.b - first.b) * ratio,
@@ -158,7 +166,9 @@ export const TeamScrollBackground: React.FC<TeamScrollBackgroundProps> = ({
 					section,
 					tone: section.dataset.teamTone as TeamTone | undefined,
 				}))
-				.filter((item): item is SectionInfo => Boolean(item.tone && item.tone in TEAM_COLORS));
+				.filter((item): item is SectionInfo =>
+					Boolean(item.tone && item.tone in TEAM_COLORS),
+				);
 
 		const updateBackground = () => {
 			const sections = readSections();
@@ -194,7 +204,7 @@ export const TeamScrollBackground: React.FC<TeamScrollBackgroundProps> = ({
 				clamp((viewportCenter - current.center) / range, 0, 1),
 			);
 			const baseColors = TEAM_COLORS[current.tone].map((color, idx) =>
-				mixHex(color, TEAM_COLORS[next.tone][idx], progress)
+				mixHex(color, TEAM_COLORS[next.tone][idx], progress),
 			) as [string, string, string, string];
 			const totalScrollable = Math.max(
 				document.documentElement.scrollHeight - window.innerHeight,
@@ -232,8 +242,14 @@ export const TeamScrollBackground: React.FC<TeamScrollBackgroundProps> = ({
 		};
 	}, []);
 
-	const palettes = useMemo(() => snapshot.baseColors.map(buildPalette), [snapshot.baseColors]);
-	const globalPalette = useMemo(() => buildPalette(averageColor(snapshot.baseColors)), [snapshot.baseColors]);
+	const palettes = useMemo(
+		() => snapshot.baseColors.map(buildPalette),
+		[snapshot.baseColors],
+	);
+	const globalPalette = useMemo(
+		() => buildPalette(averageColor(snapshot.baseColors)),
+		[snapshot.baseColors],
+	);
 	const motionAmount = snapshot.scrollProgress;
 
 	return (
@@ -247,13 +263,13 @@ export const TeamScrollBackground: React.FC<TeamScrollBackgroundProps> = ({
 					backgroundImage: [
 						`radial-gradient(circle at top, ${rgbaFromHex(globalPalette.glow, 0.12)}, transparent 42%)`,
 						`radial-gradient(circle at center, ${rgbaFromHex(globalPalette.base, 0.08)}, transparent 58%)`,
-						`linear-gradient(180deg, rgba(10, 10, 10, 0.06), rgba(10, 10, 10, 0.62))`,
+						"linear-gradient(180deg, rgba(10, 10, 10, 0.06), rgba(10, 10, 10, 0.62))",
 					].join(", "),
 				}}
 			/>
 
 			{BACKGROUND_SHAPES.map((shape, index) => {
-				const layerFactor = 0.5 + (index * 0.4);
+				const layerFactor = 0.5 + index * 0.4;
 				const palette = palettes[index];
 
 				return (

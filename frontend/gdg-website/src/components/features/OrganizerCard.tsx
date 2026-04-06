@@ -1,5 +1,5 @@
-﻿import type React from "react";
-import { motion } from "motion/react";
+﻿import { motion } from "motion/react";
+import type React from "react";
 import type { TeamMember } from "../../types";
 
 export interface OrganizerCardProps {
@@ -13,8 +13,12 @@ const LinkedinIcon = () => (
 	</svg>
 );
 
-export const OrganizerCard: React.FC<OrganizerCardProps> = ({ member, index }) => {
-	const linkedinUrl = member.socialLinks.find((l) => l.platform === "linkedin")?.url || "#";
+export const OrganizerCard: React.FC<OrganizerCardProps> = ({
+	member,
+	index,
+}) => {
+	const linkedinUrl =
+		member.socialLinks.find((l) => l.platform === "linkedin")?.url || "#";
 
 	return (
 		<motion.div
@@ -22,14 +26,17 @@ export const OrganizerCard: React.FC<OrganizerCardProps> = ({ member, index }) =
 			initial={{ opacity: 0, y: 100, scale: 0.8 }}
 			whileInView={{ opacity: 1, y: 0, scale: 1 }}
 			viewport={{ once: false, amount: 0.2 }}
-			transition={{ duration: 0.8, delay: index * 0.15, type: "spring", bounce: 0.35 }}
+			transition={{
+				duration: 0.8,
+				delay: index * 0.15,
+				type: "spring",
+				bounce: 0.35,
+			}}
 			className="flex flex-col items-center group w-full"
 		>
 			<div className="relative mb-8">
 				{/* Image Container with Glow */}
-				<div 
-					className="absolute -inset-4 bg-gradient-to-tr from-purple-500/20 to-blue-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" 
-				/>
+				<div className="absolute -inset-4 bg-gradient-to-tr from-purple-500/20 to-blue-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 				<div className="w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-2 border-white/10 relative z-10 group-hover:border-white/30 transition-colors duration-300">
 					<img
 						src={member.photoUrl}
@@ -44,7 +51,11 @@ export const OrganizerCard: React.FC<OrganizerCardProps> = ({ member, index }) =
 				<h3 className="text-xl md:text-2xl font-bold tracking-tight text-gray-200 group-hover:text-white transition-colors">
 					{member.name}
 				</h3>
-				{member.title && (<p className="text-sm md:text-base text-gray-500 font-medium tracking-wide">{member.title}</p>)}
+				{member.title && (
+					<p className="text-sm md:text-base text-gray-500 font-medium tracking-wide">
+						{member.title}
+					</p>
+				)}
 			</div>
 
 			<motion.a
@@ -61,5 +72,3 @@ export const OrganizerCard: React.FC<OrganizerCardProps> = ({ member, index }) =
 		</motion.div>
 	);
 };
-
-

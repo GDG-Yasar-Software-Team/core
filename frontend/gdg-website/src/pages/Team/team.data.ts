@@ -20,8 +20,8 @@ export const teamMembers: TeamMember[] = [
 	{
 		id: "organizer-2",
 		name: "Göktüğ Yücel",
-                title: "Co-Organizer",
-                role: "co-organizer",
+		title: "Co-Organizer",
+		role: "co-organizer",
 		team: "organization",
 		photoUrl:
 			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/team/organizers/goktug_yucel.png",
@@ -352,7 +352,3 @@ export const teamMembers: TeamMember[] = [
 		],
 	},
 ];
-
-
-
-

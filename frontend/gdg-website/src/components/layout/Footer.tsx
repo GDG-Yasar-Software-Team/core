@@ -55,10 +55,14 @@ const socialLinks = [
 
 export const Footer: React.FC<FooterProps> = ({ className = "" }) => {
 	return (
-		<footer className={`bg-[#f8f9fa] border-t border-[#dadce0] px-4 py-2 mt-8 ${className}`}>
+		<footer
+			className={`bg-[#f8f9fa] border-t border-[#dadce0] px-4 py-2 mt-8 ${className}`}
+		>
 			<div className="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
 				<div className="flex flex-col mb-2 md:mb-0">
-					<h3 className="text-xs font-bold text-[#1f1f1f] m-0">GDG on Campus Yaşar University</h3>
+					<h3 className="text-xs font-bold text-[#1f1f1f] m-0">
+						GDG on Campus Yaşar University
+					</h3>
 				</div>
 
 				<div className="flex items-center scale-75 origin-center md:origin-right">

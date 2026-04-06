@@ -1,5 +1,5 @@
-﻿import type React from "react";
-import { motion } from "motion/react";
+﻿import { motion } from "motion/react";
+import type React from "react";
 import type { TeamMember } from "../../types";
 
 export interface TeamMemberCardProps {
@@ -50,7 +50,8 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 	className = "",
 	index = 0,
 }) => {
-	const isLeader = member.role === "organizer" || member.role === "co-organizer";
+	const isLeader =
+		member.role === "organizer" || member.role === "co-organizer";
 	const isTeamLeader = member.role === "team_lead";
 
 	const nameClass =
@@ -68,15 +69,20 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 			initial={{ opacity: 0, y: 100, scale: 0.8 }}
 			whileInView={{ opacity: 1, y: 0, scale: 1 }}
 			viewport={{ once: false, amount: 0.2 }}
-			transition={{ duration: 0.8, delay: index * 0.1, type: "spring", bounce: 0.35 }}
+			transition={{
+				duration: 0.8,
+				delay: index * 0.1,
+				type: "spring",
+				bounce: 0.35,
+			}}
 			className={`flex min-w-0 w-full flex-col items-center bg-transparent rounded-[var(--border-radius-md)] px-2 py-4 sm:px-4 sm:py-6 shadow-none transition-none hover:shadow-none hover:translate-y-0 hover:bg-transparent text-white ${className}`}
 			data-role={member.role}
 		>
-			<div
-				className="relative mb-4 group"
-			>
+			<div className="relative mb-4 group">
 				<div className="absolute -inset-2 bg-gradient-to-tr from-current to-transparent rounded-full blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
-				<div className={`relative z-10 rounded-full overflow-hidden bg-black/5 border-2 border-transparent group-hover:border-current transition-colors duration-300 ${isTeamLeader ? 'w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36' : 'w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32'}`}>
+				<div
+					className={`relative z-10 rounded-full overflow-hidden bg-black/5 border-2 border-transparent group-hover:border-current transition-colors duration-300 ${isTeamLeader ? "w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36" : "w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32"}`}
+				>
 					<img
 						src={member.photoUrl}
 						alt={member.name}
@@ -91,7 +97,13 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 			>
 				{member.name}
 			</h3>
-			{member.title && (<p className={`${memberTitleClass} text-gray-400 group-hover:text-gray-300 transition-colors mb-2 m-0 text-center tracking-wide`}>{member.title}</p>)}
+			{member.title && (
+				<p
+					className={`${memberTitleClass} text-gray-400 group-hover:text-gray-300 transition-colors mb-2 m-0 text-center tracking-wide`}
+				>
+					{member.title}
+				</p>
+			)}
 
 			{member.socialLinks.length > 0 && (
 				<div className="flex gap-2 mt-2">
@@ -112,11 +124,3 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 		</motion.div>
 	);
 };
-
-
-
-
-
-
-
-

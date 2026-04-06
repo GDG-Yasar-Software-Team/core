@@ -3,7 +3,13 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Footer } from "../../components/layout/Footer";
 import { Navigation } from "../../components/layout/Navigation";
-import { fetchEventById, formatEventDate, extractCity, extractLocation, isEventPast } from "../../services/eventService";
+import {
+	extractCity,
+	extractLocation,
+	fetchEventById,
+	formatEventDate,
+	isEventPast,
+} from "../../services/eventService";
 import type { Event } from "../../types";
 
 export const EventDetailPage: React.FC = () => {
@@ -15,7 +21,7 @@ export const EventDetailPage: React.FC = () => {
 	useEffect(() => {
 		const loadEvent = async () => {
 			if (!eventId) {
-				setError('Event ID is missing');
+				setError("Event ID is missing");
 				setLoading(false);
 				return;
 			}
@@ -26,8 +32,8 @@ export const EventDetailPage: React.FC = () => {
 				const eventData = await fetchEventById(eventId);
 				setEvent(eventData);
 			} catch (err) {
-				console.error('Failed to load event:', err);
-				setError('Failed to load event. Please try again later.');
+				console.error("Failed to load event:", err);
+				setError("Failed to load event. Please try again later.");
 			} finally {
 				setLoading(false);
 			}
@@ -42,7 +48,7 @@ export const EventDetailPage: React.FC = () => {
 				<Navigation />
 				<main className="flex-1 pt-16">
 					<div className="max-w-[900px] mx-auto py-24 px-6 text-center">
-						<div className="inline-block w-12 h-12 border-4 border-[#4285F4] border-t-transparent rounded-full animate-spin"></div>
+						<div className="inline-block w-12 h-12 border-4 border-[#4285F4] border-t-transparent rounded-full animate-spin" />
 						<p className="mt-4 text-[#5f6368]">Loading event...</p>
 					</div>
 				</main>
@@ -57,9 +63,16 @@ export const EventDetailPage: React.FC = () => {
 				<Navigation />
 				<main className="flex-1 pt-16">
 					<div className="max-w-[900px] mx-auto py-24 px-6">
-						<h1 className="text-3xl font-bold text-[#1f1f1f] mb-4">Event Not Found</h1>
-						<p className="text-[#5f6368] mb-8">{error || "The event you're looking for doesn't exist."}</p>
-						<Link to="/" className="inline-flex items-center gap-2 text-[#4285F4] no-underline text-base font-medium transition-colors duration-200 hover:text-[#3367d6]">
+						<h1 className="text-3xl font-bold text-[#1f1f1f] mb-4">
+							Event Not Found
+						</h1>
+						<p className="text-[#5f6368] mb-8">
+							{error || "The event you're looking for doesn't exist."}
+						</p>
+						<Link
+							to="/"
+							className="inline-flex items-center gap-2 text-[#4285F4] no-underline text-base font-medium transition-colors duration-200 hover:text-[#3367d6]"
+						>
 							← Back to Home
 						</Link>
 					</div>
@@ -72,22 +85,25 @@ export const EventDetailPage: React.FC = () => {
 	const formattedDate = formatEventDate(event.date);
 	const location = extractLocation(event.place);
 	const city = extractCity(event.place);
-	const imageUrl = event.image_url || 'https://via.placeholder.com/400x300?text=GDG+Event';
+	const imageUrl =
+		event.image_url || "https://via.placeholder.com/400x300?text=GDG+Event";
 	const isPast = isEventPast(event);
 
 	// Determine event type from title
-	let eventType = 'Event';
+	let eventType = "Event";
 	const titleLower = event.title.toLowerCase();
-	if (titleLower.includes('workshop')) eventType = 'Workshop';
-	else if (titleLower.includes('hackathon')) eventType = 'Hackathon';
-	else if (titleLower.includes('talk') || titleLower.includes('session')) eventType = 'Tech Talk';
-	else if (titleLower.includes('meetup')) eventType = 'Meetup';
-	else if (titleLower.includes('conference') || titleLower.includes('summit')) eventType = 'Conference';
+	if (titleLower.includes("workshop")) eventType = "Workshop";
+	else if (titleLower.includes("hackathon")) eventType = "Hackathon";
+	else if (titleLower.includes("talk") || titleLower.includes("session"))
+		eventType = "Tech Talk";
+	else if (titleLower.includes("meetup")) eventType = "Meetup";
+	else if (titleLower.includes("conference") || titleLower.includes("summit"))
+		eventType = "Conference";
 
 	// Generate tags
 	const tags: string[] = [eventType];
 	if (event.speakers.length > 0) {
-		tags.push('Guest Speaker');
+		tags.push("Guest Speaker");
 	}
 
 	return (
@@ -95,7 +111,10 @@ export const EventDetailPage: React.FC = () => {
 			<Navigation />
 			<main className="flex-1 pt-16">
 				<div className="max-w-[900px] mx-auto py-24 px-6">
-					<Link to="/" className="inline-flex items-center gap-2 text-[#5f6368] no-underline text-base font-medium mb-8 transition-colors duration-200 hover:text-[#4285F4]">
+					<Link
+						to="/"
+						className="inline-flex items-center gap-2 text-[#5f6368] no-underline text-base font-medium mb-8 transition-colors duration-200 hover:text-[#4285F4]"
+					>
 						← Back to Home
 					</Link>
 
@@ -109,7 +128,13 @@ export const EventDetailPage: React.FC = () => {
 
 						<div className="flex flex-col md:flex-row md:flex-wrap gap-4 md:gap-8 mb-6">
 							<div className="flex items-center gap-2 text-[#5f6368] text-base">
-								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-[#5f6368]">
+								<svg
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									className="text-[#5f6368]"
+								>
 									<path
 										d="M8 2v3M16 2v3M3.5 9.09h17M21 8.5V17c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V8.5c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5z"
 										stroke="currentColor"
@@ -121,7 +146,13 @@ export const EventDetailPage: React.FC = () => {
 								<span>{formattedDate}</span>
 							</div>
 							<div className="flex items-center gap-2 text-[#5f6368] text-base">
-								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-[#5f6368]">
+								<svg
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									className="text-[#5f6368]"
+								>
 									<path
 										d="M12 13.43a3.12 3.12 0 1 0 0-6.24 3.12 3.12 0 0 0 0 6.24z"
 										stroke="currentColor"
@@ -141,7 +172,10 @@ export const EventDetailPage: React.FC = () => {
 
 						<div className="flex flex-wrap gap-2">
 							{tags.map((tag) => (
-								<span key={tag} className="py-1 px-4 bg-[#f1f3f4] text-[#5f6368] rounded-full text-sm font-medium">
+								<span
+									key={tag}
+									className="py-1 px-4 bg-[#f1f3f4] text-[#5f6368] rounded-full text-sm font-medium"
+								>
 									{tag}
 								</span>
 							))}
@@ -149,7 +183,9 @@ export const EventDetailPage: React.FC = () => {
 					</div>
 
 					<div className="border-t border-[#e8eaed] pt-16">
-						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-16">About This Event</h2>
+						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-16">
+							About This Event
+						</h2>
 						<div className="grid grid-cols-1 md:grid-cols-[400px_1fr] gap-16 items-start">
 							<div className="relative rounded-2xl overflow-hidden shadow-[0_4px_12px_rgba(60,64,67,0.15)] bg-gradient-to-br from-[#4285F4] via-[#EA4335] via-[#FBBC05] via-[#34A853] to-[#4285F4] p-1">
 								<img
@@ -166,12 +202,17 @@ export const EventDetailPage: React.FC = () => {
 								{event.speakers.length > 0 && (
 									<div className="mt-8">
 										<h3 className="text-xl font-bold text-[#1f1f1f] m-0 mb-6">
-											{event.speakers.length === 1 ? 'Speaker' : 'Speakers'}
+											{event.speakers.length === 1 ? "Speaker" : "Speakers"}
 										</h3>
 										<div className="flex flex-col gap-4">
 											{event.speakers.map((speaker, index) => (
-												<div key={index} className="p-6 bg-[#f8f9fa] rounded-xl border border-[#e8eaed]">
-													<h4 className="text-lg font-bold text-[#1f1f1f] m-0 mb-1">{speaker.name}</h4>
+												<div
+													key={index}
+													className="p-6 bg-[#f8f9fa] rounded-xl border border-[#e8eaed]"
+												>
+													<h4 className="text-lg font-bold text-[#1f1f1f] m-0 mb-1">
+														{speaker.name}
+													</h4>
 													<p className="text-base text-[#5f6368] m-0">
 														{speaker.title} at {speaker.company}
 													</p>
@@ -183,7 +224,13 @@ export const EventDetailPage: React.FC = () => {
 
 								{isPast && (
 									<div className="flex items-center gap-4 p-6 bg-[#fef7e0] border-l-4 border-[#FBBC05] rounded text-[#5f6368] text-base">
-										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="flex-shrink-0 text-[#FBBC05]">
+										<svg
+											width="24"
+											height="24"
+											viewBox="0 0 24 24"
+											fill="none"
+											className="flex-shrink-0 text-[#FBBC05]"
+										>
 											<path
 												d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10z"
 												stroke="currentColor"

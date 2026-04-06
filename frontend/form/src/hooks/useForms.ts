@@ -55,7 +55,7 @@ export function useForms(skip = 0, limit = 20): UseFormsResult {
 		return () => {
 			isCancelled = true;
 		};
-	}, [skip, limit, _refreshKey]);
+	}, [skip, limit]);
 
 	return { forms, total, isLoading, error, refetch };
 }

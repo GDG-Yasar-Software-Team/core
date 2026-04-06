@@ -2,9 +2,14 @@ import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { Footer } from "../../components/layout/Footer";
 import { Navigation } from "../../components/layout/Navigation";
-import { EventCard } from "./components/EventCard";
-import { fetchEvents, isEventPast, extractCity, extractLocation } from "../../services/eventService";
+import {
+	extractCity,
+	extractLocation,
+	fetchEvents,
+	isEventPast,
+} from "../../services/eventService";
 import type { Event } from "../../types";
+import { EventCard } from "./components/EventCard";
 
 export const UpcomingEventsPage: React.FC = () => {
 	const [searchQuery, setSearchQuery] = useState("");
@@ -22,8 +27,8 @@ export const UpcomingEventsPage: React.FC = () => {
 				const upcoming = allEvents.filter((e) => !isEventPast(e));
 				setEvents(upcoming);
 			} catch (err) {
-				console.error('Failed to load events:', err);
-				setError('Failed to load events. Please try again later.');
+				console.error("Failed to load events:", err);
+				setError("Failed to load events. Please try again later.");
 			} finally {
 				setLoading(false);
 			}
@@ -38,24 +43,23 @@ export const UpcomingEventsPage: React.FC = () => {
 		}
 
 		const query = searchQuery.toLowerCase();
-		return events.filter(
-			(event) => {
-				const city = extractCity(event.place);
-				const location = extractLocation(event.place);
-				
-				return (
-					event.title.toLowerCase().includes(query) ||
-					event.description.toLowerCase().includes(query) ||
-					city.toLowerCase().includes(query) ||
-					location.toLowerCase().includes(query) ||
-					event.place.toLowerCase().includes(query) ||
-					event.speakers.some((speaker) => 
+		return events.filter((event) => {
+			const city = extractCity(event.place);
+			const location = extractLocation(event.place);
+
+			return (
+				event.title.toLowerCase().includes(query) ||
+				event.description.toLowerCase().includes(query) ||
+				city.toLowerCase().includes(query) ||
+				location.toLowerCase().includes(query) ||
+				event.place.toLowerCase().includes(query) ||
+				event.speakers.some(
+					(speaker) =>
 						speaker.name.toLowerCase().includes(query) ||
-						speaker.company.toLowerCase().includes(query)
-					)
-				);
-			}
-		);
+						speaker.company.toLowerCase().includes(query),
+				)
+			);
+		});
 	}, [searchQuery, events]);
 
 	return (
@@ -106,7 +110,7 @@ export const UpcomingEventsPage: React.FC = () => {
 
 					{loading && (
 						<div className="text-center py-16">
-							<div className="inline-block w-12 h-12 border-4 border-[#4285F4] border-t-transparent rounded-full animate-spin"></div>
+							<div className="inline-block w-12 h-12 border-4 border-[#4285F4] border-t-transparent rounded-full animate-spin" />
 							<p className="mt-4 text-[#5f6368]">Loading events...</p>
 						</div>
 					)}
@@ -115,6 +119,7 @@ export const UpcomingEventsPage: React.FC = () => {
 						<div className="text-center py-16">
 							<p className="text-[#EA4335] mb-4">{error}</p>
 							<button
+								type="button"
 								onClick={() => window.location.reload()}
 								className="py-2 px-6 bg-[#4285F4] text-white rounded font-medium hover:bg-[#3367d6] transition-colors"
 							>
@@ -124,23 +129,21 @@ export const UpcomingEventsPage: React.FC = () => {
 					)}
 
 					{!loading && !error && (
-						<>
-							<div className="flex flex-col gap-6">
-								{filteredEvents.length > 0 ? (
-									filteredEvents.map((event) => (
-										<EventCard key={event.id} event={event} />
-									))
-								) : searchQuery.trim() ? (
-									<div className="text-center py-16 px-8 text-[#5f6368] text-lg">
-										<p>No events found matching your search.</p>
-									</div>
-								) : (
-									<div className="text-center py-16 px-8 text-[#5f6368] text-lg">
-										<p>No upcoming events at the moment. Check back soon!</p>
-									</div>
-								)}
-							</div>
-						</>
+						<div className="flex flex-col gap-6">
+							{filteredEvents.length > 0 ? (
+								filteredEvents.map((event) => (
+									<EventCard key={event.id} event={event} />
+								))
+							) : searchQuery.trim() ? (
+								<div className="text-center py-16 px-8 text-[#5f6368] text-lg">
+									<p>No events found matching your search.</p>
+								</div>
+							) : (
+								<div className="text-center py-16 px-8 text-[#5f6368] text-lg">
+									<p>No upcoming events at the moment. Check back soon!</p>
+								</div>
+							)}
+						</div>
 					)}
 				</div>
 			</main>
