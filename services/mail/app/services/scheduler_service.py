@@ -67,12 +67,12 @@ class SchedulerService:
                     cls._normalize_datetime(t) for t in campaign.executed_times
                 }
                 # Find due times that haven't been executed
-                due_times = [
-                    send.time
+                due_times = {
+                    cls._normalize_datetime(send.time)
                     for send in campaign.scheduled_sends
                     if cls._normalize_datetime(send.time) <= now_utc
                     and cls._normalize_datetime(send.time) not in executed_times_utc
-                ]
+                }
 
                 # Execute for each due time
                 for scheduled_time in sorted(due_times):

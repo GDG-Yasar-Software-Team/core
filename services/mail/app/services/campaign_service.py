@@ -1,5 +1,5 @@
 import asyncio
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from app.clients.user_client import UserServiceClient
 from app.config import settings
@@ -34,6 +34,13 @@ class CampaignService:
     _background_tasks: set[asyncio.Task] = set()
 
     @staticmethod
+    def _normalize_datetime(value: datetime) -> datetime:
+        """Normalize datetimes to timezone-aware UTC."""
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+        return value.astimezone(timezone.utc)
+
+    @staticmethod
     def _estimate_rate_per_second() -> float:
         avg_delay = (settings.RATE_LIMIT_MIN_DELAY + settings.RATE_LIMIT_MAX_DELAY) / 2
         if avg_delay <= 0:
@@ -61,9 +68,37 @@ class CampaignService:
         return campaign_id
 
     @classmethod
+    async def _recover_stale_in_progress(cls, campaign_id: str) -> CampaignInDB | None:
+        """If a run is stuck in in_progress, mark failed and clear progress."""
+        campaign = await CampaignRepository.get_by_id(campaign_id)
+        if campaign is None:
+            return None
+        if not (
+            settings.STALE_IN_PROGRESS_MINUTES > 0
+            and campaign.status == CampaignStatus.IN_PROGRESS
+            and campaign.current_progress is not None
+            and not campaign.current_progress.is_complete
+        ):
+            return campaign
+
+        started = cls._normalize_datetime(campaign.current_progress.started_at)
+        age = datetime.now(timezone.utc) - started
+        if age <= timedelta(minutes=settings.STALE_IN_PROGRESS_MINUTES):
+            return campaign
+
+        logger.warning(
+            "Clearing stale in_progress campaign",
+            campaign_id=campaign_id,
+            age_minutes=round(age.total_seconds() / 60, 1),
+        )
+        await CampaignRepository.update_status(campaign_id, CampaignStatus.FAILED)
+        await CampaignRepository.clear_progress(campaign_id)
+        return await CampaignRepository.get_by_id(campaign_id)
+
+    @classmethod
     async def get_campaign(cls, campaign_id: str) -> CampaignResponse | None:
         """Get a campaign by ID."""
-        campaign = await CampaignRepository.get_by_id(campaign_id)
+        campaign = await cls._recover_stale_in_progress(campaign_id)
         if campaign is None:
             return None
         return CampaignResponse.from_db(campaign)
@@ -71,7 +106,7 @@ class CampaignService:
     @classmethod
     async def get_campaign_progress(cls, campaign_id: str) -> ExecutionProgress:
         """Get execution progress for a campaign."""
-        campaign = await CampaignRepository.get_by_id(campaign_id)
+        campaign = await cls._recover_stale_in_progress(campaign_id)
         if campaign is None:
             raise CampaignNotFoundError(f"Campaign not found: {campaign_id}")
 
@@ -131,35 +166,45 @@ class CampaignService:
         scheduled_time: datetime | None = None,
         unsubscribe_url_base: str = "",
         prefetched_emails: list[str] | None = None,
+        acquire_lock: bool = True,
     ) -> TriggerResult:
         """Execute a campaign, sending emails to all subscribed users."""
         campaign = await CampaignRepository.get_by_id(campaign_id)
         if campaign is None:
             raise CampaignNotFoundError(f"Campaign not found: {campaign_id}")
 
-        if scheduled_time and scheduled_time in campaign.executed_times:
-            raise CampaignConflictError(
-                "Scheduled send already executed",
-            )
+        if scheduled_time:
+            scheduled_time = cls._normalize_datetime(scheduled_time)
+            executed_times_utc = {
+                cls._normalize_datetime(executed)
+                for executed in campaign.executed_times
+            }
+            if scheduled_time in executed_times_utc:
+                raise CampaignConflictError(
+                    "Scheduled send already executed",
+                )
 
         subject = campaign.subject
         if scheduled_time and campaign.use_custom_subjects:
+            scheduled_time_utc = cls._normalize_datetime(scheduled_time)
             for send in campaign.scheduled_sends:
-                if send.time == scheduled_time and send.subject:
+                if (
+                    cls._normalize_datetime(send.time) == scheduled_time_utc
+                    and send.subject
+                ):
                     subject = send.subject
                     break
 
-        switched_to_in_progress = await CampaignRepository.mark_in_progress_if_allowed(
-            campaign_id
-        )
-        if not switched_to_in_progress:
-            raise CampaignConflictError("Campaign is already in progress")
+        if acquire_lock:
+            switched_to_in_progress = (
+                await CampaignRepository.mark_in_progress_if_allowed(campaign_id)
+            )
+            if not switched_to_in_progress:
+                raise CampaignConflictError("Campaign is already in progress")
         started_at = datetime.now(timezone.utc)
 
         if not unsubscribe_url_base:
-            unsubscribe_url_base = (
-                f"{settings.BASE_URL.rstrip('/')}/unsubscribe"
-            )
+            unsubscribe_url_base = f"{settings.BASE_URL.rstrip('/')}/unsubscribe"
 
         try:
             emails = prefetched_emails
@@ -203,9 +248,7 @@ class CampaignService:
             update_interval = settings.PROGRESS_UPDATE_INTERVAL
 
             async def on_progress(sent: int, failed: int) -> None:
-                if (sent + failed) % update_interval == 0 or (
-                    sent + failed
-                ) == total:
+                if (sent + failed) % update_interval == 0 or (sent + failed) == total:
                     progress.sent_count = sent
                     progress.failed_count = failed
                     await CampaignRepository.update_progress(campaign_id, progress)
@@ -289,32 +332,41 @@ class CampaignService:
         if campaign.status not in (CampaignStatus.SCHEDULED, CampaignStatus.FAILED):
             raise ValueError("Campaign can only be triggered when scheduled or failed")
 
-        emails = await UserServiceClient.get_subscribed_emails()
-        total = len(emails)
+        previous_status = campaign.status
 
-        progress = ExecutionProgress(
-            total_recipients=total,
-            started_at=datetime.now(timezone.utc),
-        )
-        await CampaignRepository.update_progress(campaign_id, progress)
         switched_to_in_progress = await CampaignRepository.mark_in_progress_if_allowed(
             campaign_id
         )
         if not switched_to_in_progress:
             raise CampaignConflictError("Campaign is already in progress")
 
-        if not unsubscribe_url_base:
-            unsubscribe_url_base = (
-                f"{settings.BASE_URL.rstrip('/')}/unsubscribe"
-            )
+        try:
+            emails = await UserServiceClient.get_subscribed_emails()
+        except Exception:
+            await CampaignRepository.update_status(campaign_id, previous_status)
+            await CampaignRepository.clear_progress(campaign_id)
+            raise
 
-        task = asyncio.create_task(
-            cls._execute_in_background(
-                campaign_id, unsubscribe_url_base, emails
-            )
+        total = len(emails)
+        progress = ExecutionProgress(
+            total_recipients=total,
+            started_at=datetime.now(timezone.utc),
         )
-        cls._background_tasks.add(task)
-        task.add_done_callback(cls._background_tasks.discard)
+        await CampaignRepository.update_progress(campaign_id, progress)
+
+        if not unsubscribe_url_base:
+            unsubscribe_url_base = f"{settings.BASE_URL.rstrip('/')}/unsubscribe"
+
+        try:
+            task = asyncio.create_task(
+                cls._execute_in_background(campaign_id, unsubscribe_url_base, emails)
+            )
+            cls._background_tasks.add(task)
+            task.add_done_callback(cls._background_tasks.discard)
+        except Exception:
+            await CampaignRepository.update_status(campaign_id, previous_status)
+            await CampaignRepository.clear_progress(campaign_id)
+            raise
 
         return TriggerStartResponse(
             campaign_id=campaign_id,
@@ -328,7 +380,9 @@ class CampaignService:
         emails = await UserServiceClient.get_subscribed_emails()
         total_recipients = len(emails)
         estimated_seconds = cls._estimate_delivery_seconds(total_recipients)
-        estimated_minutes = int((estimated_seconds / 60) + 0.999) if estimated_seconds else 0
+        estimated_minutes = (
+            int((estimated_seconds / 60) + 0.999) if estimated_seconds else 0
+        )
 
         return RecipientPreviewResponse(
             total_recipients=total_recipients,
@@ -351,6 +405,7 @@ class CampaignService:
                 scheduled_time=None,
                 unsubscribe_url_base=unsubscribe_url_base,
                 prefetched_emails=prefetched_emails,
+                acquire_lock=False,
             )
         except Exception as e:
             logger.error(
@@ -358,14 +413,31 @@ class CampaignService:
                 campaign_id=campaign_id,
                 error=str(e),
             )
+            try:
+                await CampaignRepository.update_status(
+                    campaign_id, CampaignStatus.FAILED
+                )
+                await CampaignRepository.clear_progress(campaign_id)
+            except Exception as cleanup_error:
+                logger.error(
+                    "Failed to cleanup campaign after background failure",
+                    campaign_id=campaign_id,
+                    error=str(cleanup_error),
+                )
 
     @classmethod
     async def _update_final_status(cls, campaign: CampaignInDB) -> None:
         """Update campaign status based on executions and scheduled sends."""
         campaign = await CampaignRepository.get_by_id(str(campaign.id))
+        if campaign is None:
+            return
 
+        executed_times_utc = {
+            cls._normalize_datetime(executed) for executed in campaign.executed_times
+        }
         all_executed = all(
-            send.time in campaign.executed_times for send in campaign.scheduled_sends
+            cls._normalize_datetime(send.time) in executed_times_utc
+            for send in campaign.scheduled_sends
         )
 
         has_failures = any(e.failed_count > 0 for e in campaign.executions)

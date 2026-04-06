@@ -185,7 +185,9 @@ class CampaignRepository:
 
         # Mark the scheduled time as executed if provided
         if scheduled_time:
-            update_ops["$addToSet"] = {"executed_times": scheduled_time}
+            update_ops["$addToSet"] = {
+                "executed_times": cls._normalize_datetime(scheduled_time)
+            }
 
         result = await collection.update_one(
             {"_id": ObjectId(campaign_id)},

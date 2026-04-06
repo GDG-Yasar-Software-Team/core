@@ -39,6 +39,9 @@ class Settings(BaseSettings):
     # Admin Authentication
     ADMIN_API_TOKEN: str = ""
 
+    # Reset campaigns stuck in in_progress (0 disables)
+    STALE_IN_PROGRESS_MINUTES: int = 120
+
     # CORS
     ALLOWED_ORIGINS: list[str] = ["http://localhost:3001"]
 

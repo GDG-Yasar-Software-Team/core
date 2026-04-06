@@ -1,7 +1,17 @@
 import json
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, File, Form, Header, HTTPException, Query, Request, UploadFile
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    Form,
+    Header,
+    HTTPException,
+    Query,
+    Request,
+    UploadFile,
+)
 from pydantic import ValidationError
 
 from app.config import settings
@@ -18,6 +28,11 @@ from app.models.campaign import (
     TestMailResult,
     TriggerStartResponse,
 )
+from app.clients.user_client import (
+    UserServiceAuthError,
+    UserServiceError,
+    UserServiceTimeoutError,
+)
 from app.repositories.campaign_repository import CampaignNotFoundError
 from app.services.campaign_service import CampaignConflictError, CampaignService
 from app.services.email_service import EmailService
@@ -26,13 +41,35 @@ from app.services.email_service import EmailService
 async def verify_admin_token(
     x_admin_token: Annotated[str, Header()] = "",
 ) -> None:
-    """Validate admin API token. Skipped when ADMIN_API_TOKEN is empty (dev mode)."""
-    if settings.ENV != "production":
-        return
+    """Validate admin API token when ADMIN_API_TOKEN is set (any environment)."""
     if not settings.ADMIN_API_TOKEN:
         return
     if x_admin_token != settings.ADMIN_API_TOKEN:
         raise HTTPException(status_code=401, detail="Invalid admin token")
+
+
+def _http_from_user_service(exc: UserServiceError) -> HTTPException:
+    """Map user-service failures to HTTP errors with stable JSON detail."""
+    if isinstance(exc, UserServiceAuthError):
+        return HTTPException(
+            status_code=502,
+            detail={
+                "code": "user_service_auth",
+                "message": str(exc),
+            },
+        )
+    if isinstance(exc, UserServiceTimeoutError):
+        return HTTPException(
+            status_code=504,
+            detail={
+                "code": "user_service_timeout",
+                "message": str(exc),
+            },
+        )
+    return HTTPException(
+        status_code=502,
+        detail={"code": "user_service_error", "message": str(exc)},
+    )
 
 
 router = APIRouter(
@@ -130,12 +167,17 @@ async def trigger_campaign(
         raise HTTPException(status_code=409, detail=str(e))
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    except UserServiceError as e:
+        raise _http_from_user_service(e) from e
 
 
 @router.get("/recipient-preview")
 async def get_recipient_preview() -> RecipientPreviewResponse:
     """Return recipient count and estimated delivery duration for manual trigger."""
-    return await CampaignService.get_recipient_preview()
+    try:
+        return await CampaignService.get_recipient_preview()
+    except UserServiceError as e:
+        raise _http_from_user_service(e) from e
 
 
 @router.get("/{campaign_id}/progress")

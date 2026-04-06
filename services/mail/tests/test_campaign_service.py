@@ -6,7 +6,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from bson import ObjectId
 
-from app.models.campaign import CampaignUpdate
+from app.clients.user_client import UserServiceAuthError
+from app.models.campaign import CampaignStatus, CampaignUpdate
 from app.repositories.campaign_repository import CampaignNotFoundError
 from app.services.campaign_service import CampaignConflictError, CampaignService
 from app.services.email_service import SendResult
@@ -550,6 +551,92 @@ class TestTriggerNow:
         ):
             await CampaignService.trigger_now("507f1f77bcf86cd799439020")
 
+    async def test_background_execution_uses_existing_in_progress_lock(
+        self, mock_mongodb, sample_campaign_doc
+    ):
+        """Should run background execution without reacquiring in-progress lock."""
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+        mock_mongodb["campaigns"].update_one = AsyncMock(
+            return_value=MagicMock(matched_count=1)
+        )
+
+        created_coroutine = None
+
+        def fake_create_task(coroutine):
+            nonlocal created_coroutine
+            created_coroutine = coroutine
+            task = MagicMock()
+            task.add_done_callback = MagicMock()
+            return task
+
+        with patch(
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
+            new_callable=AsyncMock,
+            return_value=["user@example.com"],
+        ):
+            with patch(
+                "app.services.campaign_service.asyncio.create_task",
+                side_effect=fake_create_task,
+            ):
+                with patch(
+                    "app.services.campaign_service.CampaignService.execute_campaign",
+                    new_callable=AsyncMock,
+                ) as mock_execute:
+                    await CampaignService.trigger_now("507f1f77bcf86cd799439020")
+
+                    assert created_coroutine is not None
+                    await created_coroutine
+                    mock_execute.assert_called_once()
+                    assert mock_execute.call_args.kwargs["acquire_lock"] is False
+
+    async def test_user_service_error_after_lock_reverts_campaign(
+        self, mock_mongodb, sample_campaign_doc
+    ):
+        """Should restore scheduled status if subscriber fetch fails after in_progress."""
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+        mock_mongodb["campaigns"].update_one = AsyncMock(
+            return_value=MagicMock(matched_count=1, modified_count=1)
+        )
+
+        with patch(
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
+            new_callable=AsyncMock,
+            side_effect=UserServiceAuthError("unavailable"),
+        ):
+            with pytest.raises(UserServiceAuthError):
+                await CampaignService.trigger_now("507f1f77bcf86cd799439020")
+
+        sets = [
+            c[0][1].get("$set", {})
+            for c in mock_mongodb["campaigns"].update_one.call_args_list
+        ]
+        assert any(s.get("status") == CampaignStatus.SCHEDULED.value for s in sets)
+        assert any(s.get("current_progress") is None for s in sets)
+
+    async def test_background_execution_failure_cleans_up_campaign_state(self):
+        """Should mark campaign failed and clear progress on background errors."""
+        with patch(
+            "app.services.campaign_service.CampaignService.execute_campaign",
+            new_callable=AsyncMock,
+            side_effect=Exception("boom"),
+        ):
+            with patch(
+                "app.services.campaign_service.CampaignRepository.update_status",
+                new_callable=AsyncMock,
+            ) as mock_update_status:
+                with patch(
+                    "app.services.campaign_service.CampaignRepository.clear_progress",
+                    new_callable=AsyncMock,
+                ) as mock_clear_progress:
+                    await CampaignService._execute_in_background(
+                        campaign_id="507f1f77bcf86cd799439020",
+                        unsubscribe_url_base="http://test.com/unsubscribe",
+                        prefetched_emails=["user@example.com"],
+                    )
+
+                    mock_update_status.assert_called_once()
+                    mock_clear_progress.assert_called_once()
+
 
 class TestRecipientPreview:
     """Tests for recipient preview endpoint/service helper."""
@@ -642,3 +729,39 @@ class TestListCampaigns:
 
         assert len(campaigns) == 1
         assert campaigns[0].subject == "Test Campaign"
+
+
+class TestStaleInProgressRecovery:
+    """Stale in_progress campaigns are reset so UI and scheduler are not stuck."""
+
+    async def test_get_campaign_marks_failed_when_stale(
+        self, mock_mongodb, mock_settings, sample_campaign_doc
+    ):
+        mock_settings.STALE_IN_PROGRESS_MINUTES = 60
+        stale_doc = {
+            **sample_campaign_doc,
+            "status": "in_progress",
+            "current_progress": {
+                "total_recipients": 1,
+                "sent_count": 0,
+                "failed_count": 0,
+                "started_at": datetime(2020, 1, 1, tzinfo=timezone.utc),
+                "is_complete": False,
+            },
+        }
+        cleaned_doc = {
+            **sample_campaign_doc,
+            "status": "failed",
+            "current_progress": None,
+        }
+        mock_mongodb["campaigns"].find_one = AsyncMock(
+            side_effect=[stale_doc, cleaned_doc]
+        )
+        mock_mongodb["campaigns"].update_one = AsyncMock(
+            return_value=MagicMock(matched_count=1)
+        )
+
+        campaign = await CampaignService.get_campaign("507f1f77bcf86cd799439020")
+
+        assert campaign is not None
+        assert campaign.status == CampaignStatus.FAILED

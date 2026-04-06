@@ -1,32 +1,67 @@
 import { Lock, Mail } from "lucide-react";
-import { type FormEvent, useState } from "react";
-
-const TOKEN_KEY = "gdg_mail_admin_token";
-
-export function getAdminToken(): string {
-	return sessionStorage.getItem(TOKEN_KEY) ?? "";
-}
-
-export function clearAdminToken(): void {
-	sessionStorage.removeItem(TOKEN_KEY);
-}
+import { type FormEvent, useEffect, useState } from "react";
+import { verifyAdminToken } from "../services/campaignService.ts";
+import {
+	clearAdminToken,
+	getAdminToken,
+	setAdminToken,
+} from "../utils/adminToken.ts";
+import LoadingSpinner from "./LoadingSpinner.tsx";
 
 interface AuthGateProps {
 	children: React.ReactNode;
 }
 
 export default function AuthGate({ children }: AuthGateProps) {
-	const [isAuthorized, setIsAuthorized] = useState<boolean>(
-		() => !!sessionStorage.getItem(TOKEN_KEY),
-	);
+	const [sessionChecked, setSessionChecked] = useState(false);
+	const [isAuthorized, setIsAuthorized] = useState(false);
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	useEffect(() => {
+		const existing = getAdminToken();
+		if (!existing) {
+			setSessionChecked(true);
+			return;
+		}
+
+		let cancelled = false;
+		void verifyAdminToken(existing)
+			.then(() => {
+				if (!cancelled) {
+					setIsAuthorized(true);
+				}
+			})
+			.catch(() => {
+				if (!cancelled) {
+					clearAdminToken();
+				}
+			})
+			.finally(() => {
+				if (!cancelled) {
+					setSessionChecked(true);
+				}
+			});
+
+		return () => {
+			cancelled = true;
+		};
+	}, []);
+
+	if (!sessionChecked) {
+		return (
+			<div className="flex min-h-screen items-center justify-center bg-gray-50">
+				<LoadingSpinner size="lg" />
+			</div>
+		);
+	}
 
 	if (isAuthorized) {
 		return <>{children}</>;
 	}
 
-	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
 		if (!password.trim()) {
@@ -34,9 +69,18 @@ export default function AuthGate({ children }: AuthGateProps) {
 			return;
 		}
 
-		sessionStorage.setItem(TOKEN_KEY, password);
-		setIsAuthorized(true);
+		setIsSubmitting(true);
 		setError(null);
+		try {
+			await verifyAdminToken(password);
+			setAdminToken(password.trim());
+			setIsAuthorized(true);
+			setPassword("");
+		} catch (err: unknown) {
+			setError(err instanceof Error ? err.message : "Giriş yapılamadı.");
+		} finally {
+			setIsSubmitting(false);
+		}
 	};
 
 	return (
@@ -49,20 +93,20 @@ export default function AuthGate({ children }: AuthGateProps) {
 					<h1 className="font-display text-2xl font-bold text-gray-900">
 						GDG Mail
 					</h1>
-				<p className="mt-1 text-sm text-gray-500">
-					Admin paneline erişmek için token girin.
-				</p>
+					<p className="mt-1 text-sm text-gray-500">
+						Admin paneline erişmek için geçerli API token girin.
+					</p>
 				</div>
 
 				<div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-					<form onSubmit={handleSubmit} className="space-y-4">
+					<form className="space-y-4" onSubmit={handleSubmit}>
 						<div>
-					<label
-							htmlFor="admin-password"
-							className="mb-1 block text-sm font-medium text-gray-700"
-						>
-							Admin Token
-						</label>
+							<label
+								htmlFor="admin-password"
+								className="mb-1 block text-sm font-medium text-gray-700"
+							>
+								Admin Token
+							</label>
 							<div className="relative">
 								<Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
 								<input
@@ -75,6 +119,7 @@ export default function AuthGate({ children }: AuthGateProps) {
 									}}
 									autoComplete="current-password"
 									placeholder="Token"
+									disabled={isSubmitting}
 									className={`w-full rounded-lg border py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 ${
 										error
 											? "border-red-400 focus:ring-red-200"
@@ -86,9 +131,10 @@ export default function AuthGate({ children }: AuthGateProps) {
 
 						<button
 							type="submit"
-							className="w-full rounded-lg bg-google-blue px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-blue-600 active:bg-blue-700"
+							disabled={isSubmitting}
+							className="w-full rounded-lg bg-google-blue px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-blue-600 active:bg-blue-700 disabled:opacity-60"
 						>
-							Giriş Yap
+							{isSubmitting ? "Doğrulanıyor…" : "Giriş Yap"}
 						</button>
 					</form>
 

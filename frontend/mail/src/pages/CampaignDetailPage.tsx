@@ -1,5 +1,5 @@
 import { ArrowLeft, Calendar, Clock, Edit, Play, Send } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import ConfirmDialog from "../components/ConfirmDialog.tsx";
@@ -25,18 +25,54 @@ export default function CampaignDetailPage() {
 	const [recipientPreview, setRecipientPreview] =
 		useState<RecipientPreviewResponse | null>(null);
 
-	const shouldPoll =
-		isSending || campaign?.status === "in_progress";
+	const shouldPoll = isSending || campaign?.status === "in_progress";
 
-	const { progress, error: pollingError, isPolling } = useCampaignProgress(
+	const {
+		progress,
+		error: pollingError,
+		isPolling,
+		pollingGivenUp,
+		retryPolling,
+	} = useCampaignProgress(
 		campaignId,
 		shouldPoll,
 		() => {
-			toast.success("Kampanya gönderimi tamamlandı!");
 			setIsSending(false);
 			refresh();
 		},
+		() => {
+			setIsSending(false);
+			refresh();
+			toast.error(
+				"İlerleme bilgisi alınamadı. Sayfayı yenileyip durumu kontrol edin.",
+			);
+		},
 	);
+
+	const previousStatusRef = useRef(campaign?.status);
+
+	useEffect(() => {
+		if (!campaign) return;
+		const previousStatus = previousStatusRef.current;
+		previousStatusRef.current = campaign.status;
+
+		if (!isSending) return;
+		if (previousStatus === campaign.status) return;
+
+		if (
+			campaign.status === "completed" ||
+			campaign.status === "partially_completed"
+		) {
+			toast.success("Kampanya gönderimi tamamlandı!");
+			setIsSending(false);
+			return;
+		}
+
+		if (campaign.status === "failed") {
+			toast.error("Kampanya gönderimi başarısız oldu.");
+			setIsSending(false);
+		}
+	}, [campaign, isSending]);
 
 	const handleTrigger = async () => {
 		if (!campaignId) return;
@@ -46,8 +82,10 @@ export default function CampaignDetailPage() {
 				`Gönderim başlatıldı! ${result.total_recipients} alıcıya gönderiliyor...`,
 			);
 			setIsSending(true);
-		} catch {
-			toast.error("Kampanya tetiklenemedi.");
+		} catch (err: unknown) {
+			toast.error(
+				err instanceof Error ? err.message : "Kampanya tetiklenemedi.",
+			);
 		} finally {
 			setShowTriggerDialog(false);
 		}
@@ -60,8 +98,10 @@ export default function CampaignDetailPage() {
 			const preview = await getRecipientPreview();
 			setRecipientPreview(preview);
 			setShowTriggerDialog(true);
-		} catch {
-			toast.error("Alıcı önizlemesi alınamadı.");
+		} catch (err: unknown) {
+			toast.error(
+				err instanceof Error ? err.message : "Alıcı önizlemesi alınamadı.",
+			);
 		} finally {
 			setIsLoadingPreview(false);
 		}
@@ -96,13 +136,14 @@ export default function CampaignDetailPage() {
 		campaign.status === "completed" ||
 		campaign.status === "failed" ||
 		campaign.status === "partially_completed";
-	const isInProgress =
-		campaign.status === "in_progress" || isSending;
+	const isInProgress = campaign.status === "in_progress" || isSending;
 	const canTriggerNow =
 		campaign.status === "scheduled" || campaign.status === "failed";
 	const showProgressPanel =
 		(progress && !progress.is_complete) ||
-		(isInProgress && campaign.current_progress && !campaign.current_progress.is_complete);
+		(isInProgress &&
+			campaign.current_progress &&
+			!campaign.current_progress.is_complete);
 	const activeProgress = progress ?? campaign.current_progress;
 
 	return (
@@ -163,10 +204,25 @@ export default function CampaignDetailPage() {
 			{showProgressPanel && activeProgress && (
 				<div className="mb-6">
 					<SendProgress progress={activeProgress} isPolling={isPolling} />
-					{pollingError && (
+					{pollingError && !pollingGivenUp && (
 						<p className="mt-2 text-sm text-amber-700">
 							İlerleme anlık güncellenemiyor, yeniden denenecek.
 						</p>
+					)}
+					{pollingGivenUp && (
+						<div className="mt-2 flex flex-wrap items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+							<span>İlerleme güncellemesi durdu.</span>
+							<button
+								type="button"
+								onClick={() => {
+									refresh();
+									retryPolling();
+								}}
+								className="font-medium text-google-blue underline hover:no-underline"
+							>
+								Yenile
+							</button>
+						</div>
 					)}
 				</div>
 			)}
@@ -179,9 +235,7 @@ export default function CampaignDetailPage() {
 					<div className="space-y-2">
 						{campaign.scheduled_sends.map((send) => {
 							const executed = campaign.executed_times.some(
-								(t) =>
-									new Date(t).getTime() ===
-									new Date(send.time).getTime(),
+								(t) => new Date(t).getTime() === new Date(send.time).getTime(),
 							);
 							return (
 								<div

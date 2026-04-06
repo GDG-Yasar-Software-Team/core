@@ -1,4 +1,3 @@
-import { clearAdminToken, getAdminToken } from "../components/AuthGate.tsx";
 import type {
 	CampaignCreate,
 	CampaignListItem,
@@ -10,6 +9,8 @@ import type {
 	TestMailResponse,
 	TriggerStartResponse,
 } from "../types";
+import { clearAdminToken, getAdminToken } from "../utils/adminToken.ts";
+import { formatMailApiError } from "../utils/mailApiError.ts";
 
 const MAIL_SERVICE_URL =
 	import.meta.env.VITE_MAIL_SERVICE_URL ?? "http://localhost:8000";
@@ -32,17 +33,33 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 	if (response.status === 401) {
 		clearAdminToken();
 		window.location.reload();
-		throw new Error("Unauthorized");
+		throw new Error("Oturum süresi doldu veya token geçersiz.");
 	}
 
 	if (!response.ok) {
 		const errorText = await response.text();
-		throw new Error(
-			`Mail service request failed: ${response.status} ${errorText}`,
-		);
+		throw new Error(formatMailApiError(response.status, errorText));
 	}
 
 	return (await response.json()) as T;
+}
+
+/** Validate admin token against the mail API before storing it (no page reload). */
+export async function verifyAdminToken(token: string): Promise<void> {
+	const trimmed = token.trim();
+	const response = await fetch(`${MAIL_SERVICE_URL}/campaigns/?limit=1`, {
+		method: "GET",
+		headers: { "X-Admin-Token": trimmed },
+	});
+
+	if (response.status === 401) {
+		throw new Error("Geçersiz admin token.");
+	}
+
+	if (!response.ok) {
+		const errorText = await response.text();
+		throw new Error(formatMailApiError(response.status, errorText));
+	}
 }
 
 export async function listCampaigns(
@@ -81,14 +98,12 @@ export async function createCampaignWithFile(
 	if (response.status === 401) {
 		clearAdminToken();
 		window.location.reload();
-		throw new Error("Unauthorized");
+		throw new Error("Oturum süresi doldu veya token geçersiz.");
 	}
 
 	if (!response.ok) {
 		const errorText = await response.text();
-		throw new Error(
-			`Mail service request failed: ${response.status} ${errorText}`,
-		);
+		throw new Error(formatMailApiError(response.status, errorText));
 	}
 
 	return (await response.json()) as { id: string; status: string };

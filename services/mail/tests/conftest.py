@@ -32,6 +32,8 @@ def mock_settings():
         SMTP_PASSWORD="test_password",
         UNSUBSCRIBE_SECRET_KEY="test-secret-key-for-testing",
         ENV="test",
+        ADMIN_API_TOKEN="",
+        STALE_IN_PROGRESS_MINUTES=0,
     )
     with patch("app.config.settings", test_settings):
         with patch("app.db.mongodb.settings", test_settings):
@@ -41,9 +43,7 @@ def mock_settings():
                         "app.services.unsubscribe_service.settings", test_settings
                     ):
                         with patch("app.clients.user_client.settings", test_settings):
-                            with patch(
-                                "app.routers.campaigns.settings", test_settings
-                            ):
+                            with patch("app.routers.campaigns.settings", test_settings):
                                 with patch(
                                     "app.services.campaign_service.settings",
                                     test_settings,

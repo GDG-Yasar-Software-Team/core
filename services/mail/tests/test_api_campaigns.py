@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 from bson import ObjectId
 
+from app.clients.user_client import UserServiceAuthError
 from tests.conftest import create_async_cursor
 
 
@@ -336,3 +337,69 @@ class TestListCampaigns:
 
         assert response.status_code == 200
         assert response.json() == []
+
+
+class TestAdminAuth:
+    """Tests for X-Admin-Token when ADMIN_API_TOKEN is configured."""
+
+    def test_401_without_header_when_token_configured(
+        self, sync_client, mock_mongodb, mock_settings
+    ):
+        mock_settings.ADMIN_API_TOKEN = "expected-secret"
+        mock_cursor = create_async_cursor([])
+        mock_mongodb["campaigns"].find = MagicMock(return_value=mock_cursor)
+
+        response = sync_client.get("/campaigns/")
+
+        assert response.status_code == 401
+
+    def test_401_wrong_token_when_configured(
+        self, sync_client, mock_mongodb, mock_settings
+    ):
+        mock_settings.ADMIN_API_TOKEN = "expected-secret"
+        mock_cursor = create_async_cursor([])
+        mock_mongodb["campaigns"].find = MagicMock(return_value=mock_cursor)
+
+        response = sync_client.get(
+            "/campaigns/",
+            headers={"X-Admin-Token": "wrong"},
+        )
+
+        assert response.status_code == 401
+
+    def test_200_with_valid_token(self, sync_client, mock_mongodb, mock_settings):
+        mock_settings.ADMIN_API_TOKEN = "expected-secret"
+        mock_cursor = create_async_cursor([])
+        mock_mongodb["campaigns"].find = MagicMock(return_value=mock_cursor)
+
+        response = sync_client.get(
+            "/campaigns/",
+            headers={"X-Admin-Token": "expected-secret"},
+        )
+
+        assert response.status_code == 200
+
+
+class TestTriggerUserServiceErrors:
+    """User service failures during trigger."""
+
+    def test_trigger_returns_502_when_user_service_auth_fails(
+        self, sync_client, mock_mongodb, sample_campaign_doc
+    ):
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+        mock_mongodb["campaigns"].update_one = AsyncMock(
+            return_value=MagicMock(matched_count=1, modified_count=1)
+        )
+
+        with patch(
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
+            new_callable=AsyncMock,
+            side_effect=UserServiceAuthError("bad token"),
+        ):
+            response = sync_client.post(
+                "/campaigns/507f1f77bcf86cd799439020/trigger",
+            )
+
+        assert response.status_code == 502
+        detail = response.json()["detail"]
+        assert detail["code"] == "user_service_auth"
