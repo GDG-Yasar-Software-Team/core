@@ -5,6 +5,7 @@
 import type { Event } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_EVENT_SERVICE_URL || 'http://localhost:8003';
+const API_TOKEN = import.meta.env.VITE_EVENT_SERVICE_TOKEN || '';
 
 /**
  * Fetch all events from the backend
@@ -18,7 +19,8 @@ export async function fetchEvents(limit = 100, offset = 0): Promise<Event[]> {
                 const response = await fetch(url.toString(), {
                         method: 'GET',
                         headers: {
-                                'Content-Type': 'application/json'
+                                'Content-Type': 'application/json',
+                                'X-API-Token': API_TOKEN
                         }
                 });
 
@@ -42,7 +44,8 @@ export async function fetchEventById(eventId: string): Promise<Event> {
                 const response = await fetch(`${API_BASE_URL}/events/${eventId}`, {
                         method: 'GET',
                         headers: {
-                                'Content-Type': 'application/json'
+                                'Content-Type': 'application/json',
+                                'X-API-Token': API_TOKEN
                         }
                 });
 
