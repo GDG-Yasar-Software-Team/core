@@ -28,7 +28,11 @@ import type {
 import { ApiClientError } from "../utils/apiClientError";
 import { buildFormSchema } from "../utils/buildFormSchema";
 import { isQuestionVisible } from "../utils/fieldVisibility";
-import { messageForPublicFormSubmitError } from "../utils/publicFormMessages";
+import {
+	getSupportEmail,
+	messageForPublicFormSubmitError,
+	messagesForFormLoadError,
+} from "../utils/publicFormMessages";
 
 type FormValues = Record<string, unknown>;
 
@@ -519,16 +523,30 @@ const FormSubmissionPage = () => {
 	}
 
 	if (error || !form) {
+		const loadError = error
+			? messagesForFormLoadError(error.kind)
+			: messagesForFormLoadError("not_found");
+		const supportEmail = getSupportEmail();
+
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gray-50">
+			<div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
 				<div className="text-center max-w-md">
 					<p className="text-red-500 text-lg font-semibold">
-						{error || "Form bulunamadı."}
+						{loadError.title}
 					</p>
-					<p className="mt-2 text-gray-400 text-sm">
-						Lütfen URL&apos;yi kontrol edin ve form servisinin çalıştığından
-						emin olun.
-					</p>
+					<p className="mt-2 text-gray-500 text-sm">{loadError.description}</p>
+					{loadError.showContact && (
+						<p className="mt-4 text-gray-500 text-sm">
+							Sorun devam ederse{" "}
+							<a
+								href={`mailto:${supportEmail}`}
+								className="text-blue-600 hover:underline"
+							>
+								{supportEmail}
+							</a>{" "}
+							adresinden bizimle iletişime geçebilirsiniz.
+						</p>
+					)}
 				</div>
 			</div>
 		);

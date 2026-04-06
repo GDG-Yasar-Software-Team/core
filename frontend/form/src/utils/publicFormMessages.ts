@@ -1,4 +1,42 @@
+import type { FormLoadErrorKind } from "../hooks/useFormDetails";
 import { ApiClientError, getErrorCode } from "./apiClientError";
+
+const SUPPORT_EMAIL =
+	import.meta.env.VITE_SUPPORT_EMAIL || "gdgoncampus.yu@gmail.com";
+
+export function getSupportEmail(): string {
+	return SUPPORT_EMAIL;
+}
+
+export interface FormLoadMessages {
+	title: string;
+	description: string;
+	showContact: boolean;
+}
+
+/** Centralized copy for public form load failures (FormSubmissionPage). */
+export const publicFormLoadMessages = {
+	notFound: {
+		title: "Form bulunamadı",
+		description:
+			"Aradığınız form mevcut değil veya kaldırılmış olabilir. Lütfen bağlantıyı kontrol edin.",
+		showContact: false,
+	},
+	unavailable: {
+		title: "Şu anda ulaşılamıyor",
+		description:
+			"Form geçici olarak yüklenemiyor. Lütfen birkaç dakika sonra tekrar deneyin.",
+		showContact: true,
+	},
+} as const satisfies Record<"notFound" | "unavailable", FormLoadMessages>;
+
+export function messagesForFormLoadError(
+	kind: FormLoadErrorKind,
+): FormLoadMessages {
+	return kind === "not_found"
+		? publicFormLoadMessages.notFound
+		: publicFormLoadMessages.unavailable;
+}
 
 const SUBMIT_ERROR_MESSAGES: Record<string, string> = {
 	form_not_active: "Bu form şu anda yanıt kabul etmiyor.",
