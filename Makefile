@@ -97,7 +97,7 @@ run-mail-frontend:
 
 run-mail-service:
 	@echo "Starting mail service..."
-	cd services/mail && uv run fastapi dev
+	cd services/mail && uv run python -m app.main
 
 run-mail-campaign:
 	@echo "Running mail campaign CLI..."

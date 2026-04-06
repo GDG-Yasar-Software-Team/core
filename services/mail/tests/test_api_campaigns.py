@@ -169,16 +169,78 @@ class TestTriggerCampaign:
         ):
             response = sync_client.post("/campaigns/507f1f77bcf86cd799439020/trigger")
 
-        assert response.status_code == 200
+        assert response.status_code == 202
         data = response.json()
-        assert "sent_count" in data
-        assert "failed_count" in data
+        assert "campaign_id" in data
+        assert "total_recipients" in data
+        assert data["status"] == "in_progress"
 
     def test_404_for_missing_campaign(self, sync_client, mock_mongodb):
         """Should return 404 for nonexistent campaign."""
         mock_mongodb["campaigns"].find_one = AsyncMock(return_value=None)
 
         response = sync_client.post("/campaigns/507f1f77bcf86cd799439099/trigger")
+
+        assert response.status_code == 404
+
+
+class TestGetCampaignProgress:
+    """Tests for GET /campaigns/{id}/progress endpoint."""
+
+    def test_returns_progress_with_active_execution(
+        self, sync_client, mock_mongodb, sample_campaign_doc
+    ):
+        """Should return current progress when campaign has active progress."""
+        sample_campaign_doc["current_progress"] = {
+            "total_recipients": 100,
+            "sent_count": 50,
+            "failed_count": 2,
+            "started_at": "2025-01-20T10:00:00",
+            "is_complete": False,
+        }
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+
+        response = sync_client.get("/campaigns/507f1f77bcf86cd799439020/progress")
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["total_recipients"] == 100
+        assert data["sent_count"] == 50
+        assert data["failed_count"] == 2
+        assert data["is_complete"] is False
+
+    def test_returns_last_execution_when_no_progress(
+        self, sync_client, mock_mongodb, sample_campaign_doc
+    ):
+        """Should return completed progress from last execution when no active progress."""
+        sample_campaign_doc["executions"] = [
+            {
+                "scheduled_time": None,
+                "subject_used": "Test",
+                "started_at": "2025-01-20T10:00:00",
+                "completed_at": "2025-01-20T10:30:00",
+                "sent_count": 95,
+                "failed_count": 5,
+                "recipient_emails": [],
+                "failed_emails": [],
+                "is_manual_trigger": True,
+            }
+        ]
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+
+        response = sync_client.get("/campaigns/507f1f77bcf86cd799439020/progress")
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["total_recipients"] == 100
+        assert data["sent_count"] == 95
+        assert data["is_complete"] is True
+
+    def test_404_for_missing_campaign(self, sync_client, mock_mongodb):
+        """Should return 404 for nonexistent campaign."""
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=None)
+
+        response = sync_client.get("/campaigns/507f1f77bcf86cd799439099/progress")
 
         assert response.status_code == 404
 

@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
 from bson import ObjectId
+from motor.motor_asyncio import AsyncIOMotorCollection
 
 from app.config import settings
 from app.db.mongodb import MongoDB
@@ -9,6 +10,7 @@ from app.models.campaign import (
     CampaignInDB,
     CampaignStatus,
     CampaignUpdate,
+    ExecutionProgress,
     ExecutionRecord,
 )
 from app.utils.logger import logger
@@ -22,7 +24,7 @@ class CampaignNotFoundError(Exception):
 
 class CampaignRepository:
     @classmethod
-    def _get_collection(cls):
+    def _get_collection(cls) -> AsyncIOMotorCollection:
         return MongoDB.get_db()[settings.CAMPAIGNS_COLLECTION]
 
     @classmethod
@@ -159,11 +161,48 @@ class CampaignRepository:
         logger.info("Execution record added", campaign_id=campaign_id)
 
     @classmethod
+    async def update_progress(
+        cls, campaign_id: str, progress: ExecutionProgress
+    ) -> None:
+        """Update the real-time execution progress for a campaign."""
+        collection = cls._get_collection()
+
+        if not ObjectId.is_valid(campaign_id):
+            raise CampaignNotFoundError(f"Invalid campaign ID: {campaign_id}")
+
+        await collection.update_one(
+            {"_id": ObjectId(campaign_id)},
+            {"$set": {"current_progress": progress.model_dump()}},
+        )
+
+    @classmethod
+    async def clear_progress(cls, campaign_id: str) -> None:
+        """Clear the execution progress after completion."""
+        collection = cls._get_collection()
+
+        if not ObjectId.is_valid(campaign_id):
+            raise CampaignNotFoundError(f"Invalid campaign ID: {campaign_id}")
+
+        await collection.update_one(
+            {"_id": ObjectId(campaign_id)},
+            {"$set": {"current_progress": None}},
+        )
+
+    @classmethod
     async def list_recent(cls, limit: int = 20, offset: int = 0) -> list[CampaignInDB]:
         """List recent campaigns, sorted by created_at descending."""
         collection = cls._get_collection()
 
-        cursor = collection.find().sort("created_at", -1).skip(offset).limit(limit)
+        projection = {
+            "executions.recipient_emails": 0,
+            "executions.failed_emails": 0,
+        }
+        cursor = (
+            collection.find({}, projection)
+            .sort("created_at", -1)
+            .skip(offset)
+            .limit(limit)
+        )
 
         campaigns = []
         async for doc in cursor:

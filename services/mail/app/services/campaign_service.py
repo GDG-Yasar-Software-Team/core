@@ -1,14 +1,18 @@
+import asyncio
 from datetime import datetime, timezone
 
 from app.clients.user_client import UserServiceClient
+from app.config import settings
 from app.models.campaign import (
     CampaignCreate,
     CampaignInDB,
     CampaignResponse,
     CampaignStatus,
     CampaignUpdate,
+    ExecutionProgress,
     ExecutionRecord,
     TriggerResult,
+    TriggerStartResponse,
 )
 from app.repositories.campaign_repository import (
     CampaignNotFoundError,
@@ -20,6 +24,8 @@ from app.utils.logger import logger
 
 
 class CampaignService:
+    _background_tasks: set[asyncio.Task] = set()
+
     @classmethod
     async def create_campaign(cls, data: CampaignCreate) -> str:
         """Create a new campaign and return its ID."""
@@ -40,11 +46,40 @@ class CampaignService:
         return CampaignResponse.from_db(campaign)
 
     @classmethod
+    async def get_campaign_progress(cls, campaign_id: str) -> ExecutionProgress:
+        """Get execution progress for a campaign."""
+        campaign = await CampaignRepository.get_by_id(campaign_id)
+        if campaign is None:
+            raise CampaignNotFoundError(f"Campaign not found: {campaign_id}")
+
+        response = CampaignResponse.from_db(campaign)
+
+        if response.current_progress:
+            return response.current_progress
+
+        if response.executions:
+            last = response.executions[-1]
+            return ExecutionProgress(
+                total_recipients=last.sent_count + last.failed_count,
+                sent_count=last.sent_count,
+                failed_count=last.failed_count,
+                started_at=last.started_at,
+                is_complete=True,
+            )
+
+        return ExecutionProgress(
+            total_recipients=0,
+            sent_count=0,
+            failed_count=0,
+            started_at=response.created_at,
+            is_complete=True,
+        )
+
+    @classmethod
     async def update_campaign(
         cls, campaign_id: str, data: CampaignUpdate
     ) -> CampaignResponse:
         """Update a campaign."""
-        # Check if campaign exists and is not completed
         campaign = await CampaignRepository.get_by_id(campaign_id)
         if campaign is None:
             raise CampaignNotFoundError(f"Campaign not found: {campaign_id}")
@@ -72,23 +107,13 @@ class CampaignService:
         campaign_id: str,
         scheduled_time: datetime | None = None,
         unsubscribe_url_base: str = "",
+        prefetched_emails: list[str] | None = None,
     ) -> TriggerResult:
-        """
-        Execute a campaign, sending emails to all subscribed users.
-
-        Args:
-            campaign_id: The campaign to execute
-            scheduled_time: The scheduled time being executed (None for manual triggers)
-            unsubscribe_url_base: Base URL for unsubscribe links
-
-        Returns:
-            TriggerResult with sent/failed counts
-        """
+        """Execute a campaign, sending emails to all subscribed users."""
         campaign = await CampaignRepository.get_by_id(campaign_id)
         if campaign is None:
             raise CampaignNotFoundError(f"Campaign not found: {campaign_id}")
 
-        # Check if this scheduled time was already executed
         if scheduled_time and scheduled_time in campaign.executed_times:
             logger.warning(
                 "Scheduled time already executed",
@@ -102,7 +127,6 @@ class CampaignService:
                 subject_used=campaign.subject,
             )
 
-        # Determine which subject to use
         subject = campaign.subject
         if scheduled_time and campaign.use_custom_subjects:
             for send in campaign.scheduled_sends:
@@ -110,17 +134,31 @@ class CampaignService:
                     subject = send.subject
                     break
 
-        # Update status to in_progress
         await CampaignRepository.update_status(campaign_id, CampaignStatus.IN_PROGRESS)
-
         started_at = datetime.now(timezone.utc)
 
+        if not unsubscribe_url_base:
+            unsubscribe_url_base = (
+                f"{settings.BASE_URL.rstrip('/')}/unsubscribe"
+            )
+
         try:
-            # Fetch subscribed emails from user service
-            emails = await UserServiceClient.get_subscribed_emails()
+            emails = prefetched_emails
+            if emails is None:
+                emails = await UserServiceClient.get_subscribed_emails()
+            total = len(emails)
+
+            progress = ExecutionProgress(
+                total_recipients=total,
+                started_at=started_at,
+            )
+            await CampaignRepository.update_progress(campaign_id, progress)
 
             if not emails:
                 logger.info("No subscribed users found", campaign_id=campaign_id)
+                progress.is_complete = True
+                await CampaignRepository.update_progress(campaign_id, progress)
+
                 execution = ExecutionRecord(
                     scheduled_time=scheduled_time,
                     subject_used=subject,
@@ -143,26 +181,37 @@ class CampaignService:
                     subject_used=subject,
                 )
 
-            # Send emails
+            update_interval = settings.PROGRESS_UPDATE_INTERVAL
+
+            async def on_progress(sent: int, failed: int) -> None:
+                if (sent + failed) % update_interval == 0 or (
+                    sent + failed
+                ) == total:
+                    progress.sent_count = sent
+                    progress.failed_count = failed
+                    await CampaignRepository.update_progress(campaign_id, progress)
+
             results = await EmailService.send_bulk(
                 recipients=emails,
                 subject=subject,
                 body_html=campaign.body_html,
                 unsubscribe_url_base=unsubscribe_url_base,
                 generate_token_func=UnsubscribeService.generate_token,
+                progress_callback=on_progress,
             )
 
-            # Count results
             sent_count = sum(1 for r in results if r.success)
             failed_count = sum(1 for r in results if not r.success)
             recipient_emails = [r.email for r in results if r.success]
             failed_emails = [r.email for r in results if not r.success]
 
-            # Record mail received for successful sends
-            for email in recipient_emails:
-                await UserServiceClient.record_mail_received(email, campaign_id)
+            record_tasks = [
+                UserServiceClient.record_mail_received(email, campaign_id)
+                for email in recipient_emails
+            ]
+            if record_tasks:
+                await asyncio.gather(*record_tasks, return_exceptions=True)
 
-            # Record execution
             execution = ExecutionRecord(
                 scheduled_time=scheduled_time,
                 subject_used=subject,
@@ -178,9 +227,13 @@ class CampaignService:
                 campaign_id, execution, scheduled_time
             )
 
-            # Update final status
             campaign = await CampaignRepository.get_by_id(campaign_id)
             await cls._update_final_status(campaign)
+
+            progress.sent_count = sent_count
+            progress.failed_count = failed_count
+            progress.is_complete = True
+            await CampaignRepository.update_progress(campaign_id, progress)
 
             logger.info(
                 "Campaign execution completed",
@@ -201,31 +254,78 @@ class CampaignService:
                 "Campaign execution failed", campaign_id=campaign_id, error=str(e)
             )
             await CampaignRepository.update_status(campaign_id, CampaignStatus.FAILED)
+            await CampaignRepository.clear_progress(campaign_id)
             raise
 
     @classmethod
     async def trigger_now(
         cls, campaign_id: str, unsubscribe_url_base: str = ""
-    ) -> TriggerResult:
-        """Trigger a campaign immediately, ignoring scheduled times."""
-        return await cls.execute_campaign(
-            campaign_id=campaign_id,
-            scheduled_time=None,  # Manual trigger
-            unsubscribe_url_base=unsubscribe_url_base,
+    ) -> TriggerStartResponse:
+        """Trigger a campaign immediately in the background."""
+        campaign = await CampaignRepository.get_by_id(campaign_id)
+        if campaign is None:
+            raise CampaignNotFoundError(f"Campaign not found: {campaign_id}")
+
+        emails = await UserServiceClient.get_subscribed_emails()
+        total = len(emails)
+
+        progress = ExecutionProgress(
+            total_recipients=total,
+            started_at=datetime.now(timezone.utc),
         )
+        await CampaignRepository.update_progress(campaign_id, progress)
+        await CampaignRepository.update_status(campaign_id, CampaignStatus.IN_PROGRESS)
+
+        if not unsubscribe_url_base:
+            unsubscribe_url_base = (
+                f"{settings.BASE_URL.rstrip('/')}/unsubscribe"
+            )
+
+        task = asyncio.create_task(
+            cls._execute_in_background(
+                campaign_id, unsubscribe_url_base, emails
+            )
+        )
+        cls._background_tasks.add(task)
+        task.add_done_callback(cls._background_tasks.discard)
+
+        return TriggerStartResponse(
+            campaign_id=campaign_id,
+            total_recipients=total,
+            status="in_progress",
+        )
+
+    @classmethod
+    async def _execute_in_background(
+        cls,
+        campaign_id: str,
+        unsubscribe_url_base: str,
+        prefetched_emails: list[str],
+    ) -> None:
+        """Wrapper for background execution with error logging."""
+        try:
+            await cls.execute_campaign(
+                campaign_id=campaign_id,
+                scheduled_time=None,
+                unsubscribe_url_base=unsubscribe_url_base,
+                prefetched_emails=prefetched_emails,
+            )
+        except Exception as e:
+            logger.error(
+                "Background campaign execution failed",
+                campaign_id=campaign_id,
+                error=str(e),
+            )
 
     @classmethod
     async def _update_final_status(cls, campaign: CampaignInDB) -> None:
         """Update campaign status based on executions and scheduled sends."""
-        # Refresh campaign data
         campaign = await CampaignRepository.get_by_id(str(campaign.id))
 
-        # Check if all scheduled sends have been executed
         all_executed = all(
             send.time in campaign.executed_times for send in campaign.scheduled_sends
         )
 
-        # Check if any execution had failures
         has_failures = any(e.failed_count > 0 for e in campaign.executions)
         all_failed = (
             all(e.sent_count == 0 and e.failed_count > 0 for e in campaign.executions)
@@ -242,7 +342,6 @@ class CampaignService:
                 else CampaignStatus.COMPLETED
             )
         else:
-            # More scheduled sends remaining
             status = CampaignStatus.SCHEDULED
 
         await CampaignRepository.update_status(str(campaign.id), status)

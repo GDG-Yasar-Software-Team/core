@@ -35,11 +35,21 @@ class ExecutionRecord(BaseModel):
     is_manual_trigger: bool = False
 
 
+class ExecutionProgress(BaseModel):
+    """Tracks real-time progress of an ongoing campaign execution."""
+
+    total_recipients: int
+    sent_count: int = 0
+    failed_count: int = 0
+    started_at: datetime
+    is_complete: bool = False
+
+
 class CampaignCreate(BaseModel):
     """Input model for creating a campaign."""
 
     subject: str = Field(min_length=1, max_length=200)
-    body_html: str = Field(min_length=1)
+    body_html: str = Field(min_length=1, max_length=512_000)
     scheduled_sends: list[ScheduledSend] = Field(default_factory=list)
     use_custom_subjects: bool = False
 
@@ -48,7 +58,7 @@ class CampaignUpdate(BaseModel):
     """Input model for updating a campaign."""
 
     subject: str | None = Field(default=None, min_length=1, max_length=200)
-    body_html: str | None = Field(default=None, min_length=1)
+    body_html: str | None = Field(default=None, min_length=1, max_length=512_000)
     scheduled_sends: list[ScheduledSend] | None = None
     use_custom_subjects: bool | None = None
 
@@ -66,6 +76,7 @@ class CampaignInDB(BaseModel):
     executed_times: list[datetime] = Field(default_factory=list)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime | None = None
+    current_progress: ExecutionProgress | None = None
 
     model_config = {"populate_by_name": True, "arbitrary_types_allowed": True}
 
@@ -83,6 +94,7 @@ class CampaignResponse(BaseModel):
     executed_times: list[datetime]
     created_at: datetime
     updated_at: datetime | None = None
+    current_progress: ExecutionProgress | None = None
 
     @classmethod
     def from_db(cls, campaign: CampaignInDB) -> "CampaignResponse":
@@ -97,6 +109,7 @@ class CampaignResponse(BaseModel):
             executed_times=campaign.executed_times,
             created_at=campaign.created_at,
             updated_at=campaign.updated_at,
+            current_progress=campaign.current_progress,
         )
 
 
@@ -129,3 +142,35 @@ class TriggerResult(BaseModel):
     sent_count: int
     failed_count: int
     subject_used: str
+
+
+class TriggerStartResponse(BaseModel):
+    """Immediate response when a campaign trigger is accepted."""
+
+    campaign_id: str
+    total_recipients: int
+    status: str
+
+
+class TestMailRequest(BaseModel):
+    """Input model for sending a test email. Never persisted to DB."""
+
+    emails: list[str] = Field(min_length=1, max_length=10)
+    subject: str = Field(min_length=1, max_length=200)
+    body_html: str = Field(min_length=1)
+
+
+class TestMailResult(BaseModel):
+    """Result of a single test email send."""
+
+    email: str
+    success: bool
+    error: str | None = None
+
+
+class TestMailResponse(BaseModel):
+    """Response from the test-send endpoint."""
+
+    results: list[TestMailResult]
+    sent_count: int
+    failed_count: int

@@ -41,7 +41,14 @@ def mock_settings():
                         "app.services.unsubscribe_service.settings", test_settings
                     ):
                         with patch("app.clients.user_client.settings", test_settings):
-                            yield test_settings
+                            with patch(
+                                "app.routers.campaigns.settings", test_settings
+                            ):
+                                with patch(
+                                    "app.services.campaign_service.settings",
+                                    test_settings,
+                                ):
+                                    yield test_settings
 
 
 @pytest.fixture
