@@ -1,4 +1,4 @@
-import { LayoutDashboard, Mail, PlusCircle, X } from "lucide-react";
+import { FlaskConical, LayoutDashboard, PlusCircle, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 interface SidebarProps {
@@ -9,6 +9,7 @@ interface SidebarProps {
 const navItems = [
 	{ to: "/", label: "Kampanyalar", icon: LayoutDashboard },
 	{ to: "/campaigns/new", label: "Yeni Kampanya", icon: PlusCircle },
+	{ to: "/test-send", label: "Test Maili Gönder", icon: FlaskConical },
 ];
 
 export default function Sidebar({ open, onClose }: SidebarProps) {
@@ -33,7 +34,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
 			>
 				<div className="flex h-16 items-center justify-between border-b border-gray-200 px-5">
 					<Link to="/" className="flex items-center gap-2.5">
-						<Mail className="h-6 w-6 text-google-blue" />
+						<img src="/gdg-logo.png" alt="GDG Logo" className="h-8 w-8" />
 						<span className="font-display text-lg font-bold text-gray-900">
 							GDG Mail
 						</span>
@@ -49,7 +50,10 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
 
 				<nav className="flex-1 space-y-1 px-3 py-4">
 					{navItems.map((item) => {
-						const active = location.pathname === item.to;
+						const active =
+						item.to === "/"
+							? location.pathname === "/"
+							: location.pathname.startsWith(item.to);
 						return (
 							<Link
 								key={item.to}
@@ -69,7 +73,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
 				</nav>
 
 				<div className="border-t border-gray-200 p-4">
-					<p className="text-xs text-gray-400">GDG on Campus Yasar</p>
+					<p className="text-xs text-gray-400">GDG on Campus Yaşar Üniversitesi</p>
 				</div>
 			</aside>
 		</>

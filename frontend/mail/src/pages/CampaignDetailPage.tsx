@@ -6,8 +6,10 @@ import ConfirmDialog from "../components/ConfirmDialog.tsx";
 import ExecutionHistory from "../components/ExecutionHistory.tsx";
 import HtmlPreview from "../components/HtmlPreview.tsx";
 import LoadingSpinner from "../components/LoadingSpinner.tsx";
+import SendProgress from "../components/SendProgress.tsx";
 import StatusBadge from "../components/StatusBadge.tsx";
 import { useCampaign } from "../hooks/useCampaign.ts";
+import { useCampaignProgress } from "../hooks/useCampaignProgress.ts";
 import { useTrigger } from "../hooks/useTrigger.ts";
 import { formatDateTime, formatRelative } from "../utils/formatDate.ts";
 
@@ -16,15 +18,29 @@ export default function CampaignDetailPage() {
 	const { campaign, isLoading, error, refresh } = useCampaign(campaignId);
 	const { trigger, isTriggering } = useTrigger();
 	const [showTriggerDialog, setShowTriggerDialog] = useState(false);
+	const [isSending, setIsSending] = useState(false);
+
+	const shouldPoll =
+		isSending || campaign?.status === "in_progress";
+
+	const { progress } = useCampaignProgress(
+		campaignId,
+		shouldPoll,
+		() => {
+			toast.success("Kampanya gönderimi tamamlandı!");
+			setIsSending(false);
+			refresh();
+		},
+	);
 
 	const handleTrigger = async () => {
 		if (!campaignId) return;
 		try {
 			const result = await trigger(campaignId);
-			toast.success(
-				`Kampanya gönderildi! ${result.sent_count} başarılı, ${result.failed_count} başarısız.`,
+			toast.info(
+				`Gönderim başlatıldı! ${result.total_recipients} alıcıya gönderiliyor...`,
 			);
-			refresh();
+			setIsSending(true);
 		} catch {
 			toast.error("Kampanya tetiklenemedi.");
 		} finally {
@@ -58,7 +74,13 @@ export default function CampaignDetailPage() {
 	}
 
 	const isCompleted =
-		campaign.status === "completed" || campaign.status === "failed";
+		campaign.status === "completed" ||
+		campaign.status === "failed" ||
+		campaign.status === "partially_completed";
+	const isInProgress =
+		campaign.status === "in_progress" || isSending;
+	const showProgressPanel =
+		isInProgress && progress && !progress.is_complete;
 
 	return (
 		<div className="mx-auto max-w-4xl">
@@ -92,7 +114,7 @@ export default function CampaignDetailPage() {
 					</div>
 				</div>
 				<div className="flex gap-2">
-					{!isCompleted && (
+					{!isCompleted && !isInProgress && (
 						<Link
 							to={`/campaigns/${campaign.id}/edit`}
 							className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
@@ -101,16 +123,24 @@ export default function CampaignDetailPage() {
 							Düzenle
 						</Link>
 					)}
-					<button
-						type="button"
-						onClick={() => setShowTriggerDialog(true)}
-						className="inline-flex items-center gap-1.5 rounded-lg bg-google-blue px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-600"
-					>
-						<Play className="h-4 w-4" />
-						Şimdi Gönder
-					</button>
+					{!isInProgress && (
+						<button
+							type="button"
+							onClick={() => setShowTriggerDialog(true)}
+							className="inline-flex items-center gap-1.5 rounded-lg bg-google-blue px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-600"
+						>
+							<Play className="h-4 w-4" />
+							Şimdi Gönder
+						</button>
+					)}
 				</div>
 			</div>
+
+			{showProgressPanel && progress && (
+				<div className="mb-6">
+					<SendProgress progress={progress} />
+				</div>
+			)}
 
 			{campaign.scheduled_sends.length > 0 && (
 				<div className="mb-6 rounded-xl border border-gray-200 bg-white p-6">
@@ -120,7 +150,9 @@ export default function CampaignDetailPage() {
 					<div className="space-y-2">
 						{campaign.scheduled_sends.map((send) => {
 							const executed = campaign.executed_times.some(
-								(t) => new Date(t).getTime() === new Date(send.time).getTime(),
+								(t) =>
+									new Date(t).getTime() ===
+									new Date(send.time).getTime(),
 							);
 							return (
 								<div

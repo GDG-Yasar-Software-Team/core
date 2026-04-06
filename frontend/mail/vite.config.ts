@@ -9,6 +9,6 @@ export default defineConfig({
 	},
 	build: {
 		outDir: "dist",
-		sourcemap: true,
+		sourcemap: "hidden",
 	},
 });

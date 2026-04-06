@@ -1,22 +1,38 @@
+import { clearAdminToken, getAdminToken } from "../components/AuthGate.tsx";
 import type {
 	CampaignCreate,
 	CampaignListItem,
 	CampaignResponse,
 	CampaignUpdate,
-	TriggerResult,
+	ExecutionProgress,
+	TestMailRequest,
+	TestMailResponse,
+	TriggerStartResponse,
 } from "../types";
 
 const MAIL_SERVICE_URL =
 	import.meta.env.VITE_MAIL_SERVICE_URL ?? "http://localhost:8000";
+
+function authHeaders(): Record<string, string> {
+	const token = getAdminToken();
+	return token ? { "X-Admin-Token": token } : {};
+}
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 	const response = await fetch(`${MAIL_SERVICE_URL}${path}`, {
 		...init,
 		headers: {
 			"Content-Type": "application/json",
+			...authHeaders(),
 			...(init.headers ?? {}),
 		},
 	});
+
+	if (response.status === 401) {
+		clearAdminToken();
+		window.location.reload();
+		throw new Error("Unauthorized");
+	}
 
 	if (!response.ok) {
 		const errorText = await response.text();
@@ -57,8 +73,15 @@ export async function createCampaignWithFile(
 ): Promise<{ id: string; status: string }> {
 	const response = await fetch(`${MAIL_SERVICE_URL}/campaigns/`, {
 		method: "POST",
+		headers: authHeaders(),
 		body: formData,
 	});
+
+	if (response.status === 401) {
+		clearAdminToken();
+		window.location.reload();
+		throw new Error("Unauthorized");
+	}
 
 	if (!response.ok) {
 		const errorText = await response.text();
@@ -80,9 +103,28 @@ export async function updateCampaign(
 	});
 }
 
-export async function triggerCampaign(id: string): Promise<TriggerResult> {
-	return request<TriggerResult>(
+export async function triggerCampaign(
+	id: string,
+): Promise<TriggerStartResponse> {
+	return request<TriggerStartResponse>(
 		`/campaigns/${encodeURIComponent(id)}/trigger`,
 		{ method: "POST" },
 	);
+}
+
+export async function getCampaignProgress(
+	id: string,
+): Promise<ExecutionProgress> {
+	return request<ExecutionProgress>(
+		`/campaigns/${encodeURIComponent(id)}/progress`,
+	);
+}
+
+export async function sendTestMail(
+	data: TestMailRequest,
+): Promise<TestMailResponse> {
+	return request<TestMailResponse>("/campaigns/test-send", {
+		method: "POST",
+		body: JSON.stringify(data),
+	});
 }

@@ -1,11 +1,4 @@
-import {
-	AlertCircle,
-	CheckCircle2,
-	Clock,
-	Mail,
-	PlusCircle,
-	RefreshCw,
-} from "lucide-react";
+import { PlusCircle, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
 import CampaignCard from "../components/CampaignCard.tsx";
 import EmptyState from "../components/EmptyState.tsx";
@@ -16,15 +9,6 @@ import { useCampaigns } from "../hooks/useCampaigns.ts";
 export default function DashboardPage() {
 	const { campaigns, isLoading, error, page, setPage, hasMore, refresh } =
 		useCampaigns();
-
-	const stats = {
-		total: campaigns.length,
-		scheduled: campaigns.filter((c) => c.status === "scheduled").length,
-		completed: campaigns.filter(
-			(c) => c.status === "completed" || c.status === "partially_completed",
-		).length,
-		failed: campaigns.filter((c) => c.status === "failed").length,
-	};
 
 	return (
 		<div className="mx-auto max-w-5xl">
@@ -55,39 +39,6 @@ export default function DashboardPage() {
 					</Link>
 				</div>
 			</div>
-
-			{!isLoading && !error && campaigns.length > 0 && (
-				<div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-					<StatCard
-						icon={Mail}
-						label="Toplam"
-						value={stats.total}
-						color="text-google-blue"
-						bg="bg-blue-50"
-					/>
-					<StatCard
-						icon={Clock}
-						label="Zamanlanmış"
-						value={stats.scheduled}
-						color="text-yellow-600"
-						bg="bg-yellow-50"
-					/>
-					<StatCard
-						icon={CheckCircle2}
-						label="Tamamlanan"
-						value={stats.completed}
-						color="text-google-green"
-						bg="bg-green-50"
-					/>
-					<StatCard
-						icon={AlertCircle}
-						label="Başarısız"
-						value={stats.failed}
-						color="text-google-red"
-						bg="bg-red-50"
-					/>
-				</div>
-			)}
 
 			{isLoading && (
 				<div className="flex justify-center py-20">
@@ -127,36 +78,6 @@ export default function DashboardPage() {
 					<Pagination page={page} hasMore={hasMore} onPageChange={setPage} />
 				</>
 			)}
-		</div>
-	);
-}
-
-function StatCard({
-	icon: Icon,
-	label,
-	value,
-	color,
-	bg,
-}: {
-	icon: React.ComponentType<{ className?: string }>;
-	label: string;
-	value: number;
-	color: string;
-	bg: string;
-}) {
-	return (
-		<div className="rounded-xl border border-gray-200 bg-white p-4">
-			<div className="flex items-center gap-3">
-				<div
-					className={`flex h-9 w-9 items-center justify-center rounded-lg ${bg}`}
-				>
-					<Icon className={`h-5 w-5 ${color}`} />
-				</div>
-				<div>
-					<p className="text-2xl font-bold text-gray-900">{value}</p>
-					<p className="text-xs text-gray-500">{label}</p>
-				</div>
-			</div>
 		</div>
 	);
 }

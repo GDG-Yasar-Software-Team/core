@@ -47,6 +47,7 @@ export interface CampaignResponse {
 	executed_times: string[];
 	created_at: string;
 	updated_at: string | null;
+	current_progress: ExecutionProgress | null;
 }
 
 export interface CampaignListItem {
@@ -58,9 +59,34 @@ export interface CampaignListItem {
 	created_at: string;
 }
 
-export interface TriggerResult {
+export interface TriggerStartResponse {
 	campaign_id: string;
+	total_recipients: number;
+	status: string;
+}
+
+export interface ExecutionProgress {
+	total_recipients: number;
 	sent_count: number;
 	failed_count: number;
-	subject_used: string;
+	started_at: string;
+	is_complete: boolean;
+}
+
+export interface TestMailRequest {
+	emails: string[];
+	subject: string;
+	body_html: string;
+}
+
+export interface TestMailResult {
+	email: string;
+	success: boolean;
+	error: string | null;
+}
+
+export interface TestMailResponse {
+	results: TestMailResult[];
+	sent_count: number;
+	failed_count: number;
 }

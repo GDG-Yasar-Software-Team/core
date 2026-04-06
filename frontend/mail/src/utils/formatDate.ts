@@ -1,20 +1,32 @@
-import { format, formatDistanceToNow, parseISO } from "date-fns";
+import { format, formatDistanceToNow, isValid, parseISO } from "date-fns";
 import { tr } from "date-fns/locale";
 
+function safeParse(iso: string): Date | null {
+	const date = parseISO(iso);
+	return isValid(date) ? date : null;
+}
+
 export function formatDateTime(iso: string): string {
-	return format(parseISO(iso), "dd MMM yyyy HH:mm", { locale: tr });
+	const date = safeParse(iso);
+	if (!date) return "--";
+	return format(date, "dd MMM yyyy HH:mm", { locale: tr });
 }
 
 export function formatDateShort(iso: string): string {
-	return format(parseISO(iso), "dd MMM yyyy", { locale: tr });
+	const date = safeParse(iso);
+	if (!date) return "--";
+	return format(date, "dd MMM yyyy", { locale: tr });
 }
 
 export function formatRelative(iso: string): string {
-	return formatDistanceToNow(parseISO(iso), { addSuffix: true, locale: tr });
+	const date = safeParse(iso);
+	if (!date) return "--";
+	return formatDistanceToNow(date, { addSuffix: true, locale: tr });
 }
 
 export function toLocalDatetimeValue(iso: string): string {
-	const date = parseISO(iso);
+	const date = safeParse(iso);
+	if (!date) return "";
 	const offset = date.getTimezoneOffset();
 	const local = new Date(date.getTime() - offset * 60_000);
 	return local.toISOString().slice(0, 16);

@@ -1,8 +1,15 @@
 import { Lock, Mail } from "lucide-react";
 import { type FormEvent, useState } from "react";
 
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD ?? "";
-const SESSION_KEY = "gdg_mail_admin_auth";
+const TOKEN_KEY = "gdg_mail_admin_token";
+
+export function getAdminToken(): string {
+	return sessionStorage.getItem(TOKEN_KEY) ?? "";
+}
+
+export function clearAdminToken(): void {
+	sessionStorage.removeItem(TOKEN_KEY);
+}
 
 interface AuthGateProps {
 	children: React.ReactNode;
@@ -10,7 +17,7 @@ interface AuthGateProps {
 
 export default function AuthGate({ children }: AuthGateProps) {
 	const [isAuthorized, setIsAuthorized] = useState<boolean>(
-		() => sessionStorage.getItem(SESSION_KEY) === "true",
+		() => !!sessionStorage.getItem(TOKEN_KEY),
 	);
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
@@ -22,21 +29,14 @@ export default function AuthGate({ children }: AuthGateProps) {
 	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		if (!ADMIN_PASSWORD) {
-			setError(
-				"Yönetici şifresi tanımlı değil. Frontend .env dosyasında VITE_ADMIN_PASSWORD ayarlayın.",
-			);
+		if (!password.trim()) {
+			setError("Lütfen admin token girin.");
 			return;
 		}
 
-		if (password === ADMIN_PASSWORD) {
-			sessionStorage.setItem(SESSION_KEY, "true");
-			setIsAuthorized(true);
-			setError(null);
-		} else {
-			setError("Yönetici şifresi hatalı.");
-			setPassword("");
-		}
+		sessionStorage.setItem(TOKEN_KEY, password);
+		setIsAuthorized(true);
+		setError(null);
 	};
 
 	return (
@@ -49,20 +49,20 @@ export default function AuthGate({ children }: AuthGateProps) {
 					<h1 className="font-display text-2xl font-bold text-gray-900">
 						GDG Mail
 					</h1>
-					<p className="mt-1 text-sm text-gray-500">
-						Admin paneline erişmek için şifrenizi girin.
-					</p>
+				<p className="mt-1 text-sm text-gray-500">
+					Admin paneline erişmek için token girin.
+				</p>
 				</div>
 
 				<div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
 					<form onSubmit={handleSubmit} className="space-y-4">
 						<div>
-							<label
-								htmlFor="admin-password"
-								className="mb-1 block text-sm font-medium text-gray-700"
-							>
-								Yönetici Şifresi
-							</label>
+					<label
+							htmlFor="admin-password"
+							className="mb-1 block text-sm font-medium text-gray-700"
+						>
+							Admin Token
+						</label>
 							<div className="relative">
 								<Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
 								<input
@@ -74,7 +74,7 @@ export default function AuthGate({ children }: AuthGateProps) {
 										setError(null);
 									}}
 									autoComplete="current-password"
-									placeholder="Şifre"
+									placeholder="Token"
 									className={`w-full rounded-lg border py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 ${
 										error
 											? "border-red-400 focus:ring-red-200"

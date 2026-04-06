@@ -103,7 +103,10 @@ export default function EditCampaignPage() {
 	}
 
 	const isCompleted =
-		campaign.status === "completed" || campaign.status === "failed";
+		campaign.status === "completed" ||
+		campaign.status === "failed" ||
+		campaign.status === "in_progress" ||
+		campaign.status === "partially_completed";
 
 	if (isCompleted) {
 		return (

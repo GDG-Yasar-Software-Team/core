@@ -1,9 +1,9 @@
 import { useCallback, useState } from "react";
 import { triggerCampaign } from "../services/campaignService.ts";
-import type { TriggerResult } from "../types";
+import type { TriggerStartResponse } from "../types";
 
 interface UseTriggerResult {
-	trigger: (campaignId: string) => Promise<TriggerResult>;
+	trigger: (campaignId: string) => Promise<TriggerStartResponse>;
 	isTriggering: boolean;
 	error: string | null;
 }
