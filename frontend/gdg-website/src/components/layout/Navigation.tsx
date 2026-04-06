@@ -52,16 +52,14 @@ export const Navigation: React.FC<NavigationProps> = ({ className = "" }) => {
 						<li key={link.path}>
 							<Link
 								to={link.path}
-								className={`relative text-sm font-medium px-2 py-1 mx-2 transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-[#4285f4] focus-visible:outline-offset-2 group ${
+								className={`relative no-underline text-sm font-medium px-2 py-1 mx-2 transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-[#4285f4] focus-visible:outline-offset-2 group ${
 									location.pathname === link.path
 										? "text-[#1a73e8]"
 										: "text-[#5f6368] hover:text-[#1a73e8]"
 								}`}
 							>
 								{link.label}
-								<span className={`absolute left-0 -bottom-1 w-full h-[2px] bg-[#1a73e8] rounded-full transition-transform duration-300 origin-left ${
-									location.pathname === link.path ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-								}`} />
+								<span className="absolute left-0 -bottom-1 w-full h-[2px] bg-[#1a73e8] rounded-full transition-transform duration-300 origin-left scale-x-0 group-hover:scale-x-100" />
 							</Link>
 						</li>
 					))}
