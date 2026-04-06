@@ -10,9 +10,13 @@ import type { ExecutionProgress } from "../types";
 
 interface SendProgressProps {
 	progress: ExecutionProgress;
+	isPolling?: boolean;
 }
 
-export default function SendProgress({ progress }: SendProgressProps) {
+export default function SendProgress({
+	progress,
+	isPolling = true,
+}: SendProgressProps) {
 	const {
 		total_recipients,
 		sent_count,
@@ -110,6 +114,7 @@ export default function SendProgress({ progress }: SendProgressProps) {
 			{!is_complete && estimatedRemaining && (
 				<p className="mt-4 text-center text-sm text-gray-500">
 					Tahmini kalan süre: {estimatedRemaining}
+					{!isPolling ? " (yeniden bağlanıyor...)" : ""}
 				</p>
 			)}
 

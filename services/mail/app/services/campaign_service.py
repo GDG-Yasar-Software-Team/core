@@ -11,6 +11,7 @@ from app.models.campaign import (
     CampaignUpdate,
     ExecutionProgress,
     ExecutionRecord,
+    RecipientPreviewResponse,
     TriggerResult,
     TriggerStartResponse,
 )
@@ -23,8 +24,30 @@ from app.services.unsubscribe_service import UnsubscribeService
 from app.utils.logger import logger
 
 
+class CampaignConflictError(Exception):
+    """Raised when campaign state conflicts with requested operation."""
+
+    pass
+
+
 class CampaignService:
     _background_tasks: set[asyncio.Task] = set()
+
+    @staticmethod
+    def _estimate_rate_per_second() -> float:
+        avg_delay = (settings.RATE_LIMIT_MIN_DELAY + settings.RATE_LIMIT_MAX_DELAY) / 2
+        if avg_delay <= 0:
+            return 0
+        return 1 / avg_delay
+
+    @classmethod
+    def _estimate_delivery_seconds(cls, total_recipients: int) -> int:
+        if total_recipients <= 0:
+            return 0
+        rate_per_second = cls._estimate_rate_per_second()
+        if rate_per_second <= 0:
+            return 0
+        return int((total_recipients / rate_per_second) + 0.999)
 
     @classmethod
     async def create_campaign(cls, data: CampaignCreate) -> str:
@@ -115,16 +138,8 @@ class CampaignService:
             raise CampaignNotFoundError(f"Campaign not found: {campaign_id}")
 
         if scheduled_time and scheduled_time in campaign.executed_times:
-            logger.warning(
-                "Scheduled time already executed",
-                campaign_id=campaign_id,
-                scheduled_time=scheduled_time,
-            )
-            return TriggerResult(
-                campaign_id=campaign_id,
-                sent_count=0,
-                failed_count=0,
-                subject_used=campaign.subject,
+            raise CampaignConflictError(
+                "Scheduled send already executed",
             )
 
         subject = campaign.subject
@@ -134,7 +149,11 @@ class CampaignService:
                     subject = send.subject
                     break
 
-        await CampaignRepository.update_status(campaign_id, CampaignStatus.IN_PROGRESS)
+        switched_to_in_progress = await CampaignRepository.mark_in_progress_if_allowed(
+            campaign_id
+        )
+        if not switched_to_in_progress:
+            raise CampaignConflictError("Campaign is already in progress")
         started_at = datetime.now(timezone.utc)
 
         if not unsubscribe_url_base:
@@ -265,6 +284,10 @@ class CampaignService:
         campaign = await CampaignRepository.get_by_id(campaign_id)
         if campaign is None:
             raise CampaignNotFoundError(f"Campaign not found: {campaign_id}")
+        if campaign.status == CampaignStatus.IN_PROGRESS:
+            raise CampaignConflictError("Campaign is already in progress")
+        if campaign.status not in (CampaignStatus.SCHEDULED, CampaignStatus.FAILED):
+            raise ValueError("Campaign can only be triggered when scheduled or failed")
 
         emails = await UserServiceClient.get_subscribed_emails()
         total = len(emails)
@@ -274,7 +297,11 @@ class CampaignService:
             started_at=datetime.now(timezone.utc),
         )
         await CampaignRepository.update_progress(campaign_id, progress)
-        await CampaignRepository.update_status(campaign_id, CampaignStatus.IN_PROGRESS)
+        switched_to_in_progress = await CampaignRepository.mark_in_progress_if_allowed(
+            campaign_id
+        )
+        if not switched_to_in_progress:
+            raise CampaignConflictError("Campaign is already in progress")
 
         if not unsubscribe_url_base:
             unsubscribe_url_base = (
@@ -293,6 +320,21 @@ class CampaignService:
             campaign_id=campaign_id,
             total_recipients=total,
             status="in_progress",
+        )
+
+    @classmethod
+    async def get_recipient_preview(cls) -> RecipientPreviewResponse:
+        """Get recipient count and estimated delivery duration."""
+        emails = await UserServiceClient.get_subscribed_emails()
+        total_recipients = len(emails)
+        estimated_seconds = cls._estimate_delivery_seconds(total_recipients)
+        estimated_minutes = int((estimated_seconds / 60) + 0.999) if estimated_seconds else 0
+
+        return RecipientPreviewResponse(
+            total_recipients=total_recipients,
+            estimated_seconds=estimated_seconds,
+            estimated_minutes=estimated_minutes,
+            rate_per_second=round(cls._estimate_rate_per_second(), 2),
         )
 
     @classmethod

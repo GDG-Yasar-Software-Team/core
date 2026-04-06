@@ -1,10 +1,11 @@
 import { AlertTriangle } from "lucide-react";
+import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 
 interface ConfirmDialogProps {
 	open: boolean;
 	title: string;
-	description: string;
+	description: ReactNode;
 	confirmLabel?: string;
 	cancelLabel?: string;
 	variant?: "danger" | "primary";
@@ -56,7 +57,7 @@ export default function ConfirmDialog({
 						<h3 className="font-display text-lg font-semibold text-gray-900">
 							{title}
 						</h3>
-						<p className="mt-1 text-sm text-gray-500">{description}</p>
+						<div className="mt-1 text-sm text-gray-500">{description}</div>
 					</div>
 				</div>
 				<div className="mt-6 flex justify-end gap-3">

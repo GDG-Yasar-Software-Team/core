@@ -8,7 +8,7 @@ from bson import ObjectId
 
 from app.models.campaign import CampaignUpdate
 from app.repositories.campaign_repository import CampaignNotFoundError
-from app.services.campaign_service import CampaignService
+from app.services.campaign_service import CampaignConflictError, CampaignService
 from app.services.email_service import SendResult
 from tests.conftest import create_async_cursor
 
@@ -203,10 +203,10 @@ class TestExecuteCampaign:
             assert result.sent_count == 0
             assert result.failed_count == 0
 
-    async def test_scheduled_time_already_executed_returns_zero_and_does_not_send(
+    async def test_scheduled_time_already_executed_raises_conflict_and_does_not_send(
         self, mock_mongodb, sample_campaign_doc
     ):
-        """Should return zero counts and not send when scheduled time already executed."""
+        """Should raise conflict and not send when scheduled time already executed."""
         scheduled_time = datetime(2025, 1, 20, 10, 0, 0, tzinfo=timezone.utc)
         sample_campaign_doc["scheduled_sends"] = [
             {"time": scheduled_time, "subject": None},
@@ -222,14 +222,12 @@ class TestExecuteCampaign:
                 "app.services.campaign_service.EmailService.send_bulk",
                 new_callable=AsyncMock,
             ) as mock_send:
-                result = await CampaignService.execute_campaign(
-                    "507f1f77bcf86cd799439020",
-                    scheduled_time=scheduled_time,
-                    unsubscribe_url_base="http://test.com/unsubscribe",
-                )
-
-                assert result.sent_count == 0
-                assert result.failed_count == 0
+                with pytest.raises(CampaignConflictError):
+                    await CampaignService.execute_campaign(
+                        "507f1f77bcf86cd799439020",
+                        scheduled_time=scheduled_time,
+                        unsubscribe_url_base="http://test.com/unsubscribe",
+                    )
                 mock_get_emails.assert_not_called()
                 mock_send.assert_not_called()
 
@@ -529,6 +527,46 @@ class TestTriggerNow:
 
         with pytest.raises(CampaignNotFoundError):
             await CampaignService.trigger_now("nonexistent-id")
+
+    async def test_trigger_in_progress_raises_conflict(
+        self, mock_mongodb, sample_campaign_doc
+    ):
+        """Should raise conflict when campaign already in progress."""
+        sample_campaign_doc["status"] = "in_progress"
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+
+        with pytest.raises(CampaignConflictError):
+            await CampaignService.trigger_now("507f1f77bcf86cd799439020")
+
+    async def test_trigger_completed_raises_validation_error(
+        self, mock_mongodb, sample_campaign_doc
+    ):
+        """Should reject trigger for disallowed states."""
+        sample_campaign_doc["status"] = "completed"
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+
+        with pytest.raises(
+            ValueError, match="Campaign can only be triggered when scheduled or failed"
+        ):
+            await CampaignService.trigger_now("507f1f77bcf86cd799439020")
+
+
+class TestRecipientPreview:
+    """Tests for recipient preview endpoint/service helper."""
+
+    async def test_returns_count_and_estimates(self):
+        """Should compute recipient count and ETA from rate settings."""
+        with patch(
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
+            new_callable=AsyncMock,
+            return_value=["a@example.com", "b@example.com", "c@example.com"],
+        ):
+            result = await CampaignService.get_recipient_preview()
+
+            assert result.total_recipients == 3
+            assert result.estimated_seconds >= 0
+            assert result.estimated_minutes >= 0
+            assert result.rate_per_second >= 0
 
 
 class TestUpdateCampaign:

@@ -194,6 +194,36 @@ class TestUpdateStatus:
         call_args = mock_mongodb["campaigns"].update_one.call_args
         assert call_args[0][1]["$set"]["status"] == "completed"
 
+    async def test_mark_in_progress_if_allowed_returns_true_when_updated(
+        self, mock_mongodb
+    ):
+        """Should atomically mark campaign as in_progress when allowed."""
+        mock_mongodb["campaigns"].update_one = AsyncMock(
+            return_value=MagicMock(matched_count=1, modified_count=1)
+        )
+
+        result = await CampaignRepository.mark_in_progress_if_allowed(
+            "507f1f77bcf86cd799439020"
+        )
+
+        assert result is True
+
+    async def test_mark_in_progress_if_allowed_returns_false_when_already_in_progress(
+        self, mock_mongodb, sample_campaign_doc
+    ):
+        """Should return false when state transition is not allowed."""
+        sample_campaign_doc["status"] = "in_progress"
+        mock_mongodb["campaigns"].update_one = AsyncMock(
+            return_value=MagicMock(matched_count=0, modified_count=0)
+        )
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+
+        result = await CampaignRepository.mark_in_progress_if_allowed(
+            "507f1f77bcf86cd799439020"
+        )
+
+        assert result is False
+
 
 class TestAddExecution:
     """Tests for adding execution records."""
@@ -387,3 +417,18 @@ class TestGetDueCampaigns:
         assert call_args["status"] == "scheduled"
         elem_match = call_args["scheduled_sends"]["$elemMatch"]
         assert elem_match["time"]["$lte"] == before_time
+
+    async def test_handles_naive_and_aware_times_consistently(self, mock_mongodb):
+        """Should compare due/exec times correctly when naive datetimes appear."""
+        before_time = datetime(2025, 1, 25, 12, 0, 0, tzinfo=timezone.utc)
+        due_time_naive = datetime(2025, 1, 20, 10, 0, 0)
+        doc = self._make_campaign_doc(
+            scheduled_sends=[{"time": due_time_naive, "subject": None}],
+            executed_times=[datetime(2025, 1, 20, 10, 0, 0, tzinfo=timezone.utc)],
+        )
+        mock_cursor = create_async_cursor([doc])
+        mock_mongodb["campaigns"].find = MagicMock(return_value=mock_cursor)
+
+        campaigns = await CampaignRepository.get_due_campaigns(before_time)
+
+        assert campaigns == []

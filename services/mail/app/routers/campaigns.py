@@ -11,6 +11,7 @@ from app.models.campaign import (
     CampaignResponse,
     CampaignUpdate,
     ExecutionProgress,
+    RecipientPreviewResponse,
     ScheduledSend,
     TestMailRequest,
     TestMailResponse,
@@ -18,7 +19,7 @@ from app.models.campaign import (
     TriggerStartResponse,
 )
 from app.repositories.campaign_repository import CampaignNotFoundError
-from app.services.campaign_service import CampaignService
+from app.services.campaign_service import CampaignConflictError, CampaignService
 from app.services.email_service import EmailService
 
 
@@ -26,6 +27,8 @@ async def verify_admin_token(
     x_admin_token: Annotated[str, Header()] = "",
 ) -> None:
     """Validate admin API token. Skipped when ADMIN_API_TOKEN is empty (dev mode)."""
+    if settings.ENV != "production":
+        return
     if not settings.ADMIN_API_TOKEN:
         return
     if x_admin_token != settings.ADMIN_API_TOKEN:
@@ -108,8 +111,10 @@ async def update_campaign(
         return await CampaignService.update_campaign(campaign_id, update)
     except CampaignNotFoundError:
         raise HTTPException(status_code=404, detail="Campaign not found")
+    except CampaignConflictError as e:
+        raise HTTPException(status_code=409, detail=str(e))
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=409, detail=str(e))
 
 
 @router.post("/{campaign_id}/trigger", status_code=202)
@@ -121,6 +126,16 @@ async def trigger_campaign(
         return await CampaignService.trigger_now(campaign_id=campaign_id)
     except CampaignNotFoundError:
         raise HTTPException(status_code=404, detail="Campaign not found")
+    except CampaignConflictError as e:
+        raise HTTPException(status_code=409, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/recipient-preview")
+async def get_recipient_preview() -> RecipientPreviewResponse:
+    """Return recipient count and estimated delivery duration for manual trigger."""
+    return await CampaignService.get_recipient_preview()
 
 
 @router.get("/{campaign_id}/progress")

@@ -65,6 +65,13 @@ export interface TriggerStartResponse {
 	status: string;
 }
 
+export interface RecipientPreviewResponse {
+	total_recipients: number;
+	estimated_seconds: number;
+	estimated_minutes: number;
+	rate_per_second: number;
+}
+
 export interface ExecutionProgress {
 	total_recipients: number;
 	sent_count: number;

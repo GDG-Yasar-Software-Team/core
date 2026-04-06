@@ -5,6 +5,7 @@ import type {
 	CampaignResponse,
 	CampaignUpdate,
 	ExecutionProgress,
+	RecipientPreviewResponse,
 	TestMailRequest,
 	TestMailResponse,
 	TriggerStartResponse,
@@ -118,6 +119,10 @@ export async function getCampaignProgress(
 	return request<ExecutionProgress>(
 		`/campaigns/${encodeURIComponent(id)}/progress`,
 	);
+}
+
+export async function getRecipientPreview(): Promise<RecipientPreviewResponse> {
+	return request<RecipientPreviewResponse>("/campaigns/recipient-preview");
 }
 
 export async function sendTestMail(

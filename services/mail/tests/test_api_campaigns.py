@@ -140,7 +140,7 @@ class TestPutCampaigns:
     def test_cannot_update_completed_campaign(
         self, sync_client, mock_mongodb, sample_campaign_doc
     ):
-        """Should return 400 when updating completed campaign."""
+        """Should return 409 when updating completed campaign."""
         sample_campaign_doc["status"] = "completed"
         mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
 
@@ -149,7 +149,7 @@ class TestPutCampaigns:
             json={"subject": "Updated"},
         )
 
-        assert response.status_code == 400
+        assert response.status_code == 409
 
 
 class TestTriggerCampaign:
@@ -182,6 +182,36 @@ class TestTriggerCampaign:
         response = sync_client.post("/campaigns/507f1f77bcf86cd799439099/trigger")
 
         assert response.status_code == 404
+
+    def test_returns_409_when_already_in_progress(
+        self, sync_client, mock_mongodb, sample_campaign_doc
+    ):
+        """Should reject duplicate trigger while in progress."""
+        sample_campaign_doc["status"] = "in_progress"
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+
+        response = sync_client.post("/campaigns/507f1f77bcf86cd799439020/trigger")
+
+        assert response.status_code == 409
+
+
+class TestRecipientPreview:
+    """Tests for GET /campaigns/recipient-preview endpoint."""
+
+    def test_returns_recipient_preview(self, sync_client):
+        """Should return recipient count and ETA data."""
+        with patch(
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
+            new_callable=AsyncMock,
+            return_value=["a@example.com", "b@example.com"],
+        ):
+            response = sync_client.get("/campaigns/recipient-preview")
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["total_recipients"] == 2
+        assert "estimated_seconds" in data
+        assert "estimated_minutes" in data
 
 
 class TestGetCampaignProgress:

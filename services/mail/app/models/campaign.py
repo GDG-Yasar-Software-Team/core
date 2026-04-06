@@ -152,6 +152,15 @@ class TriggerStartResponse(BaseModel):
     status: str
 
 
+class RecipientPreviewResponse(BaseModel):
+    """Recipient preview response before triggering a campaign."""
+
+    total_recipients: int
+    estimated_seconds: int
+    estimated_minutes: int
+    rate_per_second: float
+
+
 class TestMailRequest(BaseModel):
     """Input model for sending a test email. Never persisted to DB."""
 

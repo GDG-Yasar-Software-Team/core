@@ -1,7 +1,12 @@
 import { format, formatDistanceToNow, isValid, parseISO } from "date-fns";
 import { tr } from "date-fns/locale";
 
+const ISO_WITH_TIMEZONE_REGEX = /(Z|[+-]\d{2}:\d{2})$/;
+
 function safeParse(iso: string): Date | null {
+	if (!ISO_WITH_TIMEZONE_REGEX.test(iso)) {
+		return null;
+	}
 	const date = parseISO(iso);
 	return isValid(date) ? date : null;
 }

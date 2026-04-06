@@ -23,6 +23,13 @@ class CampaignNotFoundError(Exception):
 
 
 class CampaignRepository:
+    @staticmethod
+    def _normalize_datetime(value: datetime) -> datetime:
+        """Normalize datetimes to timezone-aware UTC."""
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+        return value.astimezone(timezone.utc)
+
     @classmethod
     def _get_collection(cls) -> AsyncIOMotorCollection:
         return MongoDB.get_db()[settings.CAMPAIGNS_COLLECTION]
@@ -129,6 +136,36 @@ class CampaignRepository:
         logger.info("Campaign status updated", campaign_id=campaign_id, status=status)
 
     @classmethod
+    async def mark_in_progress_if_allowed(cls, campaign_id: str) -> bool:
+        """Atomically set status to in_progress if currently not in_progress."""
+        collection = cls._get_collection()
+
+        if not ObjectId.is_valid(campaign_id):
+            raise CampaignNotFoundError(f"Invalid campaign ID: {campaign_id}")
+
+        result = await collection.update_one(
+            {
+                "_id": ObjectId(campaign_id),
+                "status": {"$ne": CampaignStatus.IN_PROGRESS.value},
+            },
+            {
+                "$set": {
+                    "status": CampaignStatus.IN_PROGRESS.value,
+                    "updated_at": datetime.now(timezone.utc),
+                }
+            },
+        )
+
+        if result.matched_count == 0:
+            campaign = await cls.get_by_id(campaign_id)
+            if campaign is None:
+                raise CampaignNotFoundError(f"Campaign not found: {campaign_id}")
+            return False
+
+        modified = int(getattr(result, "modified_count", 0) or 0)
+        return modified > 0
+
+    @classmethod
     async def add_execution(
         cls,
         campaign_id: str,
@@ -214,6 +251,7 @@ class CampaignRepository:
     async def get_due_campaigns(cls, before_time: datetime) -> list[CampaignInDB]:
         """Get campaigns with scheduled sends due before the given time."""
         collection = cls._get_collection()
+        before_time_utc = cls._normalize_datetime(before_time)
 
         # Find campaigns that:
         # 1. Have status SCHEDULED
@@ -224,7 +262,7 @@ class CampaignRepository:
                 "status": CampaignStatus.SCHEDULED.value,
                 "scheduled_sends": {
                     "$elemMatch": {
-                        "time": {"$lte": before_time},
+                        "time": {"$lte": before_time_utc},
                     }
                 },
             }
@@ -233,12 +271,16 @@ class CampaignRepository:
         campaigns = []
         async for doc in cursor:
             campaign = CampaignInDB.model_validate(doc)
+            executed_times_utc = {
+                cls._normalize_datetime(executed) for executed in campaign.executed_times
+            }
             # Filter out campaigns where all due times have been executed
             has_unexecuted_due_time = False
             for send in campaign.scheduled_sends:
+                send_time_utc = cls._normalize_datetime(send.time)
                 if (
-                    send.time <= before_time
-                    and send.time not in campaign.executed_times
+                    send_time_utc <= before_time_utc
+                    and send_time_utc not in executed_times_utc
                 ):
                     has_unexecuted_due_time = True
                     break
