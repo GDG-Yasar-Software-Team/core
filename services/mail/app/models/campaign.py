@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from enum import Enum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from app.models.common import PyObjectId
 
@@ -20,6 +20,13 @@ class ScheduledSend(BaseModel):
     time: datetime
     subject: str | None = None  # Optional custom subject for this send
 
+    @field_validator("time")
+    @classmethod
+    def normalize_time_to_utc(cls, value: datetime) -> datetime:
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+        return value.astimezone(timezone.utc)
+
 
 class ExecutionRecord(BaseModel):
     """Record of a single campaign execution."""
@@ -34,6 +41,17 @@ class ExecutionRecord(BaseModel):
     failed_emails: list[str] = Field(default_factory=list)
     is_manual_trigger: bool = False
 
+    @field_validator("scheduled_time", "started_at", "completed_at")
+    @classmethod
+    def normalize_execution_datetimes_to_utc(
+        cls, value: datetime | None
+    ) -> datetime | None:
+        if value is None:
+            return None
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+        return value.astimezone(timezone.utc)
+
 
 class ExecutionProgress(BaseModel):
     """Tracks real-time progress of an ongoing campaign execution."""
@@ -43,6 +61,13 @@ class ExecutionProgress(BaseModel):
     failed_count: int = 0
     started_at: datetime
     is_complete: bool = False
+
+    @field_validator("started_at")
+    @classmethod
+    def normalize_started_at_to_utc(cls, value: datetime) -> datetime:
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+        return value.astimezone(timezone.utc)
 
 
 class CampaignCreate(BaseModel):
@@ -79,6 +104,30 @@ class CampaignInDB(BaseModel):
     current_progress: ExecutionProgress | None = None
 
     model_config = {"populate_by_name": True, "arbitrary_types_allowed": True}
+
+    @field_validator("created_at", "updated_at")
+    @classmethod
+    def normalize_campaign_datetimes_to_utc(
+        cls, value: datetime | None
+    ) -> datetime | None:
+        if value is None:
+            return None
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+        return value.astimezone(timezone.utc)
+
+    @field_validator("executed_times")
+    @classmethod
+    def normalize_executed_times_to_utc(
+        cls, value: list[datetime]
+    ) -> list[datetime]:
+        normalized: list[datetime] = []
+        for dt in value:
+            if dt.tzinfo is None:
+                normalized.append(dt.replace(tzinfo=timezone.utc))
+            else:
+                normalized.append(dt.astimezone(timezone.utc))
+        return normalized
 
 
 class CampaignResponse(BaseModel):

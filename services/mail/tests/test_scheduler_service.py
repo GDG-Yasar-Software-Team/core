@@ -160,6 +160,33 @@ class TestCheckAndExecuteCampaigns:
 
                 mock_execute.assert_not_called()
 
+    async def test_skips_when_due_and_executed_have_different_tz_awareness(
+        self, mock_mongodb, sample_campaign_doc
+    ):
+        """Should skip execution when times are equal after UTC normalization."""
+        sample_campaign_doc["scheduled_sends"] = [
+            {"time": datetime(2025, 1, 15, 10, 0, 0), "subject": None}
+        ]  # naive
+        sample_campaign_doc["executed_times"] = [
+            datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
+        ]  # aware UTC
+
+        with patch(
+            "app.services.scheduler_service.CampaignRepository.get_due_campaigns",
+            new_callable=AsyncMock,
+        ) as mock_get_due:
+            mock_get_due.return_value = [
+                CampaignInDB.model_validate(sample_campaign_doc)
+            ]
+
+            with patch(
+                "app.services.scheduler_service.CampaignService.execute_campaign",
+                new_callable=AsyncMock,
+            ) as mock_execute:
+                await SchedulerService._check_and_execute_campaigns()
+
+                mock_execute.assert_not_called()
+
     async def test_continues_after_single_failure(
         self, mock_mongodb, sample_campaign_doc
     ):

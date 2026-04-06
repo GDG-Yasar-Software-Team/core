@@ -1,3 +1,5 @@
+from datetime import timezone
+
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.config import settings
@@ -11,7 +13,11 @@ class MongoDB:
     async def connect(cls):
         try:
             logger.info("Connecting to MongoDB...")
-            cls.client = AsyncIOMotorClient(settings.MONGODB_URI)
+            cls.client = AsyncIOMotorClient(
+                settings.MONGODB_URI,
+                tz_aware=True,
+                tzinfo=timezone.utc,
+            )
             # Verify connection
             await cls.client.admin.command("ping")
             logger.success("Successfully connected to MongoDB")
