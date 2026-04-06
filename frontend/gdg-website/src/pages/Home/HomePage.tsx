@@ -145,7 +145,7 @@ export const HomePage: React.FC = () => {
 			<Navigation />
 			<div className="w-full overflow-hidden">
 				<img
-					src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/home-page-title/home-picture.jpg"
+					src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/home-page-title/home-picture.jpeg"
 					alt="GDG on Campus Yaşar University"
 					className="w-full h-auto block object-cover"
 				/>
