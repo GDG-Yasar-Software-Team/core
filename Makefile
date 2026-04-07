@@ -124,7 +124,7 @@ test-user-service:
 
 run-event-service:
 	@echo "Starting event service..."
-	cd services/event && uv run fastapi dev
+	cd services/event && uv run python -m app.main
 
 test-event-service:
 	@echo "Running event service tests..."
