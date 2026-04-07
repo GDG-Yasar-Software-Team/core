@@ -39,14 +39,19 @@ export const Navigation: React.FC<NavigationProps> = ({ className = "" }) => {
 			<div className="w-full px-4 md:px-8 py-3 flex items-center justify-between md:justify-start">
 				<Link
 					to="/"
-					className="flex items-center gap-3 text-lg font-medium text-[#5f6368] no-underline transition-opacity duration-200 hover:opacity-80 shrink-0"
+					className="flex items-center gap-2 sm:gap-3 text-[#5f6368] no-underline transition-opacity duration-200 hover:opacity-80 shrink min-w-0"
 				>
 					<img
 						src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/core/refs/heads/main/frontend/form/public/gdg-logo.png"
 						alt="GDG Logo"
-						className="w-12 h-12 object-contain"
+						className="w-10 h-10 sm:w-12 sm:h-12 object-contain shrink-0"
 					/>
-					GDG on Campus Yaşar University
+					<span className="sm:hidden text-sm font-medium truncate">
+						GDG Yaşar
+					</span>
+					<span className="hidden sm:inline text-sm md:text-lg font-medium truncate">
+						GDG on Campus Yaşar University
+					</span>
 				</Link>
 
 				{/* Desktop Navigation */}

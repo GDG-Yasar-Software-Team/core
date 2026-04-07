@@ -152,17 +152,17 @@ export const HomePage: React.FC = () => {
 			</div>
 
 			<main className="flex-1">
-				<section className="py-24 text-center">
-					<div className="max-w-[1200px] mx-auto px-6">
+				<section className="py-16 md:py-24 text-center">
+					<div className="max-w-[1200px] mx-auto px-4 sm:px-6">
 						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-6">
 							Our Mission
 						</h2>
-						<p className="text-lg text-[#5f6368] max-w-[800px] mx-auto mb-24 leading-relaxed">
+						<p className="text-base md:text-lg text-[#5f6368] max-w-[800px] mx-auto mb-12 md:mb-24 leading-relaxed">
 							We bring together students passionate about technology to learn,
 							share, and build amazing things. Join us for workshops,
 							hackathons, and tech talks!
 						</p>
-						<div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+						<div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-12 md:mt-16">
 							{missionCards.map((card) => (
 								<div
 									key={card.id}
@@ -196,13 +196,13 @@ export const HomePage: React.FC = () => {
 					</div>
 				</section>
 
-				<section className="py-24 bg-[#f5f5f5] overflow-hidden">
-					<div className="max-w-[1200px] mx-auto px-6">
+				<section className="py-16 md:py-24 bg-[#f5f5f5] overflow-hidden">
+					<div className="max-w-[1200px] mx-auto px-4 sm:px-6">
 						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-16 text-center">
 							What We Do
 						</h2>
 					</div>
-					<div className="relative max-w-[1600px] mx-auto px-[60px] md:px-[60px]">
+					<div className="relative max-w-[1600px] mx-auto px-4 sm:px-8 md:px-[60px]">
 						<button
 							type="button"
 							className="absolute top-1/2 -translate-y-1/2 left-0 w-12 h-12 rounded-full bg-white border-none shadow-[0_2px_4px_0_rgba(60,64,67,0.3),0_1px_6px_1px_rgba(60,64,67,0.15)] cursor-pointer flex items-center justify-center text-[#5f6368] transition-all duration-200 z-10 hover:bg-[#f8f9fa] hover:shadow-[0_4px_8px_0_rgba(60,64,67,0.3),0_2px_8px_2px_rgba(60,64,67,0.15)] hover:text-[#202124] active:scale-95 md:flex hidden"
@@ -233,12 +233,12 @@ export const HomePage: React.FC = () => {
 								<Link
 									key={event.id}
 									to={`/events/${event.id}`}
-									className="flex-[0_0_auto] w-[280px] bg-white rounded-xl overflow-hidden shadow-[0_1px_2px_0_rgba(60,64,67,0.3),0_1px_3px_1px_rgba(60,64,67,0.15)] transition-all duration-200 cursor-pointer no-underline block hover:-translate-y-1 hover:shadow-[0_4px_8px_0_rgba(60,64,67,0.3),0_2px_6px_2px_rgba(60,64,67,0.15)]"
+									className="flex-[0_0_auto] w-[240px] sm:w-[280px] bg-white rounded-xl overflow-hidden shadow-[0_1px_2px_0_rgba(60,64,67,0.3),0_1px_3px_1px_rgba(60,64,67,0.15)] transition-all duration-200 cursor-pointer no-underline block hover:-translate-y-1 hover:shadow-[0_4px_8px_0_rgba(60,64,67,0.3),0_2px_6px_2px_rgba(60,64,67,0.15)]"
 								>
 									<img
 										src={event.image}
 										alt={event.title}
-										className="w-full h-[280px] object-cover block"
+										className="w-full h-[240px] sm:h-[280px] object-cover block"
 									/>
 								</Link>
 							))}
@@ -268,8 +268,8 @@ export const HomePage: React.FC = () => {
 					</div>
 				</section>
 
-				<section className="py-24">
-					<div className="max-w-[1200px] mx-auto px-6">
+				<section className="py-16 md:py-24">
+					<div className="max-w-[1200px] mx-auto px-4 sm:px-6">
 						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-16 text-center">
 							Upcoming Events
 						</h2>

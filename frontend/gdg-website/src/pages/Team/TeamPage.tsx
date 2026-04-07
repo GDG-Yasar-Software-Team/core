@@ -44,10 +44,10 @@ export const TeamPage: React.FC = () => {
 			<main className="flex-1 relative z-10 w-full">
 				{/* Organizers Section */}
 				<section
-					className="h-[calc(100vh-74px)] snap-start w-full flex items-center justify-center relative overflow-hidden py-12 md:py-16"
+					className="min-h-[calc(100dvh-74px)] snap-start w-full flex items-center justify-center relative overflow-visible py-12 md:py-16"
 					data-team-tone="organizers"
 				>
-					<div className="max-w-[1240px] mx-auto px-6 relative z-10 w-full">
+					<div className="max-w-[1240px] mx-auto px-4 sm:px-6 relative z-10 w-full">
 						<div className="flex flex-col items-center mb-20 text-center">
 							<motion.div
 								initial={{ opacity: 0, y: 50, scale: 0.8 }}
@@ -71,7 +71,7 @@ export const TeamPage: React.FC = () => {
 									type: "spring",
 									bounce: 0.35,
 								}}
-								className="text-5xl md:text-7xl font-black tracking-tighter text-white m-0 uppercase"
+								className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter text-white m-0 uppercase"
 							>
 								ORGANIZERS
 							</motion.h2>
@@ -94,7 +94,7 @@ export const TeamPage: React.FC = () => {
 					<div className="max-w-full p-0 flex flex-col w-full text-white">
 						{/* Organization Team */}
 						<div
-							className="h-[calc(100vh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-hidden"
+							className="min-h-[calc(100dvh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-visible"
 							data-team-tone="organization"
 						>
 							<div className="flex flex-col items-center mb-8 md:mb-12 text-center relative z-[2]">
@@ -120,7 +120,7 @@ export const TeamPage: React.FC = () => {
 										type: "spring",
 										bounce: 0.35,
 									}}
-									className="text-4xl md:text-6xl font-black tracking-tighter text-white m-0 uppercase"
+									className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter text-white m-0 uppercase"
 								>
 									ORGANIZATION
 								</motion.h2>
@@ -154,7 +154,7 @@ export const TeamPage: React.FC = () => {
 
 						{/* Marketing Team */}
 						<div
-							className="h-[calc(100vh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-hidden"
+							className="min-h-[calc(100dvh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-visible"
 							data-team-tone="marketing"
 						>
 							<div className="flex flex-col items-center mb-8 md:mb-12 text-center relative z-[2]">
@@ -180,7 +180,7 @@ export const TeamPage: React.FC = () => {
 										type: "spring",
 										bounce: 0.35,
 									}}
-									className="text-4xl md:text-6xl font-black tracking-tighter text-white m-0 uppercase"
+									className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter text-white m-0 uppercase"
 								>
 									MARKETING
 								</motion.h2>
@@ -214,7 +214,7 @@ export const TeamPage: React.FC = () => {
 
 						{/* Sponsorship Team */}
 						<div
-							className="h-[calc(100vh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-hidden"
+							className="min-h-[calc(100dvh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-visible"
 							data-team-tone="sponsorship"
 						>
 							<div className="flex flex-col items-center mb-8 md:mb-12 text-center relative z-[2]">
@@ -240,7 +240,7 @@ export const TeamPage: React.FC = () => {
 										type: "spring",
 										bounce: 0.35,
 									}}
-									className="text-4xl md:text-6xl font-black tracking-tighter text-white m-0 uppercase"
+									className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter text-white m-0 uppercase"
 								>
 									SPONSORSHIP
 								</motion.h2>
@@ -274,7 +274,7 @@ export const TeamPage: React.FC = () => {
 
 						{/* Software Team */}
 						<div
-							className="h-[calc(100vh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-hidden"
+							className="min-h-[calc(100dvh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-visible"
 							data-team-tone="software"
 						>
 							<div className="flex flex-col items-center mb-8 md:mb-12 text-center relative z-[2]">
@@ -300,7 +300,7 @@ export const TeamPage: React.FC = () => {
 										type: "spring",
 										bounce: 0.35,
 									}}
-									className="text-4xl md:text-6xl font-black tracking-tighter text-white m-0 uppercase"
+									className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter text-white m-0 uppercase"
 								>
 									SOFTWARE
 								</motion.h2>

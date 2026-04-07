@@ -46,8 +46,8 @@ export const EventDetailPage: React.FC = () => {
 		return (
 			<div className="min-h-screen flex flex-col">
 				<Navigation />
-				<main className="flex-1 pt-16">
-					<div className="max-w-[900px] mx-auto py-24 px-6 text-center">
+				<main className="flex-1 pt-12 md:pt-16">
+					<div className="max-w-[900px] mx-auto py-16 md:py-24 px-4 sm:px-6 text-center">
 						<div className="inline-block w-12 h-12 border-4 border-[#4285F4] border-t-transparent rounded-full animate-spin" />
 						<p className="mt-4 text-[#5f6368]">Loading event...</p>
 					</div>
@@ -61,8 +61,8 @@ export const EventDetailPage: React.FC = () => {
 		return (
 			<div className="min-h-screen flex flex-col">
 				<Navigation />
-				<main className="flex-1 pt-16">
-					<div className="max-w-[900px] mx-auto py-24 px-6">
+				<main className="flex-1 pt-12 md:pt-16">
+					<div className="max-w-[900px] mx-auto py-16 md:py-24 px-4 sm:px-6">
 						<h1 className="text-3xl font-bold text-[#1f1f1f] mb-4">
 							Event Not Found
 						</h1>
@@ -87,6 +87,7 @@ export const EventDetailPage: React.FC = () => {
 	const city = extractCity(event.place);
 	const imageUrl =
 		event.image_url || "https://via.placeholder.com/400x300?text=GDG+Event";
+	const registrationUrl = event.registration_form_url?.trim();
 	const isPast = isEventPast(event);
 
 	// Determine event type from title
@@ -109,8 +110,8 @@ export const EventDetailPage: React.FC = () => {
 	return (
 		<div className="min-h-screen flex flex-col">
 			<Navigation />
-			<main className="flex-1 pt-16">
-				<div className="max-w-[900px] mx-auto py-24 px-6">
+			<main className="flex-1 pt-12 md:pt-16">
+				<div className="max-w-[900px] mx-auto py-16 md:py-24 px-4 sm:px-6">
 					<Link
 						to="/"
 						className="inline-flex items-center gap-2 text-[#5f6368] no-underline text-base font-medium mb-8 transition-colors duration-200 hover:text-[#4285F4]"
@@ -118,7 +119,7 @@ export const EventDetailPage: React.FC = () => {
 						← Back to Home
 					</Link>
 
-					<div className="mb-24">
+					<div className="mb-16 md:mb-24">
 						<span className="inline-block py-1 px-4 bg-[#e8f0fe] text-[#1967d2] rounded-full text-sm font-medium mb-4">
 							{eventType}
 						</span>
@@ -186,7 +187,7 @@ export const EventDetailPage: React.FC = () => {
 						<h2 className="text-2xl font-bold text-[#1f1f1f] m-0 mb-16">
 							About This Event
 						</h2>
-						<div className="grid grid-cols-1 md:grid-cols-[400px_1fr] gap-16 items-start">
+						<div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-8 md:gap-16 items-start">
 							<div className="relative rounded-2xl overflow-hidden shadow-[0_4px_12px_rgba(60,64,67,0.15)] bg-gradient-to-br from-[#4285F4] via-[#EA4335] via-[#FBBC05] via-[#34A853] to-[#4285F4] p-1">
 								<img
 									src={imageUrl}
@@ -199,6 +200,25 @@ export const EventDetailPage: React.FC = () => {
 									{event.description}
 								</p>
 
+								{registrationUrl && !isPast && (
+									<div className="mt-2 p-5 bg-[#e8f0fe] rounded-xl border border-[#d2e3fc]">
+										<h3 className="text-lg font-bold text-[#1f1f1f] m-0 mb-2">
+											Registration
+										</h3>
+										<p className="text-sm text-[#5f6368] m-0 mb-4">
+											Secure your spot using the event form.
+										</p>
+										<a
+											href={registrationUrl}
+											target="_blank"
+											rel="noopener noreferrer"
+											className="inline-flex items-center gap-2 py-2.5 px-4 rounded-lg bg-[#1a73e8] text-white no-underline text-sm font-medium hover:bg-[#1765cc] transition-colors"
+										>
+											Register now
+										</a>
+									</div>
+								)}
+
 								{event.speakers.length > 0 && (
 									<div className="mt-8">
 										<h3 className="text-xl font-bold text-[#1f1f1f] m-0 mb-6">
@@ -208,13 +228,13 @@ export const EventDetailPage: React.FC = () => {
 											{event.speakers.map((speaker, index) => (
 												<div
 													key={index}
-													className="p-6 bg-[#f8f9fa] rounded-xl border border-[#e8eaed]"
+													className="p-4 bg-[#f8f9fa] rounded-xl border border-[#e8eaed]"
 												>
-													<h4 className="text-lg font-bold text-[#1f1f1f] m-0 mb-1">
+													<h4 className="text-base font-bold text-[#1f1f1f] m-0 mb-1 leading-tight">
 														{speaker.name}
 													</h4>
-													<p className="text-base text-[#5f6368] m-0">
-														{speaker.title} at {speaker.company}
+													<p className="text-sm text-[#5f6368] m-0 leading-snug">
+														{speaker.title} @ {speaker.company}
 													</p>
 												</div>
 											))}

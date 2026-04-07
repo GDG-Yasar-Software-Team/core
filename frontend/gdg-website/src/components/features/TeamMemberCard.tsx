@@ -64,6 +64,8 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 			? "text-[length:var(--font-size-md)]"
 			: "text-[length:var(--font-size-sm)]";
 
+	const displayTitle = member.title ?? "Team Member";
+
 	return (
 		<motion.div
 			initial={{ opacity: 0, y: 100, scale: 0.8 }}
@@ -97,13 +99,11 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 			>
 				{member.name}
 			</h3>
-			{member.title && (
-				<p
-					className={`${memberTitleClass} text-gray-400 group-hover:text-gray-300 transition-colors mb-2 m-0 text-center tracking-wide`}
-				>
-					{member.title}
-				</p>
-			)}
+			<p
+				className={`${memberTitleClass} text-gray-400 group-hover:text-gray-300 transition-colors mb-2 m-0 text-center tracking-wide`}
+			>
+				{displayTitle}
+			</p>
 
 			{member.socialLinks.length > 0 && (
 				<div className="flex gap-2 mt-2">

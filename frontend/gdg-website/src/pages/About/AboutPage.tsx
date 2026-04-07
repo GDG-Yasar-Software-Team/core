@@ -55,8 +55,8 @@ export const AboutPage: React.FC = () => {
 				/>
 			</div>
 			<main className="flex-1">
-				<section className="w-full py-16 lg:py-24 relative overflow-hidden">
-					<div className="w-full max-w-[1440px] mx-auto px-6">
+				<section className="w-full py-12 md:py-16 lg:py-24 relative overflow-hidden">
+					<div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6">
 						<div className="flex flex-col xl:flex-row items-center justify-between gap-12 xl:gap-8">
 							{/* Sol Metinler */}
 							<div className="w-full xl:w-[320px] flex flex-col sm:flex-row xl:flex-col gap-10 z-10 flex-shrink-0 text-center xl:text-left order-2 xl:order-1">
@@ -113,7 +113,7 @@ export const AboutPage: React.FC = () => {
 							</div>
 
 							{/* Galeri (Orta Merkez) */}
-							<div className="w-full xl:flex-[2] h-[550px] md:h-[750px] relative bg-transparent order-1 xl:order-2 flex-shrink-0 xl:flex-shrink max-w-full">
+							<div className="w-full xl:flex-[2] h-[420px] sm:h-[550px] md:h-[680px] lg:h-[750px] relative bg-transparent order-1 xl:order-2 flex-shrink-0 xl:flex-shrink max-w-full">
 								<div className="absolute inset-0 scale-[1.05] xl:scale-100 pointer-events-auto">
 									<DomeGallery
 										images={GALLERY_IMAGES}

@@ -66,10 +66,10 @@ export const UpcomingEventsPage: React.FC = () => {
 		<div className="min-h-screen flex flex-col bg-white">
 			<Navigation />
 
-			<main className="flex-1 py-16 px-8 md:py-16 md:px-8">
+			<main className="flex-1 py-12 px-4 sm:px-6 md:py-16 md:px-8">
 				<div className="max-w-[1200px] mx-auto">
 					<header className="mb-12">
-						<h1 className="text-[2rem] md:text-[2.5rem] font-normal text-[#202124] m-0 mb-4">
+						<h1 className="text-[1.75rem] md:text-[2.5rem] font-normal text-[#202124] m-0 mb-4">
 							Upcoming events
 						</h1>
 						<p className="text-sm md:text-base text-[#5f6368] leading-relaxed max-w-[800px] m-0 italic">

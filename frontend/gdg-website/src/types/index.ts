@@ -22,6 +22,7 @@ export interface Event {
 	date: string; // ISO datetime string from backend
 	place: string;
 	image_url?: string;
+	registration_form_url?: string;
 	speakers: Speaker[];
 	tags: string[];
 }

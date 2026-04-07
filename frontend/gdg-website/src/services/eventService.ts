@@ -6,7 +6,36 @@ import type { Event } from "../types";
 
 const API_BASE_URL =
 	import.meta.env.VITE_EVENT_SERVICE_URL || "http://localhost:8003";
-const API_TOKEN = import.meta.env.VITE_EVENT_SERVICE_TOKEN || "";
+
+function getOptionalString(value: unknown): string | undefined {
+	return typeof value === "string" && value.trim().length > 0
+		? value
+		: undefined;
+}
+
+function normalizeEvent(rawEvent: unknown): Event {
+	const e = rawEvent as Record<string, unknown>;
+
+	const speakers = Array.isArray(e.speakers) ? e.speakers : [];
+	const tags = Array.isArray(e.tags) ? e.tags : [];
+
+	return {
+		id: String(e.id ?? ""),
+		title: String(e.title ?? ""),
+		description: String(e.description ?? ""),
+		date: String(e.date ?? ""),
+		place: String(e.place ?? ""),
+		image_url: getOptionalString(e.image_url ?? e.imageUrl),
+		registration_form_url: getOptionalString(
+			e.registration_form_url ??
+				e.registrationFormUrl ??
+				e.registration_url ??
+				e.form_url,
+		),
+		speakers: speakers as Event["speakers"],
+		tags: tags as string[],
+	};
+}
 
 /**
  * Fetch all events from the backend
@@ -21,7 +50,6 @@ export async function fetchEvents(limit = 100, offset = 0): Promise<Event[]> {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
-				"X-API-Token": API_TOKEN,
 			},
 		});
 
@@ -29,7 +57,10 @@ export async function fetchEvents(limit = 100, offset = 0): Promise<Event[]> {
 			throw new Error(`Failed to fetch events: ${response.statusText}`);
 		}
 
-		const events: Event[] = await response.json();
+		const payload: unknown = await response.json();
+		const events = Array.isArray(payload)
+			? payload.map((event) => normalizeEvent(event))
+			: [];
 		return events;
 	} catch (error) {
 		console.error("Error fetching events:", error);
@@ -46,7 +77,6 @@ export async function fetchEventById(eventId: string): Promise<Event> {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
-				"X-API-Token": API_TOKEN,
 			},
 		});
 
@@ -54,8 +84,8 @@ export async function fetchEventById(eventId: string): Promise<Event> {
 			throw new Error(`Failed to fetch event: ${response.statusText}`);
 		}
 
-		const event: Event = await response.json();
-		return event;
+		const payload: unknown = await response.json();
+		return normalizeEvent(payload);
 	} catch (error) {
 		console.error(`Error fetching event ${eventId}:`, error);
 		throw error;
