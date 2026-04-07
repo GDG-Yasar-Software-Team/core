@@ -146,6 +146,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "email-validator" },
     { name = "fastapi" },
+    { name = "httpx" },
     { name = "motor" },
     { name = "pydantic-settings" },
     { name = "python-dotenv" },
@@ -167,6 +168,7 @@ dev = [
 requires-dist = [
     { name = "email-validator", specifier = ">=2.3.0" },
     { name = "fastapi", specifier = ">=0.128.0" },
+    { name = "httpx", specifier = ">=0.28.0" },
     { name = "httpx", marker = "extra == 'dev'", specifier = ">=0.28.0" },
     { name = "mongomock-motor", marker = "extra == 'dev'", specifier = ">=0.0.34" },
     { name = "motor", specifier = ">=3.7.1" },

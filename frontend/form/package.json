@@ -14,14 +14,16 @@
 	},
 	"dependencies": {
 		"@hookform/resolvers": "3.9.1",
+		"motion": "^12.35.0",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0",
 		"react-hook-form": "^7.71.1",
 		"react-router-dom": "^7.13.0",
+		"xlsx": "^0.18.5",
 		"zod": "3.24.4"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.3.11",
+		"@biomejs/biome": "^2.4.6",
 		"@eslint/js": "^9.39.1",
 		"@types/node": "^24.10.1",
 		"@types/react": "^19.2.5",

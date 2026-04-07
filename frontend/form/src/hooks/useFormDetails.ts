@@ -1,21 +1,26 @@
 import { useEffect, useState } from "react";
 import { getFormById } from "../services/formService";
 import type { FormResponse } from "../types";
+import { ApiClientError } from "../utils/apiClientError";
+
+export type FormLoadErrorKind = "not_found" | "unavailable";
+
+export interface FormLoadError {
+	kind: FormLoadErrorKind;
+	message: string;
+}
 
 interface UseFormDetailsReturn {
 	form: FormResponse | null;
 	isLoading: boolean;
-	error: string | null;
+	error: FormLoadError | null;
 }
 
-function formatError(error: unknown): string {
-	if (error instanceof Error) {
-		if (error.message.includes("404")) {
-			return "Form bulunamadı.";
-		}
-		return "Form yüklenirken bir hata oluştu.";
+function classifyError(error: unknown): FormLoadError {
+	if (error instanceof ApiClientError && error.status === 404) {
+		return { kind: "not_found", message: "Form bulunamadı." };
 	}
-	return "Form yüklenemedi.";
+	return { kind: "unavailable", message: "Form yüklenemedi." };
 }
 
 export function useFormDetails(
@@ -23,11 +28,11 @@ export function useFormDetails(
 ): UseFormDetailsReturn {
 	const [form, setForm] = useState<FormResponse | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+	const [error, setError] = useState<FormLoadError | null>(null);
 
 	useEffect(() => {
 		if (!formId) {
-			setError("Form kimliği bulunamadı.");
+			setError({ kind: "not_found", message: "Form kimliği bulunamadı." });
 			setForm(null);
 			setIsLoading(false);
 			return;
@@ -44,10 +49,10 @@ export function useFormDetails(
 				if (!isCancelled) {
 					setForm(data);
 				}
-			} catch (error) {
+			} catch (err) {
 				if (!isCancelled) {
 					setForm(null);
-					setError(formatError(error));
+					setError(classifyError(err));
 				}
 			} finally {
 				if (!isCancelled) {

@@ -25,8 +25,14 @@ import type {
 	UserPayload,
 	UserResponse,
 } from "../types";
+import { ApiClientError } from "../utils/apiClientError";
 import { buildFormSchema } from "../utils/buildFormSchema";
 import { isQuestionVisible } from "../utils/fieldVisibility";
+import {
+	getSupportEmail,
+	messageForPublicFormSubmitError,
+	messagesForFormLoadError,
+} from "../utils/publicFormMessages";
 
 type FormValues = Record<string, unknown>;
 
@@ -35,11 +41,20 @@ const NAME_FIELD_KEYS = [
 	"name",
 	"full_name",
 	"fullname",
+	"isim_soyisim",
+	"isimsoyisim",
 	"ad_soyad",
 	"adsoyad",
 ];
-const SECTION_FIELD_KEYS = ["section", "department", "dept", "bolum", "bölüm"];
-const GRADE_FIELD_KEYS = ["grade", "class", "sinif", "sınıf", "year"];
+const SECTION_FIELD_KEYS = [
+	"section",
+	"department",
+	"dept",
+	"bolum",
+	"bölüm",
+	"blm",
+];
+const GRADE_FIELD_KEYS = ["grade", "class", "sinif", "sınıf", "year", "snf"];
 const STUDENT_FIELD_KEYS = [
 	"is_yasar_student",
 	"yasar_student",
@@ -188,13 +203,6 @@ function areValuesEqual(current: unknown, target: unknown): boolean {
 		return current.every((item, index) => item === target[index]);
 	}
 	return current === target;
-}
-
-function formatError(error: unknown): string {
-	if (error instanceof Error) {
-		return error.message;
-	}
-	return "Beklenmeyen bir hata oluştu.";
 }
 
 function buildUserPayload(
@@ -474,11 +482,14 @@ const FormSubmissionPage = () => {
 				try {
 					await createUser(payload);
 				} catch (createError) {
-					const message = formatError(createError);
-					if (!message.includes("409")) {
+					if (
+						createError instanceof ApiClientError &&
+						createError.status === 409
+					) {
+						await updateUser(normalizedEmail, payload);
+					} else {
 						throw createError;
 					}
-					await updateUser(normalizedEmail, payload);
 				}
 			}
 
@@ -496,7 +507,7 @@ const FormSubmissionPage = () => {
 			setShowSuccessAlert(true);
 			setSubmissionError(null);
 		} catch (submitError) {
-			setSubmissionError(formatError(submitError));
+			setSubmissionError(messageForPublicFormSubmitError(submitError));
 		}
 	};
 
@@ -512,15 +523,68 @@ const FormSubmissionPage = () => {
 	}
 
 	if (error || !form) {
+		const loadError = error
+			? messagesForFormLoadError(error.kind)
+			: messagesForFormLoadError("not_found");
+		const supportEmail = getSupportEmail();
+
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gray-50">
+			<div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
 				<div className="text-center max-w-md">
 					<p className="text-red-500 text-lg font-semibold">
-						{error || "Form bulunamadı."}
+						{loadError.title}
 					</p>
-					<p className="mt-2 text-gray-400 text-sm">
-						Lütfen URL&apos;yi kontrol edin ve form servisinin çalıştığından
-						emin olun.
+					<p className="mt-2 text-gray-500 text-sm">{loadError.description}</p>
+					{loadError.showContact && (
+						<p className="mt-4 text-gray-500 text-sm">
+							Sorun devam ederse{" "}
+							<a
+								href={`mailto:${supportEmail}`}
+								className="text-blue-600 hover:underline"
+							>
+								{supportEmail}
+							</a>{" "}
+							adresinden bizimle iletişime geçebilirsiniz.
+						</p>
+					)}
+				</div>
+			</div>
+		);
+	}
+
+	if (showSuccessAlert) {
+		return (
+			<div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12 font-sans">
+				<div className="w-full max-w-2xl">
+					<div className="rounded-2xl shadow-lg border border-gray-200 overflow-hidden bg-white">
+						<Banner />
+						<div className="px-8 py-8">
+							<h1 className="text-2xl font-bold text-gray-900 font-display tracking-tight">
+								{form.title}
+							</h1>
+							<p className="mt-4 text-sm text-gray-700 font-medium">
+								Yanıtınız kaydedildi. Katılımınız için teşekkür ederiz.
+							</p>
+							<div className="mt-6">
+								<button
+									type="button"
+									onClick={() => {
+										setShowSuccessAlert(false);
+										setRespondentEmail("");
+										reset();
+									}}
+									className="text-blue-600 hover:text-blue-800 hover:underline text-sm font-medium transition"
+								>
+									Başka bir yanıt gönder
+								</button>
+							</div>
+						</div>
+					</div>
+					<p className="mt-8 text-center text-xs text-gray-500">
+						<span className="font-medium">
+							GDG on Campus Yaşar Üniversitesi
+						</span>{" "}
+						tarafından geliştirilmiştir.
 					</p>
 				</div>
 			</div>
@@ -615,18 +679,6 @@ const FormSubmissionPage = () => {
 					tarafından geliştirilmiştir.
 				</p>
 			</div>
-			{showSuccessAlert && (
-				<div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4">
-					<div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-2xl">
-						<h2 className="text-xl font-semibold text-gray-900">
-							Başvurunuz Alındı
-						</h2>
-						<p className="mt-3 text-sm text-gray-600">
-							Formunuz başarıyla gönderildi. Katılımınız için teşekkür ederiz.
-						</p>
-					</div>
-				</div>
-			)}
 		</div>
 	);
 };

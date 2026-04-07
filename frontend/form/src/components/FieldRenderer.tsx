@@ -50,6 +50,7 @@ const FieldRenderer = ({ field, registration, error }: FieldRendererProps) => {
 				/>
 			);
 		case "select":
+		case "department":
 			return (
 				<SelectInput
 					id={field.field_id}

@@ -19,8 +19,6 @@ bun run dev
 
 ```bash
 VITE_FORM_SERVICE_URL=http://localhost:8002
-VITE_USER_SERVICE_URL=http://localhost:8001
-VITE_USER_SERVICE_TOKEN=dev-frontend-token
 ```
 
 ## Project Structure

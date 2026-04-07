@@ -25,9 +25,18 @@ class FormNotFoundError(Exception):
 
 
 class FormValidationError(Exception):
-    """Raised when form or submission answer validation fails."""
+    """Raised when form or submission answer validation fails.
 
-    pass
+    `code` is a stable machine-readable identifier returned to public clients.
+    `internal_note` is for server logs only (may contain field_id, etc.).
+    """
+
+    __slots__ = ("code", "internal_note")
+
+    def __init__(self, code: str, *, internal_note: str | None = None) -> None:
+        self.code = code
+        self.internal_note = internal_note
+        super().__init__(internal_note or code)
 
 
 class InvalidObjectIdError(Exception):
@@ -118,10 +127,10 @@ class SubmissionService:
             form = FormInDB.model_validate(form_doc)
         except Exception as e:
             logger.error(f"Error converting form document to FormInDB: {e}")
-            raise FormValidationError(f"Invalid form data for id: {form_id}")
+            raise FormValidationError("invalid_form_schema", internal_note=str(form_id))
 
         if not form.is_active:
-            raise FormValidationError("Form is not active")
+            raise FormValidationError("form_not_active")
 
         now = datetime.now(timezone.utc)
 
@@ -131,14 +140,14 @@ class SubmissionService:
             if start_date.tzinfo is None:
                 start_date = start_date.replace(tzinfo=timezone.utc)
             if start_date > now:
-                raise FormValidationError("Form has not started yet")
+                raise FormValidationError("form_not_started")
 
         if form.deadline is not None:
             deadline = form.deadline
             if deadline.tzinfo is None:
                 deadline = deadline.replace(tzinfo=timezone.utc)
             if deadline < now:
-                raise FormValidationError("Form deadline has passed")
+                raise FormValidationError("form_deadline_passed")
 
         return form
 
@@ -206,18 +215,20 @@ class SubmissionService:
 
             if not cls._is_answer_provided(field, answers.get(field.field_id)):
                 raise FormValidationError(
-                    f"Required field '{field.field_id}' is missing or empty"
+                    "required_answer_incomplete",
+                    internal_note=field.field_id,
                 )
 
     @classmethod
     async def create_submission(
-        cls, submission_data: SubmissionCreate
+        cls, submission_data: SubmissionCreate, *, dry_run: bool = False
     ) -> SubmissionInDB:
         """
         Create a new submission.
 
         Args:
             submission_data: Submission data to create
+            dry_run: If True, validate only — skip DB insert and submission_count increment.
 
         Returns:
             Created SubmissionInDB instance
@@ -236,6 +247,13 @@ class SubmissionService:
         submission_doc["submitted_at"] = datetime.now(timezone.utc)
         # Ensure form_id is stored as ObjectId, not string
         submission_doc["form_id"] = cls._to_object_id(submission_data.form_id)
+
+        if dry_run:
+            logger.info(
+                "Dry-run submission validated (not persisted)",
+                form_id=str(submission_data.form_id),
+            )
+            return cls._document_to_submission(submission_doc)
 
         object_id = cls._to_object_id(submission_data.form_id)
         submissions_collection = cls._get_submissions_collection()

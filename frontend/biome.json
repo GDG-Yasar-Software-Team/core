@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.4.8/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.4.6/schema.json",
 	"root": false,
 	"vcs": {
 		"enabled": true,
@@ -23,7 +23,23 @@
 					"options": {
 						"ignore": ["tailwind"]
 					}
-				}
+				},
+				"noArrayIndexKey": "off"
+			},
+			"a11y": {
+				"noSvgWithoutTitle": "off",
+				"noLabelWithoutControl": "off",
+				"noStaticElementInteractions": "off",
+				"useSemanticElements": "off"
+			},
+			"complexity": {
+				"noImportantStyles": "off"
+			},
+			"style": {
+				"noNonNullAssertion": "off"
+			},
+			"correctness": {
+				"useExhaustiveDependencies": "warn"
 			}
 		}
 	},

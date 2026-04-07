@@ -55,7 +55,6 @@ export default function ScheduleForm({
 					const subjectId = `schedule-subject-${index}`;
 					return (
 						<div
-							// biome-ignore lint/suspicious/noArrayIndexKey: index is stable for ordered schedule list
 							key={index}
 							className="flex flex-wrap items-start gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3"
 						>

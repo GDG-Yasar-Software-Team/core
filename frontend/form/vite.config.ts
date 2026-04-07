@@ -1,6 +1,10 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
+/**
+ * Vite Configuration
+ * Clean, minimal setup for the form application
+ */
 export default defineConfig({
 	plugins: [react()],
 	server: {
@@ -9,6 +13,8 @@ export default defineConfig({
 	},
 	build: {
 		outDir: "dist",
-		sourcemap: true,
+		sourcemap: false,
+		target: "esnext",
+		minify: "esbuild",
 	},
 });
