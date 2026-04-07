@@ -51,9 +51,9 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
 				<nav className="flex-1 space-y-1 px-3 py-4">
 					{navItems.map((item) => {
 						const active =
-						item.to === "/"
-							? location.pathname === "/"
-							: location.pathname.startsWith(item.to);
+							item.to === "/"
+								? location.pathname === "/"
+								: location.pathname.startsWith(item.to);
 						return (
 							<Link
 								key={item.to}
@@ -73,7 +73,9 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
 				</nav>
 
 				<div className="border-t border-gray-200 p-4">
-					<p className="text-xs text-gray-400">GDG on Campus Yaşar Üniversitesi</p>
+					<p className="text-xs text-gray-400">
+						GDG on Campus Yaşar Üniversitesi
+					</p>
 				</div>
 			</aside>
 		</>

@@ -24,10 +24,7 @@ function App() {
 							path="/campaigns/:campaignId/edit"
 							element={<EditCampaignPage />}
 						/>
-						<Route
-							path="/test-send"
-							element={<TestMailPage />}
-						/>
+						<Route path="/test-send" element={<TestMailPage />} />
 					</Route>
 					<Route path="*" element={<Navigate to="/" replace />} />
 				</Routes>

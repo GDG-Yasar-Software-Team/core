@@ -27,13 +27,10 @@ export default function SendProgress({
 
 	const processed = sent_count + failed_count;
 	const percentage =
-		total_recipients > 0
-			? Math.round((processed / total_recipients) * 100)
-			: 0;
+		total_recipients > 0 ? Math.round((processed / total_recipients) * 100) : 0;
 
 	const estimatedRemaining = useMemo(() => {
-		if (is_complete || processed === 0 || total_recipients === 0)
-			return null;
+		if (is_complete || processed === 0 || total_recipients === 0) return null;
 		const elapsed = Date.now() - new Date(started_at).getTime();
 		const avgPerItem = elapsed / processed;
 		const remaining = (total_recipients - processed) * avgPerItem;
