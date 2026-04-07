@@ -2,8 +2,9 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 
+from app.auth import verify_api_key
 from app.models.submission import (
     PaginatedSubmissionsResponse,
     SubmissionCreate,
@@ -15,6 +16,7 @@ from app.services.submission_service import (
     InvalidObjectIdError,
     SubmissionService,
 )
+from app.utils.logger import logger
 
 router = APIRouter(prefix="/submissions", tags=["submissions"])
 
@@ -22,24 +24,37 @@ router = APIRouter(prefix="/submissions", tags=["submissions"])
 @router.post("/", response_model=SubmissionResponse, status_code=201)
 async def create_submission(
     submission_data: SubmissionCreate,
+    dry_run: Annotated[bool, Query(alias="dry_run")] = False,
 ) -> SubmissionResponse:
     """
     Create a new form submission.
 
     Validates that the form exists, is active, has started, and deadline has not passed.
+
+    When `dry_run=true`, the payload is fully validated but nothing is
+    persisted to the database.
     """
     try:
-        submission = await SubmissionService.create_submission(submission_data)
+        submission = await SubmissionService.create_submission(
+            submission_data, dry_run=dry_run
+        )
         return SubmissionResponse.from_db(submission)
     except FormNotFoundError:
-        raise HTTPException(status_code=404, detail="Form not found")
+        raise HTTPException(status_code=404, detail={"code": "form_not_found"})
     except FormValidationError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        logger.warning(
+            f"Submission rejected: code={e.code} internal={e.internal_note!r}"
+        )
+        raise HTTPException(status_code=400, detail={"code": e.code})
     except InvalidObjectIdError:
-        raise HTTPException(status_code=400, detail="Invalid form ID format")
+        raise HTTPException(status_code=400, detail={"code": "invalid_form_id"})
 
 
-@router.get("/{submission_id}", response_model=SubmissionResponse)
+@router.get(
+    "/{submission_id}",
+    response_model=SubmissionResponse,
+    dependencies=[Depends(verify_api_key)],
+)
 async def get_submission_by_id(
     submission_id: str,
 ) -> SubmissionResponse:
@@ -53,7 +68,11 @@ async def get_submission_by_id(
         raise HTTPException(status_code=400, detail="Invalid submission ID format")
 
 
-@router.get("/by-form/{form_id}", response_model=PaginatedSubmissionsResponse)
+@router.get(
+    "/by-form/{form_id}",
+    response_model=PaginatedSubmissionsResponse,
+    dependencies=[Depends(verify_api_key)],
+)
 async def get_submissions_by_form(
     form_id: str,
     skip: Annotated[int, Query(ge=0)] = 0,

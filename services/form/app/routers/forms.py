@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from pymongo.errors import PyMongoError
 
+from app.auth import verify_api_key
 from app.db.mongodb import get_database
 from app.models.form import (
     FormCreate,
@@ -27,7 +28,7 @@ async def get_form_service(
     return FormService(db)
 
 
-@router.post("/", status_code=201)
+@router.post("/", status_code=201, dependencies=[Depends(verify_api_key)])
 async def create_form(
     form_data: FormCreate,
     service: Annotated[FormService, Depends(get_form_service)],
@@ -87,7 +88,7 @@ async def get_form(
         raise HTTPException(status_code=500, detail="Database error occurred")
 
 
-@router.get("/")
+@router.get("/", dependencies=[Depends(verify_api_key)])
 async def list_forms(
     skip: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(ge=1, le=100)] = 10,
@@ -125,13 +126,13 @@ async def list_forms(
 
     except ValueError as e:
         logger.warning(f"Invalid pagination parameters: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail="Invalid pagination parameters")
     except PyMongoError as e:
         logger.error(f"Database error while listing forms: {e}")
         raise HTTPException(status_code=500, detail="Database error occurred")
 
 
-@router.put("/{form_id}")
+@router.put("/{form_id}", dependencies=[Depends(verify_api_key)])
 async def update_form(
     form_id: str,
     form_data: FormUpdate,
@@ -167,7 +168,7 @@ async def update_form(
         raise HTTPException(status_code=500, detail="Database error occurred")
 
 
-@router.delete("/{form_id}", status_code=204)
+@router.delete("/{form_id}", status_code=204, dependencies=[Depends(verify_api_key)])
 async def delete_form(
     form_id: str,
     service: Annotated[FormService, Depends(get_form_service)],

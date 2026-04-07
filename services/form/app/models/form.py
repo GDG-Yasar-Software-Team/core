@@ -16,6 +16,7 @@ class FieldType(str, Enum):
     CHECKBOX = "checkbox"
     RADIO = "radio"
     DATE = "date"
+    DEPARTMENT = "department"
 
 
 class FieldValidation(BaseModel):
@@ -43,7 +44,12 @@ class FormFieldSchema(BaseModel):
 
     @model_validator(mode="after")
     def validate_options_for_choice_fields(self) -> Self:
-        choice_types = {FieldType.SELECT, FieldType.MULTISELECT, FieldType.RADIO}
+        choice_types = {
+            FieldType.SELECT,
+            FieldType.MULTISELECT,
+            FieldType.RADIO,
+            FieldType.DEPARTMENT,
+        }
         if self.field_type in choice_types:
             if not self.options:
                 raise ValueError(f"{self.field_type} requires non-empty options")
@@ -54,7 +60,7 @@ class FormFieldSchema(BaseModel):
 
 class FormCreate(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
-    description: str = Field(..., min_length=1, max_length=2000)
+    description: str | None = Field(default=None, min_length=1, max_length=2000)
     questions: list[FormFieldSchema] = Field(..., min_length=1)
     start_date: datetime | None = None
     deadline: datetime | None = None
@@ -137,6 +143,7 @@ class FormPreview(BaseModel):
     start_date: datetime | None
     deadline: datetime | None
     is_active: bool
+    created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -185,4 +192,5 @@ class FormInDB(FormCreate):
             start_date=self.start_date,
             deadline=self.deadline,
             is_active=self.is_active,
+            created_at=self.created_at,
         )

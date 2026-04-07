@@ -1,0 +1,476 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="x-apple-disable-message-reformatting" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Tech Summit'26 — Yaşar Üniversitesi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=DM+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet" type="text/css" />
+  <style type="text/css">
+    #outlook a { padding: 0; }
+    table, td { border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f0f2f5;
+      font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+      color: #0f1e35;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Palette: navy #0b2a5c · blue #1a5fd4 · blue-lt #e6eef9 · text #0f1e35 · body #3d546e · muted #7a90aa · border #dde6f2 · bg #f5f8fd */
+
+    .email-shell {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Banner: görsel dosyası core repo’da değil; mail-assets üzerinden public URL */
+    .banner-row {
+      padding: 0;
+      line-height: 0;
+      font-size: 0;
+      background-color: #050e24;
+      border-bottom: 2px solid #0b2a5c;
+      text-align: center;
+    }
+
+    .banner-hero-img {
+      display: block;
+      width: 100%;
+      max-width: 600px;
+      height: auto;
+      border: 0;
+      margin: 0 auto;
+    }
+
+    .section-intro {
+      padding: 28px 40px 26px 40px;
+      border-bottom: 1px solid #dde6f2;
+    }
+
+    .section-intro p {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.75;
+      color: #0f0f0f;
+    }
+
+    .section-event-details {
+      padding: 22px 40px 24px 40px;
+      border-bottom: 1px solid #dde6f2;
+      background-color: #ffffff;
+    }
+
+    .event-detail-row td {
+      font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #0f0f0f;
+    }
+
+    .section-speakers {
+      padding: 32px 40px 32px 40px;
+      border-bottom: 1px solid #dde6f2;
+      background: #ffffff;
+    }
+
+    .section-label {
+      font-family: 'Poppins', Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: #0b2a5c;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, #1a5fd4 0%, rgba(77, 148, 255, 0.35) 45%, transparent 100%);
+    }
+
+    .section-label-mic {
+      flex-shrink: 0;
+      font-size: 14px;
+      line-height: 1;
+      margin-right: 6px;
+    }
+
+    .speaker-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid #d8e4f4;
+      margin-bottom: 0;
+    }
+
+    .speaker-card:last-child { 
+      border-bottom: none; 
+      padding-bottom: 0;
+    }
+
+    .speaker-avatar-wrap {
+      width: 72px;
+      height: 72px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      overflow: hidden;
+      background-color: #ffffff;
+      border: 2px solid #0b2a5c;
+      box-sizing: border-box;
+      line-height: 0;
+    }
+
+    /* Global img { height: auto } dikey oval yapmasın; kare + yuvarlak için sabit px */
+    .speaker-avatar-img {
+      width: 68px !important;
+      height: 68px !important;
+      max-width: 68px !important;
+      max-height: 68px !important;
+      border-radius: 50% !important;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      border: 0;
+      background-color: #ffffff;
+      margin: 0;
+    }
+
+    .speaker-info { flex: 1; min-width: 0; }
+
+    .speaker-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f0f0f;
+      margin-bottom: 1px;
+    }
+
+    .speaker-role {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0f0f0f;
+      margin-bottom: 3px;
+      letter-spacing: 0;
+    }
+
+    .speaker-topic {
+      font-size: 12px;
+      font-weight: 400;
+      color: #3d546e;
+      line-height: 1.35;
+    }
+
+    .speaker-time {
+      flex-shrink: 0;
+      align-self: center;
+      padding: 0;
+      margin: 0;
+      line-height: 0;
+    }
+
+    .speaker-time-inner {
+      display: inline-block;
+      font-family: 'DM Sans', Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: #0b2a5c;
+      background: #d4e6fc;
+      border: 1px solid #9ec5f5;
+      border-radius: 6px;
+      padding: 6px 10px;
+      text-align: center;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      line-height: 1.25;
+    }
+
+    .section-highlights {
+      padding: 32px 40px 32px 40px;
+      border-bottom: 1px solid #dde6f2;
+      background: #ffffff;
+    }
+
+    .highlights-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      max-width: 100%;
+    }
+
+    .highlight-item {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 12px 16px;
+      background: #f9fbfd;
+      border: 1px solid #dde6f2;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #3d546e;
+    }
+
+    /* Emoji: ek kutu/border yok — satır içi hizalı tek vurgu */
+    .hl-icon {
+      flex-shrink: 0;
+      width: auto;
+      min-width: 0;
+      height: auto;
+      margin: 0;
+      padding: 0 12px 0 0;
+      font-size: 22px;
+      line-height: 1;
+      background: transparent !important;
+      border: none !important;
+      border-radius: 0;
+      box-shadow: none;
+      display: block;
+    }
+
+    .hl-icon svg { width: 14px; height: 14px; stroke: #1a5fd4; stroke-width: 2; }
+
+    .cta-inline {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid #e8ecf4;
+      text-align: center;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #0b2a5c 0%, #1a5fd4 100%);
+      color: #ffffff !important;
+      font-family: 'Poppins', Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 9px 22px;
+      border-radius: 6px;
+      box-shadow: 0 2px 10px rgba(26, 95, 212, 0.22);
+    }
+
+    .footer {
+      padding: 36px 40px 40px 40px;
+      text-align: center;
+      background: #f4f4f7;
+      border-top: 1px solid #e0e0e8;
+    }
+
+    .footer-line {
+      margin: 0;
+      font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      color: #6b7280;
+      line-height: 1.55;
+    }
+
+    .footer-mail {
+      color: #8a8aff !important;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    @media (max-width: 600px) {
+      .email-shell { width: 100% !important; max-width: 100% !important; border-radius: 0 !important; }
+      .section-intro,
+      .section-event-details,
+      .section-speakers,
+      .section-highlights,
+      .footer { padding: 24px 18px !important; }
+    }
+  </style>
+</head>
+<!--
+  PR kapsamı: yalnızca bu HTML. Görseller (banner, konuşmacı) mail-assets repo’sunda; burada sadece public URL.
+-->
+<body>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f0f2f5;">
+    <tr>
+      <td align="center" style="padding: 20px 10px;">
+        <table role="presentation" class="email-shell" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);">
+
+          <!-- BANNER (kaynak: mail-assets, core’da binary yok) -->
+          <tr>
+            <td class="banner-row" bgcolor="#050e24" style="padding: 0; line-height: 0; font-size: 0; background-color: #050e24; border-bottom: 2px solid #0b2a5c; text-align: center;">
+              <img class="banner-hero-img" src="https://cdn.jsdelivr.net/gh/GDG-Yasar-Software-Team/mail-assets@main/7ca42f59-9529-4b81-b03b-4bbadb5db9aa.jpg" alt="Tech Summit'26 — Teknoloji Zirvesi · Yaşar Üniversitesi" width="600" style="display: block; width: 100%; max-width: 600px; height: auto; border: 0; margin: 0 auto;" />
+            </td>
+          </tr>
+
+          <!-- INTRO -->
+          <tr>
+            <td class="section-intro" style="padding: 28px 40px 26px 40px; border-bottom: 1px solid #dde6f2;">
+              <p style="text-align: center; color: #0f0f0f;">Teknoloji, ilham ve networking bir arada 🚀</p>
+              <p style="text-align: center; color: #0f0f0f; margin-top: 12px;">Birbirinden değerli konuşmacılar, dopdolu oturumlar ve fuaye alanıyla <strong>Tech Summit'26</strong> seni bekliyor!</p>
+              <p style="text-align: center; color: #0f0f0f; margin-top: 12px;">Geleceğin teknolojisini yakından deneyimlemek ve yeni bağlantılar kurmak için yerini ayırt.</p>
+            </td>
+          </tr>
+
+          <!-- Tarih · Saat · Konum (konuşmacıların üstü, sola hizalı liste) -->
+          <tr>
+            <td class="section-event-details" style="padding: 22px 40px 24px 40px; border-bottom: 1px solid #dde6f2; background-color: #ffffff;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr class="event-detail-row">
+                  <td valign="top" style="width: 34px; padding: 0 12px 14px 0; font-size: 17px; line-height: 1.4; vertical-align: top;" aria-hidden="true">📅</td>
+                  <td valign="top" style="padding: 0 0 14px 0; vertical-align: top; font-family: 'DM Sans', Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #0f0f0f;">
+                    <strong style="font-weight: 700; color: #0f0f0f;">Tarih:</strong> 11 Nisan 2026
+                  </td>
+                </tr>
+                <tr class="event-detail-row">
+                  <td valign="top" style="width: 34px; padding: 0 12px 14px 0; font-size: 17px; line-height: 1.4; vertical-align: top;" aria-hidden="true">🕐</td>
+                  <td valign="top" style="padding: 0 0 14px 0; vertical-align: top; font-family: 'DM Sans', Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #0f0f0f;">
+                    <strong style="font-weight: 700; color: #0f0f0f;">Saat:</strong> 11.00–17.30
+                  </td>
+                </tr>
+                <tr class="event-detail-row">
+                  <td valign="top" style="width: 34px; padding: 0 12px 0 0; font-size: 17px; line-height: 1.4; vertical-align: top;" aria-hidden="true">📍</td>
+                  <td valign="top" style="padding: 0; vertical-align: top; font-family: 'DM Sans', Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #0f0f0f;">
+                    <strong style="font-weight: 700; color: #0f0f0f;">Konum:</strong> Y-110, Yaşar Üniversitesi
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- SPEAKERS -->
+          <tr>
+            <td class="section-speakers" style="padding: 32px 40px 32px 40px; border-bottom: 1px solid #dde6f2; background-color: #ffffff;">
+              <div class="section-label">
+                <span class="section-label-mic" aria-hidden="true" style="font-size:14px;line-height:1;margin-right:6px;">🎤</span>Konuşmacılar
+              </div>
+
+              <div class="speaker-card">
+                <div class="speaker-avatar-wrap" style="box-sizing:border-box;width:72px;height:72px;min-width:72px;min-height:72px;border-radius:50%;overflow:hidden;border:2px solid #0b2a5c;line-height:0;">
+                  <img class="speaker-avatar-img" src="https://cdn.jsdelivr.net/gh/GDG-Yasar-Software-Team/mail-assets@main/tech-summit-white-bg/melih.jpg" width="68" height="68" style="width:68px;height:68px;border-radius:50%;display:block;object-fit:cover;" alt="Melih Doğankaya" />
+                </div>
+                <div class="speaker-info">
+                  <div class="speaker-name" style="color: #0f0f0f; font-weight: 700;">Melih Doğankaya</div>
+                  <div class="speaker-role" style="color: #0f0f0f;">Senior Software Architect · Ford</div>
+                  <div class="speaker-topic">Sıfırdan Global Projelere: Büyük Şirketlerde Nasıl İşliyor</div>
+                </div>
+                <div class="speaker-time"><span class="speaker-time-inner">12:00 - 12:45</span></div>
+              </div>
+
+              <div class="speaker-card">
+                <div class="speaker-avatar-wrap" style="box-sizing:border-box;width:72px;height:72px;min-width:72px;min-height:72px;border-radius:50%;overflow:hidden;border:2px solid #0b2a5c;line-height:0;">
+                  <img class="speaker-avatar-img" src="https://cdn.jsdelivr.net/gh/GDG-Yasar-Software-Team/mail-assets@main/tech-summit-white-bg/izzet.jpg" width="68" height="68" style="width:68px;height:68px;border-radius:50%;display:block;object-fit:cover;" alt="İzzet Sancaklı" />
+                </div>
+                <div class="speaker-info">
+                  <div class="speaker-name" style="color: #0f0f0f; font-weight: 700;">İzzet Sancaklı</div>
+                  <div class="speaker-role" style="color: #0f0f0f;">Product Manager · Turkish Airlines</div>
+                  <div class="speaker-topic">Havacılıkta Dijital Ürün ve Proje Yönetimi</div>
+                </div>
+                <div class="speaker-time"><span class="speaker-time-inner">13:00 - 13:45</span></div>
+              </div>
+
+              <div class="speaker-card">
+                <div class="speaker-avatar-wrap" style="box-sizing:border-box;width:72px;height:72px;min-width:72px;min-height:72px;border-radius:50%;overflow:hidden;border:2px solid #0b2a5c;line-height:0;">
+                  <img class="speaker-avatar-img" src="https://cdn.jsdelivr.net/gh/GDG-Yasar-Software-Team/mail-assets@main/tech-summit-white-bg/tunga.jpg" width="68" height="68" style="width:68px;height:68px;border-radius:50%;display:block;object-fit:cover;" alt="Tunga Sayıcı" />
+                </div>
+                <div class="speaker-info">
+                  <div class="speaker-name" style="color: #0f0f0f; font-weight: 700;">Tunga Sayıcı</div>
+                  <div class="speaker-role" style="color: #0f0f0f;">Lead Developer · Turkcell</div>
+                  <div class="speaker-topic">Junior'dan Execution Leader'a: Bir Yazılımcının Evrimi</div>
+                </div>
+                <div class="speaker-time"><span class="speaker-time-inner">14:40 - 15:25</span></div>
+              </div>
+
+              <div class="speaker-card">
+                <div class="speaker-avatar-wrap" style="box-sizing:border-box;width:72px;height:72px;min-width:72px;min-height:72px;border-radius:50%;overflow:hidden;border:2px solid #0b2a5c;line-height:0;">
+                  <img class="speaker-avatar-img" src="https://cdn.jsdelivr.net/gh/GDG-Yasar-Software-Team/mail-assets@main/tech-summit-white-bg/sabahat%20(2).jpg" width="68" height="68" style="width:68px;height:68px;border-radius:50%;display:block;object-fit:cover;" alt="Sabahat Baştuğ" />
+                </div>
+                <div class="speaker-info">
+                  <div class="speaker-name" style="color: #0f0f0f; font-weight: 700;">Sabahat Baştuğ</div>
+                  <div class="speaker-role" style="color: #0f0f0f;">Senior Product Manager · Boyner</div>
+                  <div class="speaker-topic">Ürün Yönetiminde Yapay Zeka ve Dijital Dönüşüm</div>
+                </div>
+                <div class="speaker-time"><span class="speaker-time-inner">15:40 - 16:25</span></div>
+              </div>
+
+              <div class="speaker-card">
+                <div class="speaker-avatar-wrap" style="box-sizing:border-box;width:72px;height:72px;min-width:72px;min-height:72px;border-radius:50%;overflow:hidden;border:2px solid #0b2a5c;line-height:0;">
+                  <img class="speaker-avatar-img" src="https://cdn.jsdelivr.net/gh/GDG-Yasar-Software-Team/mail-assets@main/tech-summit-white-bg/atakan.jpg" width="68" height="68" style="width:68px;height:68px;border-radius:50%;display:block;object-fit:cover;" alt="Atakan Demir" />
+                </div>
+                <div class="speaker-info">
+                  <div class="speaker-name" style="color: #0f0f0f; font-weight: 700;">Atakan Demir</div>
+                  <div class="speaker-role" style="color: #0f0f0f;">Execution Lead &amp; Product Owner · Turkcell</div>
+                  <div class="speaker-topic">Agile Süreçler ve Ritüeller: Teoriden Gerçek Hayata</div>
+                </div>
+                <div class="speaker-time"><span class="speaker-time-inner">16:40 - 17:25</span></div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- HIGHLIGHTS -->
+          <tr>
+            <td class="section-highlights" style="padding: 32px 40px 32px 40px; border-bottom: 1px solid #dde6f2; background-color: #ffffff;">
+              <div class="highlights-grid">
+                <div class="highlight-item">
+                  <div class="hl-icon hl-icon-lang" aria-hidden="true" style="font-size:20px;line-height:1;background:none;border:none;box-shadow:none;padding:0 12px 0 0;margin:0;width:auto;height:auto;">
+                    🌐
+                  </div>
+                  Etkinlik dili Türkçedir.
+                </div>
+                <div class="highlight-item">
+                  <div class="hl-icon" style="font-size:22px;line-height:1;background:none;border:none;box-shadow:none;padding:0 12px 0 0;margin:0;width:auto;height:auto;">
+                    🎓
+                  </div>
+                  Katılım sertifikası
+                </div>
+              </div>
+              <div class="cta-inline">
+                <a href="https://forms.gdgoncampusyu.com/forms/69cd5adbd4e9fe5859caff29" class="cta-btn" target="_blank" rel="noopener noreferrer">Kayıt Ol</a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td class="footer" style="padding: 36px 40px 40px 40px; text-align: center; background-color: #f4f4f7; border-top: 1px solid #e0e0e8;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin: 0 auto;">
+                <tr>
+                  <td align="center" style="padding: 0 0 16px 0;">
+                    <a href="https://instagram.com/yu.gdgoncampus" style="text-decoration: none;">
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" width="36" height="36" style="display: block; border: 0;" />
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" class="footer-line" style="padding: 0; font-family: 'DM Sans', Arial, Helvetica, sans-serif; font-size: 15px; font-weight: 400; color: #6b7280; line-height: 1.55;">
+                    GDG on Campus · Yaşar University
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" class="footer-line" style="padding: 8px 0 0 0; font-family: 'DM Sans', Arial, Helvetica, sans-serif; font-size: 15px; font-weight: 400; color: #6b7280; line-height: 1.55;">
+                    Bilgi ve İletişim:
+                    <a href="mailto:gdgoncampus.yu@gmail.com" class="footer-mail" style="color: #8a8aff; text-decoration: none; font-weight: 500;">gdgoncampus.yu@gmail.com</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

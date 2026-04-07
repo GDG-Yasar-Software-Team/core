@@ -162,14 +162,112 @@ class TestCreateSubmissionAPI:
             )
 
         assert response.status_code == 400
-        assert "turkish_identity_number" in response.json()["detail"]
+        assert response.json()["detail"]["code"] == "required_answer_incomplete"
+
+
+class TestCreateSubmissionDryRunAPI:
+    """Test POST /submissions/?dry_run=true endpoint."""
+
+    def test_dry_run_returns_201_without_persisting(self, sync_client, mock_mongodb):
+        """POST /submissions/?dry_run=true returns 201 but does not write to DB."""
+        form_doc = _make_active_form_doc()
+        mock_mongodb["forms"].find_one = AsyncMock(return_value=form_doc)
+        mock_mongodb["submissions"].insert_one = AsyncMock()
+        mock_mongodb["forms"].update_one = AsyncMock()
+
+        with patch(
+            "app.services.submission_service.MongoDB.get_db",
+            return_value=mock_mongodb["db"],
+        ):
+            response = sync_client.post(
+                "/submissions/?dry_run=true",
+                json={
+                    "form_id": str(SAMPLE_FORM_ID),
+                    "answers": {"q1": "answer"},
+                    "respondent_email": "test@example.com",
+                },
+            )
+
+        assert response.status_code == 201
+        data = response.json()
+        assert data["respondent_email"] == "test@example.com"
+        mock_mongodb["submissions"].insert_one.assert_not_awaited()
+        mock_mongodb["forms"].update_one.assert_not_awaited()
+
+    def test_dry_run_still_returns_404_for_missing_form(
+        self, sync_client, mock_mongodb
+    ):
+        """POST /submissions/?dry_run=true returns 404 when form does not exist."""
+        mock_mongodb["forms"].find_one = AsyncMock(return_value=None)
+
+        with patch(
+            "app.services.submission_service.MongoDB.get_db",
+            return_value=mock_mongodb["db"],
+        ):
+            response = sync_client.post(
+                "/submissions/?dry_run=true",
+                json={
+                    "form_id": str(SAMPLE_FORM_ID),
+                    "answers": {"q1": "answer"},
+                    "respondent_email": "test@example.com",
+                },
+            )
+
+        assert response.status_code == 404
+
+    def test_dry_run_still_returns_400_for_missing_required_field(
+        self, sync_client, mock_mongodb
+    ):
+        """POST /submissions/?dry_run=true returns 400 when required answer is empty."""
+        form_doc = _make_active_form_doc()
+        mock_mongodb["forms"].find_one = AsyncMock(return_value=form_doc)
+
+        with patch(
+            "app.services.submission_service.MongoDB.get_db",
+            return_value=mock_mongodb["db"],
+        ):
+            response = sync_client.post(
+                "/submissions/?dry_run=true",
+                json={
+                    "form_id": str(SAMPLE_FORM_ID),
+                    "answers": {"q1": ""},
+                    "respondent_email": "test@example.com",
+                },
+            )
+
+        assert response.status_code == 400
+        assert response.json()["detail"]["code"] == "required_answer_incomplete"
+
+    def test_dry_run_false_still_persists(self, sync_client, mock_mongodb):
+        """POST /submissions/?dry_run=false behaves like default (persists to DB)."""
+        form_doc = _make_active_form_doc()
+        mock_mongodb["forms"].find_one = AsyncMock(return_value=form_doc)
+        mock_mongodb["submissions"].insert_one = AsyncMock()
+        mock_mongodb["forms"].update_one = AsyncMock()
+
+        with patch(
+            "app.services.submission_service.MongoDB.get_db",
+            return_value=mock_mongodb["db"],
+        ):
+            response = sync_client.post(
+                "/submissions/?dry_run=false",
+                json={
+                    "form_id": str(SAMPLE_FORM_ID),
+                    "answers": {"q1": "answer"},
+                    "respondent_email": "test@example.com",
+                },
+            )
+
+        assert response.status_code == 201
+        mock_mongodb["submissions"].insert_one.assert_awaited_once()
+        mock_mongodb["forms"].update_one.assert_awaited_once()
 
 
 class TestGetSubmissionAPI:
     """Test GET /submissions/{submission_id} endpoint."""
 
     def test_get_submission_found(
-        self, sync_client, mock_mongodb, sample_submission_doc
+        self, sync_client, mock_mongodb, sample_submission_doc, auth_headers
     ):
         """GET /submissions/{id} returns 200 when submission exists."""
         mock_mongodb["submissions"].find_one = AsyncMock(
@@ -180,13 +278,15 @@ class TestGetSubmissionAPI:
             "app.services.submission_service.MongoDB.get_db",
             return_value=mock_mongodb["db"],
         ):
-            response = sync_client.get(f"/submissions/{SAMPLE_SUBMISSION_ID}")
+            response = sync_client.get(
+                f"/submissions/{SAMPLE_SUBMISSION_ID}", headers=auth_headers
+            )
 
         assert response.status_code == 200
         data = response.json()
         assert data["respondent_email"] == "john@example.com"
 
-    def test_get_submission_not_found(self, sync_client, mock_mongodb):
+    def test_get_submission_not_found(self, sync_client, mock_mongodb, auth_headers):
         """GET /submissions/{id} returns 404 when submission does not exist."""
         mock_mongodb["submissions"].find_one = AsyncMock(return_value=None)
 
@@ -194,17 +294,19 @@ class TestGetSubmissionAPI:
             "app.services.submission_service.MongoDB.get_db",
             return_value=mock_mongodb["db"],
         ):
-            response = sync_client.get(f"/submissions/{SAMPLE_SUBMISSION_ID}")
+            response = sync_client.get(
+                f"/submissions/{SAMPLE_SUBMISSION_ID}", headers=auth_headers
+            )
 
         assert response.status_code == 404
 
-    def test_get_submission_invalid_id(self, sync_client, mock_mongodb):
+    def test_get_submission_invalid_id(self, sync_client, mock_mongodb, auth_headers):
         """GET /submissions/{id} returns 400 for invalid ObjectId."""
         with patch(
             "app.services.submission_service.MongoDB.get_db",
             return_value=mock_mongodb["db"],
         ):
-            response = sync_client.get("/submissions/bad-id")
+            response = sync_client.get("/submissions/bad-id", headers=auth_headers)
 
         assert response.status_code == 400
 
@@ -213,7 +315,7 @@ class TestGetSubmissionsByFormAPI:
     """Test GET /submissions/by-form/{form_id} endpoint."""
 
     def test_get_submissions_by_form(
-        self, sync_client, mock_mongodb, sample_submission_doc
+        self, sync_client, mock_mongodb, sample_submission_doc, auth_headers
     ):
         """GET /submissions/by-form/{form_id} returns paginated results."""
         mock_mongodb["submissions"].count_documents = AsyncMock(return_value=1)
@@ -224,19 +326,25 @@ class TestGetSubmissionsByFormAPI:
             "app.services.submission_service.MongoDB.get_db",
             return_value=mock_mongodb["db"],
         ):
-            response = sync_client.get(f"/submissions/by-form/{SAMPLE_FORM_ID}")
+            response = sync_client.get(
+                f"/submissions/by-form/{SAMPLE_FORM_ID}", headers=auth_headers
+            )
 
         assert response.status_code == 200
         data = response.json()
         assert data["total"] == 1
         assert len(data["submissions"]) == 1
 
-    def test_get_submissions_by_form_invalid_id(self, sync_client, mock_mongodb):
+    def test_get_submissions_by_form_invalid_id(
+        self, sync_client, mock_mongodb, auth_headers
+    ):
         """GET /submissions/by-form/{form_id} returns 400 for invalid form ID."""
         with patch(
             "app.services.submission_service.MongoDB.get_db",
             return_value=mock_mongodb["db"],
         ):
-            response = sync_client.get("/submissions/by-form/bad-id")
+            response = sync_client.get(
+                "/submissions/by-form/bad-id", headers=auth_headers
+            )
 
         assert response.status_code == 400

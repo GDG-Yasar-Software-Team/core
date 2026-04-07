@@ -94,8 +94,9 @@ class TestCreateSubmission:
         form_doc = _make_active_form_doc(is_active=False)
         mock_submission_collections["forms"].find_one = AsyncMock(return_value=form_doc)
 
-        with pytest.raises(FormValidationError, match="not active"):
+        with pytest.raises(FormValidationError) as exc_info:
             await SubmissionService.create_submission(sample_submission_data)
+        assert exc_info.value.code == "form_not_active"
 
     async def test_create_submission_form_not_started(
         self, mock_submission_collections, sample_submission_data
@@ -105,8 +106,9 @@ class TestCreateSubmission:
         form_doc = _make_active_form_doc(start_date=future_date)
         mock_submission_collections["forms"].find_one = AsyncMock(return_value=form_doc)
 
-        with pytest.raises(FormValidationError, match="not started yet"):
+        with pytest.raises(FormValidationError) as exc_info:
             await SubmissionService.create_submission(sample_submission_data)
+        assert exc_info.value.code == "form_not_started"
 
     async def test_create_submission_deadline_passed(
         self, mock_submission_collections, sample_submission_data
@@ -116,8 +118,9 @@ class TestCreateSubmission:
         form_doc = _make_active_form_doc(deadline=past_date)
         mock_submission_collections["forms"].find_one = AsyncMock(return_value=form_doc)
 
-        with pytest.raises(FormValidationError, match="deadline has passed"):
+        with pytest.raises(FormValidationError) as exc_info:
             await SubmissionService.create_submission(sample_submission_data)
+        assert exc_info.value.code == "form_deadline_passed"
 
     async def test_create_submission_requires_conditional_field_when_visible(
         self, mock_submission_collections
@@ -159,8 +162,10 @@ class TestCreateSubmission:
 
         mock_submission_collections["forms"].find_one = AsyncMock(return_value=form_doc)
 
-        with pytest.raises(FormValidationError, match="turkish_identity_number"):
+        with pytest.raises(FormValidationError) as exc_info:
             await SubmissionService.create_submission(submission_data)
+        assert exc_info.value.code == "required_answer_incomplete"
+        assert exc_info.value.internal_note == "turkish_identity_number"
 
     async def test_create_submission_skips_conditional_field_when_hidden(
         self, mock_submission_collections
@@ -208,6 +213,70 @@ class TestCreateSubmission:
 
         assert result is not None
         assert result.answers["is_yasar_student"] == "Evet"
+
+
+class TestCreateSubmissionDryRun:
+    """Test SubmissionService.create_submission with dry_run=True."""
+
+    async def test_dry_run_returns_submission_without_persisting(
+        self, mock_submission_collections, sample_submission_data
+    ):
+        """Returns a valid SubmissionInDB without calling insert_one or incrementing submission_count."""
+        form_doc = _make_active_form_doc()
+        mock_submission_collections["forms"].find_one = AsyncMock(return_value=form_doc)
+        mock_submission_collections["submissions"].insert_one = AsyncMock()
+        mock_submission_collections["forms"].update_one = AsyncMock()
+
+        result = await SubmissionService.create_submission(
+            sample_submission_data, dry_run=True
+        )
+
+        assert result is not None
+        assert result.respondent_email == "john@example.com"
+        assert result.form_id == sample_submission_data.form_id
+        mock_submission_collections["submissions"].insert_one.assert_not_awaited()
+        mock_submission_collections["forms"].update_one.assert_not_awaited()
+
+    async def test_dry_run_still_rejects_missing_form(
+        self, mock_submission_collections, sample_submission_data
+    ):
+        """Raises FormNotFoundError even when dry_run=True."""
+        mock_submission_collections["forms"].find_one = AsyncMock(return_value=None)
+
+        with pytest.raises(FormNotFoundError):
+            await SubmissionService.create_submission(
+                sample_submission_data, dry_run=True
+            )
+
+    async def test_dry_run_still_rejects_inactive_form(
+        self, mock_submission_collections, sample_submission_data
+    ):
+        """Raises FormValidationError for inactive form even when dry_run=True."""
+        form_doc = _make_active_form_doc(is_active=False)
+        mock_submission_collections["forms"].find_one = AsyncMock(return_value=form_doc)
+
+        with pytest.raises(FormValidationError) as exc_info:
+            await SubmissionService.create_submission(
+                sample_submission_data, dry_run=True
+            )
+        assert exc_info.value.code == "form_not_active"
+
+    async def test_dry_run_still_validates_required_answers(
+        self, mock_submission_collections
+    ):
+        """Raises FormValidationError for missing required field even when dry_run=True."""
+        form_doc = _make_active_form_doc()
+        mock_submission_collections["forms"].find_one = AsyncMock(return_value=form_doc)
+
+        submission_data = SubmissionCreate(
+            form_id=SAMPLE_FORM_ID,
+            answers={"name": ""},
+            respondent_email="test@example.com",
+        )
+
+        with pytest.raises(FormValidationError) as exc_info:
+            await SubmissionService.create_submission(submission_data, dry_run=True)
+        assert exc_info.value.code == "required_answer_incomplete"
 
 
 class TestGetSubmissionById:
