@@ -274,7 +274,8 @@ class CampaignRepository:
         async for doc in cursor:
             campaign = CampaignInDB.model_validate(doc)
             executed_times_utc = {
-                cls._normalize_datetime(executed) for executed in campaign.executed_times
+                cls._normalize_datetime(executed)
+                for executed in campaign.executed_times
             }
             # Filter out campaigns where all due times have been executed
             has_unexecuted_due_time = False

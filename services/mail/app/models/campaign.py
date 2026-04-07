@@ -118,9 +118,7 @@ class CampaignInDB(BaseModel):
 
     @field_validator("executed_times")
     @classmethod
-    def normalize_executed_times_to_utc(
-        cls, value: list[datetime]
-    ) -> list[datetime]:
+    def normalize_executed_times_to_utc(cls, value: list[datetime]) -> list[datetime]:
         normalized: list[datetime] = []
         for dt in value:
             if dt.tzinfo is None:

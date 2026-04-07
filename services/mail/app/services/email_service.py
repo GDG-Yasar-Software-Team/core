@@ -265,9 +265,7 @@ class EmailService:
                     for email in recipients
                 ]
 
-            logger.info(
-                "Starting test email batch", total_recipients=len(recipients)
-            )
+            logger.info("Starting test email batch", total_recipients=len(recipients))
 
             for i, email in enumerate(recipients):
                 try:
