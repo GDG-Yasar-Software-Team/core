@@ -36,6 +36,18 @@ class Settings(BaseSettings):
     # Scheduler Configuration
     SCHEDULER_CHECK_INTERVAL_MINUTES: int = 1
 
+    # Admin Authentication
+    ADMIN_API_TOKEN: str = ""
+
+    # Reset campaigns stuck in in_progress (0 disables)
+    STALE_IN_PROGRESS_MINUTES: int = 120
+
+    # CORS
+    ALLOWED_ORIGINS: list[str] = ["http://localhost:3001"]
+
+    # Progress tracking
+    PROGRESS_UPDATE_INTERVAL: int = 10
+
     # Environment
     ENV: str = "development"
 
@@ -80,6 +92,16 @@ class Settings(BaseSettings):
                 raise ValueError(
                     "USER_SERVICE_URL must be set to the production user service URL. "
                     "Example: https://user.gdg.com"
+                )
+            if not self.ADMIN_API_TOKEN:
+                raise ValueError(
+                    "ADMIN_API_TOKEN must be set in production. "
+                    "Generate one with: python -c 'import secrets; print(secrets.token_urlsafe(32))'"
+                )
+            if self.ALLOWED_ORIGINS == ["http://localhost:3001"]:
+                raise ValueError(
+                    "ALLOWED_ORIGINS must be set to production frontend URL(s). "
+                    "Example: ['https://mail.gdg-yasar.com']"
                 )
 
 

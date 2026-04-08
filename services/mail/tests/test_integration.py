@@ -47,7 +47,7 @@ class TestFullCampaignFlow:
 
         assert created_id == str(campaign_id)
 
-        # Trigger campaign
+        # Trigger campaign (now returns immediately, execution is background)
         mock_emails = ["user1@example.com"]
 
         with patch(
@@ -75,8 +75,8 @@ class TestFullCampaignFlow:
                         unsubscribe_url_base="http://test.com/unsubscribe",
                     )
 
-        assert result.sent_count == 1
-        assert result.failed_count == 0
+        assert result.total_recipients == 1
+        assert result.status == "in_progress"
 
     async def test_update_before_execution(self, mock_mongodb):
         """Test updating campaign before execution."""

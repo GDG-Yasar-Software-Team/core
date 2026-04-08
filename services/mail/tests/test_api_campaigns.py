@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 from bson import ObjectId
 
+from app.clients.user_client import UserServiceAuthError
 from tests.conftest import create_async_cursor
 
 
@@ -140,7 +141,7 @@ class TestPutCampaigns:
     def test_cannot_update_completed_campaign(
         self, sync_client, mock_mongodb, sample_campaign_doc
     ):
-        """Should return 400 when updating completed campaign."""
+        """Should return 409 when updating completed campaign."""
         sample_campaign_doc["status"] = "completed"
         mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
 
@@ -149,7 +150,7 @@ class TestPutCampaigns:
             json={"subject": "Updated"},
         )
 
-        assert response.status_code == 400
+        assert response.status_code == 409
 
 
 class TestTriggerCampaign:
@@ -169,16 +170,108 @@ class TestTriggerCampaign:
         ):
             response = sync_client.post("/campaigns/507f1f77bcf86cd799439020/trigger")
 
-        assert response.status_code == 200
+        assert response.status_code == 202
         data = response.json()
-        assert "sent_count" in data
-        assert "failed_count" in data
+        assert "campaign_id" in data
+        assert "total_recipients" in data
+        assert data["status"] == "in_progress"
 
     def test_404_for_missing_campaign(self, sync_client, mock_mongodb):
         """Should return 404 for nonexistent campaign."""
         mock_mongodb["campaigns"].find_one = AsyncMock(return_value=None)
 
         response = sync_client.post("/campaigns/507f1f77bcf86cd799439099/trigger")
+
+        assert response.status_code == 404
+
+    def test_returns_409_when_already_in_progress(
+        self, sync_client, mock_mongodb, sample_campaign_doc
+    ):
+        """Should reject duplicate trigger while in progress."""
+        sample_campaign_doc["status"] = "in_progress"
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+
+        response = sync_client.post("/campaigns/507f1f77bcf86cd799439020/trigger")
+
+        assert response.status_code == 409
+
+
+class TestRecipientPreview:
+    """Tests for GET /campaigns/recipient-preview endpoint."""
+
+    def test_returns_recipient_preview(self, sync_client):
+        """Should return recipient count and ETA data."""
+        with patch(
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
+            new_callable=AsyncMock,
+            return_value=["a@example.com", "b@example.com"],
+        ):
+            response = sync_client.get("/campaigns/recipient-preview")
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["total_recipients"] == 2
+        assert "estimated_seconds" in data
+        assert "estimated_minutes" in data
+
+
+class TestGetCampaignProgress:
+    """Tests for GET /campaigns/{id}/progress endpoint."""
+
+    def test_returns_progress_with_active_execution(
+        self, sync_client, mock_mongodb, sample_campaign_doc
+    ):
+        """Should return current progress when campaign has active progress."""
+        sample_campaign_doc["current_progress"] = {
+            "total_recipients": 100,
+            "sent_count": 50,
+            "failed_count": 2,
+            "started_at": "2025-01-20T10:00:00",
+            "is_complete": False,
+        }
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+
+        response = sync_client.get("/campaigns/507f1f77bcf86cd799439020/progress")
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["total_recipients"] == 100
+        assert data["sent_count"] == 50
+        assert data["failed_count"] == 2
+        assert data["is_complete"] is False
+
+    def test_returns_last_execution_when_no_progress(
+        self, sync_client, mock_mongodb, sample_campaign_doc
+    ):
+        """Should return completed progress from last execution when no active progress."""
+        sample_campaign_doc["executions"] = [
+            {
+                "scheduled_time": None,
+                "subject_used": "Test",
+                "started_at": "2025-01-20T10:00:00",
+                "completed_at": "2025-01-20T10:30:00",
+                "sent_count": 95,
+                "failed_count": 5,
+                "recipient_emails": [],
+                "failed_emails": [],
+                "is_manual_trigger": True,
+            }
+        ]
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+
+        response = sync_client.get("/campaigns/507f1f77bcf86cd799439020/progress")
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["total_recipients"] == 100
+        assert data["sent_count"] == 95
+        assert data["is_complete"] is True
+
+    def test_404_for_missing_campaign(self, sync_client, mock_mongodb):
+        """Should return 404 for nonexistent campaign."""
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=None)
+
+        response = sync_client.get("/campaigns/507f1f77bcf86cd799439099/progress")
 
         assert response.status_code == 404
 
@@ -244,3 +337,69 @@ class TestListCampaigns:
 
         assert response.status_code == 200
         assert response.json() == []
+
+
+class TestAdminAuth:
+    """Tests for X-Admin-Token when ADMIN_API_TOKEN is configured."""
+
+    def test_401_without_header_when_token_configured(
+        self, sync_client, mock_mongodb, mock_settings
+    ):
+        mock_settings.ADMIN_API_TOKEN = "expected-secret"
+        mock_cursor = create_async_cursor([])
+        mock_mongodb["campaigns"].find = MagicMock(return_value=mock_cursor)
+
+        response = sync_client.get("/campaigns/")
+
+        assert response.status_code == 401
+
+    def test_401_wrong_token_when_configured(
+        self, sync_client, mock_mongodb, mock_settings
+    ):
+        mock_settings.ADMIN_API_TOKEN = "expected-secret"
+        mock_cursor = create_async_cursor([])
+        mock_mongodb["campaigns"].find = MagicMock(return_value=mock_cursor)
+
+        response = sync_client.get(
+            "/campaigns/",
+            headers={"X-Admin-Token": "wrong"},
+        )
+
+        assert response.status_code == 401
+
+    def test_200_with_valid_token(self, sync_client, mock_mongodb, mock_settings):
+        mock_settings.ADMIN_API_TOKEN = "expected-secret"
+        mock_cursor = create_async_cursor([])
+        mock_mongodb["campaigns"].find = MagicMock(return_value=mock_cursor)
+
+        response = sync_client.get(
+            "/campaigns/",
+            headers={"X-Admin-Token": "expected-secret"},
+        )
+
+        assert response.status_code == 200
+
+
+class TestTriggerUserServiceErrors:
+    """User service failures during trigger."""
+
+    def test_trigger_returns_502_when_user_service_auth_fails(
+        self, sync_client, mock_mongodb, sample_campaign_doc
+    ):
+        mock_mongodb["campaigns"].find_one = AsyncMock(return_value=sample_campaign_doc)
+        mock_mongodb["campaigns"].update_one = AsyncMock(
+            return_value=MagicMock(matched_count=1, modified_count=1)
+        )
+
+        with patch(
+            "app.services.campaign_service.UserServiceClient.get_subscribed_emails",
+            new_callable=AsyncMock,
+            side_effect=UserServiceAuthError("bad token"),
+        ):
+            response = sync_client.post(
+                "/campaigns/507f1f77bcf86cd799439020/trigger",
+            )
+
+        assert response.status_code == 502
+        detail = response.json()["detail"]
+        assert detail["code"] == "user_service_auth"

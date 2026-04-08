@@ -1,21 +1,82 @@
 import json
 from typing import Annotated
 
-from fastapi import APIRouter, File, Form, HTTPException, Query, Request, UploadFile
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    Form,
+    Header,
+    HTTPException,
+    Query,
+    Request,
+    UploadFile,
+)
 from pydantic import ValidationError
 
+from app.config import settings
 from app.models.campaign import (
     CampaignCreate,
     CampaignListItem,
     CampaignResponse,
     CampaignUpdate,
+    ExecutionProgress,
+    RecipientPreviewResponse,
     ScheduledSend,
-    TriggerResult,
+    TestMailRequest,
+    TestMailResponse,
+    TestMailResult,
+    TriggerStartResponse,
+)
+from app.clients.user_client import (
+    UserServiceAuthError,
+    UserServiceError,
+    UserServiceTimeoutError,
 )
 from app.repositories.campaign_repository import CampaignNotFoundError
-from app.services.campaign_service import CampaignService
+from app.services.campaign_service import CampaignConflictError, CampaignService
+from app.services.email_service import EmailService
 
-router = APIRouter(prefix="/campaigns", tags=["campaigns"])
+
+async def verify_admin_token(
+    x_admin_token: Annotated[str, Header()] = "",
+) -> None:
+    """Validate admin API token when ADMIN_API_TOKEN is set (any environment)."""
+    if not settings.ADMIN_API_TOKEN:
+        return
+    if x_admin_token != settings.ADMIN_API_TOKEN:
+        raise HTTPException(status_code=401, detail="Invalid admin token")
+
+
+def _http_from_user_service(exc: UserServiceError) -> HTTPException:
+    """Map user-service failures to HTTP errors with stable JSON detail."""
+    if isinstance(exc, UserServiceAuthError):
+        return HTTPException(
+            status_code=502,
+            detail={
+                "code": "user_service_auth",
+                "message": str(exc),
+            },
+        )
+    if isinstance(exc, UserServiceTimeoutError):
+        return HTTPException(
+            status_code=504,
+            detail={
+                "code": "user_service_timeout",
+                "message": str(exc),
+            },
+        )
+    return HTTPException(
+        status_code=502,
+        detail={"code": "user_service_error", "message": str(exc)},
+    )
+
+
+router = APIRouter(
+    prefix="/campaigns",
+    tags=["campaigns"],
+    dependencies=[Depends(verify_admin_token)],
+)
 
 
 @router.post("/", status_code=201)
@@ -87,25 +148,43 @@ async def update_campaign(
         return await CampaignService.update_campaign(campaign_id, update)
     except CampaignNotFoundError:
         raise HTTPException(status_code=404, detail="Campaign not found")
+    except CampaignConflictError as e:
+        raise HTTPException(status_code=409, detail=str(e))
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=409, detail=str(e))
 
 
-@router.post("/{campaign_id}/trigger")
+@router.post("/{campaign_id}/trigger", status_code=202)
 async def trigger_campaign(
     campaign_id: str,
-    request: Request,
-) -> TriggerResult:
-    """Trigger a campaign immediately, ignoring scheduled times."""
+) -> TriggerStartResponse:
+    """Trigger a campaign immediately. Execution runs in background."""
     try:
-        # Build unsubscribe URL base from request
-        base_url = str(request.base_url).rstrip("/")
-        unsubscribe_url_base = f"{base_url}/unsubscribe"
+        return await CampaignService.trigger_now(campaign_id=campaign_id)
+    except CampaignNotFoundError:
+        raise HTTPException(status_code=404, detail="Campaign not found")
+    except CampaignConflictError as e:
+        raise HTTPException(status_code=409, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except UserServiceError as e:
+        raise _http_from_user_service(e) from e
 
-        return await CampaignService.trigger_now(
-            campaign_id=campaign_id,
-            unsubscribe_url_base=unsubscribe_url_base,
-        )
+
+@router.get("/recipient-preview")
+async def get_recipient_preview() -> RecipientPreviewResponse:
+    """Return recipient count and estimated delivery duration for manual trigger."""
+    try:
+        return await CampaignService.get_recipient_preview()
+    except UserServiceError as e:
+        raise _http_from_user_service(e) from e
+
+
+@router.get("/{campaign_id}/progress")
+async def get_campaign_progress(campaign_id: str) -> ExecutionProgress:
+    """Get real-time execution progress for a campaign."""
+    try:
+        return await CampaignService.get_campaign_progress(campaign_id)
     except CampaignNotFoundError:
         raise HTTPException(status_code=404, detail="Campaign not found")
 
@@ -137,3 +216,33 @@ async def list_campaigns(
         )
         for c in campaigns
     ]
+
+
+@router.post("/test-send", status_code=200)
+async def test_send(
+    data: TestMailRequest,
+) -> TestMailResponse:
+    """
+    Send a test email to one or more addresses.
+
+    Does NOT persist anything to the database.
+    Does NOT call the user service.
+    Does NOT inject unsubscribe links.
+    Subject is prefixed with [TEST].
+    Maximum 10 recipients.
+    """
+    results = await EmailService.send_test(
+        recipients=data.emails,
+        subject=data.subject,
+        body_html=data.body_html,
+    )
+    sent_count = sum(1 for r in results if r.success)
+    failed_count = sum(1 for r in results if not r.success)
+    return TestMailResponse(
+        results=[
+            TestMailResult(email=r.email, success=r.success, error=r.error)
+            for r in results
+        ],
+        sent_count=sent_count,
+        failed_count=failed_count,
+    )

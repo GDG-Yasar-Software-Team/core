@@ -12,6 +12,13 @@ class SchedulerService:
     _scheduler: AsyncIOScheduler | None = None
     _unsubscribe_url_base: str = ""
 
+    @staticmethod
+    def _normalize_datetime(value: datetime) -> datetime:
+        """Normalize datetimes to timezone-aware UTC."""
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+        return value.astimezone(timezone.utc)
+
     @classmethod
     def configure(cls, unsubscribe_url_base: str) -> None:
         """Configure the scheduler with the unsubscribe URL base."""
@@ -47,8 +54,8 @@ class SchedulerService:
     async def _check_and_execute_campaigns(cls) -> None:
         """Check for due campaigns and execute them."""
         try:
-            now = datetime.now(timezone.utc)
-            campaigns = await CampaignRepository.get_due_campaigns(before_time=now)
+            now_utc = datetime.now(timezone.utc)
+            campaigns = await CampaignRepository.get_due_campaigns(before_time=now_utc)
 
             if not campaigns:
                 return
@@ -56,12 +63,16 @@ class SchedulerService:
             logger.info("Found due campaigns", count=len(campaigns))
 
             for campaign in campaigns:
+                executed_times_utc = {
+                    cls._normalize_datetime(t) for t in campaign.executed_times
+                }
                 # Find due times that haven't been executed
-                due_times = [
-                    send.time
+                due_times = {
+                    cls._normalize_datetime(send.time)
                     for send in campaign.scheduled_sends
-                    if send.time <= now and send.time not in campaign.executed_times
-                ]
+                    if cls._normalize_datetime(send.time) <= now_utc
+                    and cls._normalize_datetime(send.time) not in executed_times_utc
+                }
 
                 # Execute for each due time
                 for scheduled_time in sorted(due_times):

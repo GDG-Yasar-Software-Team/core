@@ -1,6 +1,6 @@
 """Tests for Pydantic models."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 from pydantic import ValidationError
@@ -70,6 +70,19 @@ class TestScheduledSend:
             subject="Custom Subject",
         )
         assert send.subject == "Custom Subject"
+
+    def test_normalizes_naive_time_to_utc(self):
+        """Should normalize naive datetime values to UTC."""
+        send = ScheduledSend(time=datetime(2025, 1, 20, 10, 0, 0))
+
+        assert send.time.tzinfo is not None
+        assert send.time.tzinfo == timezone.utc
+
+    def test_normalizes_aware_time_to_utc(self):
+        """Should normalize timezone-aware datetime values to UTC."""
+        send = ScheduledSend(time=datetime.fromisoformat("2025-01-20T13:00:00+03:00"))
+
+        assert send.time == datetime(2025, 1, 20, 10, 0, 0, tzinfo=timezone.utc)
 
 
 class TestCampaignUpdate:
