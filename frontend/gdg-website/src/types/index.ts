@@ -30,12 +30,7 @@ export interface Event {
 /**
  * Platform types for social media links
  */
-export type SocialPlatform =
-	| "linkedin"
-	| "github"
-	| "twitter"
-	| "instagram"
-	| "website";
+export type SocialPlatform = "linkedin";
 
 /**
  * Social media link for team members

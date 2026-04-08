@@ -48,7 +48,7 @@ export const EventDetailPage: React.FC = () => {
 				<Navigation />
 				<main className="flex-1 pt-12 md:pt-16">
 					<div className="max-w-[900px] mx-auto py-16 md:py-24 px-4 sm:px-6 text-center">
-						<div className="inline-block w-12 h-12 border-4 border-[#4285F4] border-t-transparent rounded-full animate-spin" />
+						<div className="inline-block w-12 h-12 border-4 border-gray-800 border-t-transparent rounded-full animate-spin" />
 						<p className="mt-4 text-[#5f6368]">Loading event...</p>
 					</div>
 				</main>
@@ -114,13 +114,13 @@ export const EventDetailPage: React.FC = () => {
 				<div className="max-w-[900px] mx-auto py-16 md:py-24 px-4 sm:px-6">
 					<Link
 						to="/"
-						className="inline-flex items-center gap-2 text-[#5f6368] no-underline text-base font-medium mb-8 transition-colors duration-200 hover:text-[#4285F4]"
+						className="inline-flex items-center gap-2 text-[#5f6368] no-underline text-base font-medium mb-8 transition-colors duration-200 hover:text-gray-800"
 					>
 						← Back to Home
 					</Link>
 
 					<div className="mb-16 md:mb-24">
-						<span className="inline-block py-1 px-4 bg-[#e8f0fe] text-[#1967d2] rounded-full text-sm font-medium mb-4">
+						<span className="inline-block py-1 px-4 bg-gray-800 text-white rounded-full text-sm font-medium mb-4">
 							{eventType}
 						</span>
 						<h1 className="text-3xl md:text-4xl font-bold text-[#1f1f1f] m-0 mb-8 leading-tight">
@@ -188,11 +188,11 @@ export const EventDetailPage: React.FC = () => {
 							About This Event
 						</h2>
 						<div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-8 md:gap-16 items-start">
-							<div className="relative rounded-2xl overflow-hidden shadow-[0_4px_12px_rgba(60,64,67,0.15)] bg-gradient-to-br from-[#4285F4] via-[#EA4335] via-[#FBBC05] via-[#34A853] to-[#4285F4] p-1">
+							<div className="relative rounded-2xl overflow-hidden shadow-md shadow-gray-200 p-0 border border-gray-100">
 								<img
 									src={imageUrl}
 									alt={event.title}
-									className="w-full h-auto block rounded-xl bg-white"
+									className="w-full h-auto block bg-white"
 								/>
 							</div>
 							<div className="flex flex-col gap-8">
@@ -201,7 +201,7 @@ export const EventDetailPage: React.FC = () => {
 								</p>
 
 								{registrationUrl && !isPast && (
-									<div className="mt-2 p-5 bg-[#e8f0fe] rounded-xl border border-[#d2e3fc]">
+									<div className="mt-2 p-6 bg-white rounded-2xl border border-gray-200 shadow-sm">
 										<h3 className="text-lg font-bold text-[#1f1f1f] m-0 mb-2">
 											Registration
 										</h3>
@@ -212,7 +212,7 @@ export const EventDetailPage: React.FC = () => {
 											href={registrationUrl}
 											target="_blank"
 											rel="noopener noreferrer"
-											className="inline-flex items-center gap-2 py-2.5 px-4 rounded-lg bg-[#1a73e8] text-white no-underline text-sm font-medium hover:bg-[#1765cc] transition-colors"
+											className="inline-flex items-center gap-2 py-2.5 px-6 rounded-xl bg-gray-900 text-white no-underline text-sm font-medium hover:bg-gray-800 transition-colors shadow-sm"
 										>
 											Register now
 										</a>

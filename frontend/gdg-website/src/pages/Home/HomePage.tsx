@@ -7,63 +7,6 @@ import { fetchEvents, isEventPast } from "../../services/eventService";
 import type { Event } from "../../types";
 import { EventCard } from "../UpcomingEvents/components/EventCard";
 
-const pastEventsDisplay = [
-	{
-		id: "info-session",
-		title: "Info Session",
-		image:
-			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/1-info-session.png",
-	},
-	{
-		id: "tech-talks",
-		title: "Tech Talks",
-		image:
-			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/2-tech-talks.png",
-	},
-	{
-		id: "build-your-circle",
-		title: "Build Your Circle",
-		image:
-			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/3-build-your-circle.png",
-	},
-	{
-		id: "ai-talks-25",
-		title: "AI Talks 25",
-		image:
-			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/4-ai-talks-25.png",
-	},
-	{
-		id: "batuhan-gungor",
-		title: "Batuhan Güngör",
-		image:
-			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/6-batuhan-gungor.png",
-	},
-	{
-		id: "emre-danisan",
-		title: "Emre Danışan",
-		image:
-			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/7-emre-danisan.png",
-	},
-	{
-		id: "fikirden-gelecege",
-		title: "Fikirden Geleceğe",
-		image:
-			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/8-fikirden-gelecege-event.png",
-	},
-	{
-		id: "hard-times",
-		title: "Hard Times",
-		image:
-			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/9-hard-times.jpg",
-	},
-	{
-		id: "study-connect",
-		title: "Study Connect",
-		image:
-			"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/10-study-connect.png",
-	},
-];
-
 const missionCards = [
 	{
 		id: 1,
@@ -97,6 +40,7 @@ const missionCards = [
 export const HomePage: React.FC = () => {
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
 	const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
+	const [pastEvents, setPastEvents] = useState<Event[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
@@ -106,9 +50,16 @@ export const HomePage: React.FC = () => {
 				setLoading(true);
 				setError(null);
 				const events = await fetchEvents();
+				
 				// Filter for upcoming events only
 				const upcoming = events.filter((e) => !isEventPast(e));
 				setUpcomingEvents(upcoming);
+
+				// Filter and sort past events by date ascending
+				const past = events
+					.filter(isEventPast)
+					.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+				setPastEvents(past);
 			} catch (err) {
 				console.error("Failed to load events:", err);
 				setError("Failed to load events. Please try again later.");
@@ -229,14 +180,14 @@ export const HomePage: React.FC = () => {
 							className="flex gap-6 overflow-x-auto md:overflow-x-hidden overflow-y-hidden scroll-smooth [-webkit-overflow-scrolling:touch] [scrollbar-width:thin] md:[scrollbar-width:none] [scrollbar-color:#dadce0_transparent] md:[&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar]:block [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#dadce0] [&::-webkit-scrollbar-thumb]:rounded"
 							ref={scrollContainerRef}
 						>
-							{pastEventsDisplay.map((event) => (
+							{pastEvents.map((event) => (
 								<Link
 									key={event.id}
 									to={`/events/${event.id}`}
 									className="flex-[0_0_auto] w-[240px] sm:w-[280px] bg-white rounded-xl overflow-hidden shadow-[0_1px_2px_0_rgba(60,64,67,0.3),0_1px_3px_1px_rgba(60,64,67,0.15)] transition-all duration-200 cursor-pointer no-underline block hover:-translate-y-1 hover:shadow-[0_4px_8px_0_rgba(60,64,67,0.3),0_2px_6px_2px_rgba(60,64,67,0.15)]"
 								>
 									<img
-										src={event.image}
+										src={event.image_url || "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/1-info-session.png"}
 										alt={event.title}
 										className="w-full h-[240px] sm:h-[280px] object-cover block"
 									/>
