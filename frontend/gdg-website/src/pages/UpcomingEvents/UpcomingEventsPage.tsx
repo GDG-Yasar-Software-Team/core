@@ -23,9 +23,7 @@ export const UpcomingEventsPage: React.FC = () => {
 				setLoading(true);
 				setError(null);
 				const allEvents = await fetchEvents();
-				// Filter for upcoming events only
-				const upcoming = allEvents.filter((e) => !isEventPast(e));
-				setEvents(upcoming);
+				setEvents(allEvents);
 			} catch (err) {
 				console.error("Failed to load events:", err);
 				setError("Failed to load events. Please try again later.");
@@ -132,7 +130,7 @@ export const UpcomingEventsPage: React.FC = () => {
 						<div className="flex flex-col gap-6">
 							{filteredEvents.length > 0 ? (
 								filteredEvents.map((event) => (
-									<EventCard key={event.id} event={event} />
+									<EventCard key={event.id} event={event} isPast={isEventPast(event)} />
 								))
 							) : searchQuery.trim() ? (
 								<div className="text-center py-16 px-8 text-[#5f6368] text-lg">

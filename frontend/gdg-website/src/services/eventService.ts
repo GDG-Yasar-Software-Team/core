@@ -26,6 +26,7 @@ function normalizeEvent(rawEvent: unknown): Event {
 		date: String(e.date ?? ""),
 		place: String(e.place ?? ""),
 		image_url: getOptionalString(e.image_url ?? e.imageUrl),
+		event_type: getOptionalString(e.event_type ?? e.eventType),
 		registration_form_url: getOptionalString(
 			e.registration_form_url ??
 				e.registrationFormUrl ??

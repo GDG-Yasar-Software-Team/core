@@ -86,26 +86,12 @@ export const EventDetailPage: React.FC = () => {
 	const location = extractLocation(event.place);
 	const city = extractCity(event.place);
 	const imageUrl =
-		event.image_url || "https://via.placeholder.com/400x300?text=GDG+Event";
+		event.image_url || "/placeholder.png";
 	const registrationUrl = event.registration_form_url?.trim();
 	const isPast = isEventPast(event);
 
-	// Determine event type from title
-	let eventType = "Event";
-	const titleLower = event.title.toLowerCase();
-	if (titleLower.includes("workshop")) eventType = "Workshop";
-	else if (titleLower.includes("hackathon")) eventType = "Hackathon";
-	else if (titleLower.includes("talk") || titleLower.includes("session"))
-		eventType = "Tech Talk";
-	else if (titleLower.includes("meetup")) eventType = "Meetup";
-	else if (titleLower.includes("conference") || titleLower.includes("summit"))
-		eventType = "Conference";
-
-	// Generate tags
-	const tags: string[] = [eventType];
-	if (event.speakers.length > 0) {
-		tags.push("Guest Speaker");
-	}
+	const eventType = event.event_type || "Event";
+	const tags = event.tags || [];
 
 	return (
 		<div className="min-h-screen flex flex-col">
@@ -227,7 +213,7 @@ export const EventDetailPage: React.FC = () => {
 										<div className="flex flex-col gap-4">
 											{event.speakers.map((speaker, index) => (
 												<div
-													key={index}
+													key={speaker.name || index}
 													className="p-4 bg-[#f8f9fa] rounded-xl border border-[#e8eaed]"
 												>
 													<h4 className="text-base font-bold text-[#1f1f1f] m-0 mb-1 leading-tight">

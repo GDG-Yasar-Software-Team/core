@@ -5,19 +5,20 @@ import type { Event } from "../../../types";
 
 interface EventCardProps {
 	event: Event;
+	isPast?: boolean;
 }
 
-export const EventCard: React.FC<EventCardProps> = ({ event }) => {
+export const EventCard: React.FC<EventCardProps> = ({ event, isPast }) => {
 	const formattedDate = formatEventDate(event.date);
 	const imageUrl =
-		event.image_url || "https://via.placeholder.com/400x300?text=GDG+Event";
+		event.image_url || "/placeholder.png";
 
 	// Use tags directly from backend
 	const tags: string[] = event.tags || [];
 	const mainTag = tags.length > 0 ? tags[0] : "Event";
 
 	return (
-		<article className="flex flex-col md:flex-row gap-6 p-6 bg-white rounded-lg border border-[#e0e0e0] transition-shadow duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] items-center md:items-start text-center md:text-left">
+		<article className={`flex flex-col md:flex-row gap-6 p-6 bg-white rounded-lg border border-[#e0e0e0] transition-shadow duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] items-center md:items-start text-center md:text-left ${isPast ? "opacity-60" : ""}`}>
 			<div className="flex-shrink-0 w-[100px] h-[100px] md:w-[120px] md:h-[120px] rounded-full overflow-hidden bg-[#f5f5f5]">
 				<img
 					src={imageUrl}
@@ -28,6 +29,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
 
 			<div className="flex-1 flex flex-col gap-3">
 				<div className="flex items-center gap-3 flex-wrap text-sm text-[#5f6368] justify-center md:justify-start">
+					{isPast && <span className="bg-gray-200 text-gray-700 py-0.5 px-2 rounded-full text-xs font-bold">Past</span>}
 					<time className="font-semibold text-[#202124]">{formattedDate}</time>
 					<span className="uppercase text-xs">{mainTag}</span>
 				</div>
