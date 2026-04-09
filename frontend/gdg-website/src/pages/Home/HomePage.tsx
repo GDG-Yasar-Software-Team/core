@@ -189,7 +189,7 @@ export const HomePage: React.FC = () => {
 									<img
 										src={event.image_url || "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/1-info-session.png"}
 										alt={event.title}
-										className="w-full h-[240px] sm:h-[280px] object-cover block"
+										className="w-full h-auto object-cover block"
 									/>
 								</Link>
 							))}
