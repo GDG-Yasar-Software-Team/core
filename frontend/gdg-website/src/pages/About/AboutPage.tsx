@@ -46,13 +46,6 @@ const GALLERY_IMAGES = [
 	},
 ].sort(() => Math.random() - 0.5);
 
-const EVENT_BG_COLORS = [
-	"bg-[#4285F4]", // Blue
-	"bg-[#EA4335]", // Red
-	"bg-[#FBBC04]", // Yellow
-	"bg-[#34A853]", // Green
-];
-
 export const AboutPage: React.FC = () => {
 	const [events, setEvents] = useState<Event[]>([]);
 
@@ -74,29 +67,30 @@ export const AboutPage: React.FC = () => {
 			<div className="w-full overflow-hidden">
 				<img
 					src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/about-page-title/about-title.png"
-					alt="About GDG on Campus Yaşar University"
+					alt="About GDG on Campus Yasar University"
 					className="w-full h-auto block"
 				/>
 			</div>
 			<main className="flex-1">
-				{/* Biz Kimiz Section */}
+				{/* Who Are We Section */}
 				<section className="flex flex-col lg:flex-row w-full min-h-[75vh] mt-[-5px]">
 					<div className="relative w-full lg:w-1/2 bg-[#121212] text-white p-12 lg:p-24 flex flex-col justify-center">
 						<div className="max-w-xl mx-auto lg:ml-0 z-10 w-full">
 							<h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-8 tracking-tight leading-tight">
-								Biz Kimiz?
+								Who Are We?
 							</h1>
 							<p className="text-gray-300 text-lg md:text-xl leading-relaxed mb-6 font-medium">
-								Bizler, sadece ders geçmek veya zorunlu staj aramak yerine,
-								teknolojiyi öğrenmeye ve yeni bir şeyler üretmeye aşık olduğumuz
-								için toplanmış bir avuç Yaşar Üniversitesi öğrencisiyiz.
+								We are a group of Yasar University students gathered because we
+								love learning technology and creating new things, rather than
+								just passing classes or looking for mandatory internships.
 							</p>
 							<p className="text-gray-400 text-base md:text-lg leading-relaxed mb-10">
-								Aramızda ilk kez "Hello World" yazmanın heyecanını yaşayanlar da
-								var, yıllardır kendi projelerini kodlayanlar da... Amacımız
-								mükemmel olmak değil; birbirimizden öğrenmek, hata yapmaktan
-								korkmamak ve teknolojinin hızına hep birlikte ayak uydurmak. Ne
-								kadar farklı koda baksak da ortak dilimiz: Üretmek.
+								There are some of us experiencing the excitement of writing
+								"Hello World" for the first time, and some who have been coding
+								their own projects for years... Our goal is not to be perfect;
+								but to learn from each other, not be afraid of making mistakes,
+								and keep up with the speed of technology together. No matter how
+								different the code we look at, our common language is: Creating.
 							</p>
 							<a
 								href="https://gdg.community.dev/gdg-on-campus-yasar-university-izmir-turkey/"
@@ -104,7 +98,7 @@ export const AboutPage: React.FC = () => {
 								rel="noopener noreferrer"
 								className="inline-block bg-[#4285F4] hover:bg-blue-600 text-white font-semibold py-4 px-10 rounded-full transition-all shadow-lg hover:shadow-blue-500/30 transform hover:-translate-y-1 w-max"
 							>
-								Topluluğa Katıl
+								Join the Community
 							</a>
 						</div>
 						<div className="absolute bottom-12 right-12 opacity-30 pointer-events-none">
@@ -140,7 +134,7 @@ export const AboutPage: React.FC = () => {
 									<span className="text-[#4285F4]">code </span>
 									<span className="text-[#34A853]">stuff!</span>
 								</span>{" "}
-								<span className="text-3xl ml-1">🚀</span>
+								<span className="text-3xl ml-1">ğŸš€</span>
 							</div>
 						</div>
 						<div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -150,13 +144,12 @@ export const AboutPage: React.FC = () => {
 
 				<div className="bg-[#fff] py-20 text-center border-y border-gray-100">
 					<h2 className="text-4xl md:text-5xl font-extrabold text-[#202124] mb-6 tracking-tight">
-						Neler Yapıyoruz?
+						What Do We Do?
 					</h2>
 					<p className="text-xl text-[#5f6368] max-w-3xl mx-auto px-6 leading-relaxed">
-						Yapay zeka demolarından, teknik mülakat hazırlıklarına; saatlerce
-						süren kodlama atölyelerinden, alanında uzman isimleri dinlediğimiz
-						seminerlere... Teoride bırakmayıp pratiğe döktüğümüz geçmiş
-						etkinliklerimize göz at.
+						From AI demos to technical interview preparations; from hours of
+						coding workshops to seminars where we listen to industry experts...
+						Check out our past events where we put theory into practice.
 					</p>
 				</div>
 
@@ -164,10 +157,10 @@ export const AboutPage: React.FC = () => {
 					{events.map((event, index) => {
 						const isEven = index % 2 === 0;
 						const GDG_COLORS = [
-							"bg-[#4285F4]", // Blue
-							"bg-[#EA4335]", // Red
-							"bg-[#FBBC04]", // Yellow
-							"bg-[#34A853]", // Green
+							"bg-[#4285F4]",
+							"bg-[#EA4335]",
+							"bg-[#FBBC04]",
+							"bg-[#34A853]",
 						];
 						const bgColor = GDG_COLORS[index % GDG_COLORS.length];
 						const imageUrl =
@@ -184,7 +177,7 @@ export const AboutPage: React.FC = () => {
 										<div
 											className={`inline-block px-5 py-2 mb-6 rounded-full text-xs font-bold tracking-widest uppercase ${bgColor} text-white shadow-sm`}
 										>
-											{event.event_type || "Event / Atölye"}
+											{event.event_type || "Event / Workshop"}
 										</div>
 										<h3 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight leading-tight text-[#202124]">
 											{event.title}
@@ -199,7 +192,7 @@ export const AboutPage: React.FC = () => {
 												rel="noopener noreferrer"
 												className={`inline-block text-white hover:brightness-110 font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:-translate-y-1 shadow-md w-max ${bgColor}`}
 											>
-												Kayıt Ol & Detayları Gör
+												Register & View Details
 											</a>
 										)}
 									</div>
@@ -223,10 +216,10 @@ export const AboutPage: React.FC = () => {
 				<section className="w-full py-20 bg-[#f8f9fa] overflow-hidden border-t border-gray-100">
 					<div className="text-center mb-10">
 						<h2 className="text-3xl md:text-4xl font-bold text-[#202124]">
-							Ekibimizden Kareler
+							Moments From Our Team
 						</h2>
 						<p className="text-gray-500 mt-3 text-lg">
-							Birlikte olduğumuz, öğrendiğimiz ve eğlendiğimiz her an...
+							Every moment we spend together, learning, and having fun...
 						</p>
 					</div>
 					<div className="w-full h-[400px] sm:h-[500px] md:h-[600px] relative pointer-events-auto">
