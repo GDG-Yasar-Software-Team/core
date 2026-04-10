@@ -137,13 +137,13 @@ export const TeamPage: React.FC = () => {
 											/>
 										))}
 								</div>
-								<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5 max-w-7xl mx-auto w-full">
+								<div className="flex justify-center flex-wrap gap-3 sm:gap-5 max-w-7xl mx-auto w-full px-2">
 									{organizationTeam
 										.filter((m) => m.role === "member")
 										.map((member, idx) => (
 											<div
 												key={member.id}
-												className="w-full max-w-[170px] justify-self-center"
+												className="w-[45%] sm:w-[30%] md:w-[22%] lg:w-[18%] max-w-[170px] flex justify-center"
 											>
 												<TeamMemberCard member={member} index={idx + 1} />
 											</div>
@@ -197,13 +197,13 @@ export const TeamPage: React.FC = () => {
 											/>
 										))}
 								</div>
-								<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5 max-w-7xl mx-auto w-full">
+								<div className="flex justify-center flex-wrap gap-3 sm:gap-5 max-w-7xl mx-auto w-full px-2">
 									{marketingTeam
 										.filter((m) => m.role === "member")
 										.map((member, idx) => (
 											<div
 												key={member.id}
-												className="w-full max-w-[170px] justify-self-center"
+												className="w-[45%] sm:w-[30%] md:w-[22%] lg:w-[18%] max-w-[170px] flex justify-center"
 											>
 												<TeamMemberCard member={member} index={idx + 1} />
 											</div>
@@ -257,13 +257,13 @@ export const TeamPage: React.FC = () => {
 											/>
 										))}
 								</div>
-								<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5 max-w-7xl mx-auto w-full">
+								<div className="flex justify-center flex-wrap gap-3 sm:gap-5 max-w-7xl mx-auto w-full px-2">
 									{sponsorshipTeam
 										.filter((m) => m.role === "member")
 										.map((member, idx) => (
 											<div
 												key={member.id}
-												className="w-full max-w-[170px] justify-self-center"
+												className="w-[45%] sm:w-[30%] md:w-[22%] lg:w-[18%] max-w-[170px] flex justify-center"
 											>
 												<TeamMemberCard member={member} index={idx + 1} />
 											</div>
@@ -317,13 +317,13 @@ export const TeamPage: React.FC = () => {
 											/>
 										))}
 								</div>
-								<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5 max-w-7xl mx-auto w-full">
+								<div className="flex justify-center flex-wrap gap-3 sm:gap-5 max-w-7xl mx-auto w-full px-2">
 									{softwareTeam
 										.filter((m) => m.role === "member")
 										.map((member, idx) => (
 											<div
 												key={member.id}
-												className="w-full max-w-[170px] justify-self-center"
+												className="w-[45%] sm:w-[30%] md:w-[22%] lg:w-[18%] max-w-[170px] flex justify-center"
 											>
 												<TeamMemberCard member={member} index={idx + 1} />
 											</div>
