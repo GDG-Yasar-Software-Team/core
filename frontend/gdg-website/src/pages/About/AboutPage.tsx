@@ -47,16 +47,9 @@ export const AboutPage: React.FC = () => {
 	return (
 		<div className="min-h-screen flex flex-col bg-white overflow-hidden">
 			<Navigation />
-			<div className="w-full overflow-hidden">
-				<img
-					src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/about-page-title/about-title.png"
-					alt="About GDG on Campus Yasar University"
-					className="w-full h-auto block"
-				/>
-			</div>
 			<main className="flex-1">
 				{/* Who Are We Section */}
-				<section className="flex flex-col lg:flex-row w-full min-h-[75vh] mt-[-5px]">
+				<section className="flex flex-col lg:flex-row w-full min-h-[75vh]">
 					<div className="relative w-full lg:w-1/2 bg-[#121212] text-white p-12 lg:p-24 flex flex-col justify-center">
 						<div className="max-w-xl mx-auto lg:ml-0 z-10 w-full">
 							<h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-8 tracking-tight leading-tight">
