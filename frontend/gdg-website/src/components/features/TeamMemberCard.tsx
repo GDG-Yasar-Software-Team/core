@@ -51,13 +51,13 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 				type: "spring",
 				bounce: 0.35,
 			}}
-			className={`flex min-w-0 w-full flex-col items-center bg-transparent rounded-[var(--border-radius-md)] px-2 py-4 sm:px-4 sm:py-6 shadow-none transition-none hover:shadow-none hover:translate-y-0 hover:bg-transparent text-white ${className}`}
+			className={`flex min-w-0 w-full flex-col items-center bg-transparent rounded-[var(--border-radius-md)] px-1 py-3 sm:px-4 sm:py-6 shadow-none transition-none hover:shadow-none hover:translate-y-0 hover:bg-transparent text-white ${className}`}
 			data-role={member.role}
 		>
-			<div className="relative mb-4 group">
+			<div className="relative mb-3 sm:mb-4 group">
 				<div className="absolute -inset-2 bg-gradient-to-tr from-current to-transparent rounded-full blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
 				<div
-					className={`relative z-10 rounded-full overflow-hidden bg-black/5 border-2 border-transparent group-hover:border-current transition-colors duration-300 ${isTeamLeader ? "w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36" : "w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32"}`}
+					className={`relative z-10 rounded-full overflow-hidden bg-black/5 border-2 border-transparent group-hover:border-current transition-colors duration-300 ${isTeamLeader ? "w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36" : "w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32"}`}
 				>
 					<img
 						src={member.photoUrl}
@@ -69,25 +69,25 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 				</div>
 			</div>
 			<h3
-				className={`font-bold text-gray-200 group-hover:text-white transition-colors mb-1 m-0 text-center mt-4 ${nameClass}`}
+				className={`font-bold text-gray-200 group-hover:text-white transition-colors mb-1 m-0 text-center mt-2 sm:mt-4 leading-tight break-words ${nameClass}`}
 			>
 				{member.name}
 			</h3>
 			<p
-				className={`${memberTitleClass} text-gray-400 group-hover:text-gray-300 transition-colors mb-2 m-0 text-center tracking-wide`}
+				className={`${memberTitleClass} text-gray-400 group-hover:text-gray-300 transition-colors mb-2 m-0 text-center tracking-wide leading-tight`}
 			>
 				{displayTitle}
 			</p>
 
 			{member.socialLinks.length > 0 && (
-				<div className="flex gap-2 mt-2">
+				<div className="flex gap-2 mt-1 sm:mt-2">
 					{member.socialLinks.map((link) => (
 						<a
 							key={link.platform}
 							href={link.url}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="mt-2 p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 transition-all text-gray-400 hover:text-[#0077b5]"
+							className="mt-1 sm:mt-2 p-1.5 sm:p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 transition-all text-gray-400 hover:text-[#0077b5]"
 							aria-label={`${member.name}'s ${link.platform}`}
 						>
 							{getSocialIcon(link.platform)}

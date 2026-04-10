@@ -25,7 +25,6 @@ export function useCampaigns(pageSize = 20): UseCampaignsResult {
 		setRefreshKey((k) => k + 1);
 	}, []);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: refreshKey triggers manual refetch
 	useEffect(() => {
 		let cancelled = false;
 		setIsLoading(true);
