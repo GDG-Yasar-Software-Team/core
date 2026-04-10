@@ -53,9 +53,10 @@ export default function ScheduleForm({
 				{schedules.map((schedule, index) => {
 					const timeId = `schedule-time-${index}`;
 					const subjectId = `schedule-subject-${index}`;
+					const scheduleKey = `${schedule.time}-${schedule.subject ?? "default"}`;
 					return (
 						<div
-							key={index}
+							key={scheduleKey}
 							className="flex flex-wrap items-start gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3"
 						>
 							<div className="flex-1 min-w-[200px]">
