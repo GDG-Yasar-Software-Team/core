@@ -55,15 +55,15 @@ export const Card: React.FC<CardProps> = ({
 	};
 
 	return (
-		// biome-ignore lint/a11y/noStaticElementInteractions: conditional role is not recognized by Biome
-		<div
+		<button
+			type={clickable ? "button" : undefined}
 			className={classNames}
-			onClick={handleClick}
-			onKeyDown={handleKeyDown}
-			role={clickable ? "button" : undefined}
-			tabIndex={clickable ? 0 : undefined}
+			onClick={clickable ? handleClick : undefined}
+			onKeyDown={clickable ? handleKeyDown : undefined}
+			disabled={!clickable}
+			aria-disabled={!clickable}
 		>
 			{children}
-		</div>
+		</button>
 	);
 };

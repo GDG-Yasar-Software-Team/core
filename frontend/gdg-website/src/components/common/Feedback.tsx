@@ -9,7 +9,7 @@ export const Feedback: React.FC<FeedbackProps> = ({
 }) => {
 	return (
 		<div
-			className={`flex flex-col items-center py-12 px-6 min-h-[420px] relative ${className}`}
+			className={`flex w-full max-w-full overflow-x-clip flex-col items-center py-12 px-4 sm:px-6 min-h-[420px] relative ${className}`}
 		>
 			<div className="flex gap-2 mb-8">
 				<div className="w-3 h-3 rounded-full bg-[#4285F4]" />
@@ -18,7 +18,7 @@ export const Feedback: React.FC<FeedbackProps> = ({
 				<div className="w-3 h-3 rounded-full bg-[#34A853]" />
 			</div>
 
-			<div className="bg-white border border-[#dadce0] rounded-[24px] pt-10 pb-8 px-5 sm:px-10 max-w-[540px] w-full text-center relative overflow-hidden shadow-sm">
+			<div className="bg-white border border-[#dadce0] rounded-[24px] pt-10 pb-8 px-4 sm:px-10 max-w-[540px] w-full text-center relative overflow-hidden shadow-sm">
 				<div
 					className="absolute top-0 left-0 right-0 h-1"
 					style={{
@@ -48,7 +48,7 @@ export const Feedback: React.FC<FeedbackProps> = ({
 
 				<a
 					href="mailto:gdgoncampus.yu@gmail.com"
-					className="inline-flex items-center gap-2.5 bg-[#4285F4] text-white border-none rounded-full px-7 py-[13px] text-[14px] font-medium cursor-pointer tracking-[0.1px] transition-all hover:bg-[#3367D6] hover:-translate-y-[1px] active:scale-95 mb-6"
+					className="inline-flex w-full max-w-[320px] items-center justify-center gap-2 bg-[#4285F4] text-white border-none rounded-full px-4 sm:px-7 py-[13px] text-[13px] sm:text-[14px] font-medium cursor-pointer tracking-[0.1px] transition-all hover:bg-[#3367D6] hover:-translate-y-[1px] active:scale-95 mb-6 break-all"
 				>
 					<svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 shrink-0">
 						<path
