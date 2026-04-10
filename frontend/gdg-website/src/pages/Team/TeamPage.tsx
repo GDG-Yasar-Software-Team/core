@@ -1,6 +1,6 @@
-﻿import { TeamScrollBackground } from "@/pages/Team/TeamScrollBackground";
-import { motion } from "motion/react";
+﻿import { motion } from "motion/react";
 import type React from "react";
+import { TeamScrollBackground } from "@/pages/Team/TeamScrollBackground";
 import { OrganizerCard } from "../../components/features/OrganizerCard";
 import { TeamMemberCard } from "../../components/features/TeamMemberCard";
 import { Navigation } from "../../components/layout/Navigation";

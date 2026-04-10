@@ -19,7 +19,6 @@ export function useCampaign(campaignId: string | undefined): UseCampaignResult {
 		setRefreshKey((k) => k + 1);
 	}, []);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: refreshKey triggers manual refetch
 	useEffect(() => {
 		if (!campaignId) {
 			setIsLoading(false);
