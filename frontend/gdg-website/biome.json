@@ -6,10 +6,6 @@
 		"clientKind": "git",
 		"useIgnoreFile": true
 	},
-	"files": {
-		"ignoreUnknown": false,
-		"include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "**/*.json"]
-	},
 	"formatter": {
 		"enabled": true,
 		"indentStyle": "tab"
@@ -40,16 +36,5 @@
 		"formatter": {
 			"quoteStyle": "double"
 		}
-	},
-	"overrides": [
-		{
-			"include": ["**/dist/**", "**/node_modules/**", "**/tsconfig*.json"],
-			"linter": {
-				"enabled": false
-			},
-			"formatter": {
-				"enabled": false
-			}
-		}
-	]
+	}
 }
