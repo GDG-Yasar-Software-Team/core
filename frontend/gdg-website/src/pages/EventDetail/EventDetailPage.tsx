@@ -85,8 +85,7 @@ export const EventDetailPage: React.FC = () => {
 	const formattedDate = formatEventDate(event.date);
 	const location = extractLocation(event.place);
 	const city = extractCity(event.place);
-	const imageUrl =
-		event.image_url || "/placeholder.png";
+	const imageUrl = event.image_url || "/placeholder.png";
 	const registrationUrl = event.registration_form_url?.trim();
 	const isPast = isEventPast(event);
 

@@ -4,7 +4,9 @@ export interface FeedbackProps {
 	className?: string;
 }
 
-export const Feedback: React.FC<FeedbackProps> = ({ className = "bg-[#f8f9fa]" }) => {
+export const Feedback: React.FC<FeedbackProps> = ({
+	className = "bg-[#f8f9fa]",
+}) => {
 	return (
 		<div
 			className={`flex flex-col items-center py-12 px-6 min-h-[420px] relative ${className}`}

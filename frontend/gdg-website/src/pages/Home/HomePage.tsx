@@ -50,7 +50,7 @@ export const HomePage: React.FC = () => {
 				setLoading(true);
 				setError(null);
 				const events = await fetchEvents();
-				
+
 				// Filter for upcoming events only
 				const upcoming = events.filter((e) => !isEventPast(e));
 				setUpcomingEvents(upcoming);
@@ -58,7 +58,9 @@ export const HomePage: React.FC = () => {
 				// Filter and sort past events by date ascending
 				const past = events
 					.filter(isEventPast)
-					.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+					.sort(
+						(a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+					);
 				setPastEvents(past);
 			} catch (err) {
 				console.error("Failed to load events:", err);
@@ -187,7 +189,10 @@ export const HomePage: React.FC = () => {
 									className="flex-[0_0_auto] w-[240px] sm:w-[280px] bg-white rounded-xl overflow-hidden shadow-[0_1px_2px_0_rgba(60,64,67,0.3),0_1px_3px_1px_rgba(60,64,67,0.15)] transition-all duration-200 cursor-pointer no-underline block hover:-translate-y-1 hover:shadow-[0_4px_8px_0_rgba(60,64,67,0.3),0_2px_6px_2px_rgba(60,64,67,0.15)]"
 								>
 									<img
-										src={event.image_url || "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/1-info-session.png"}
+										src={
+											event.image_url ||
+											"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/1-info-session.png"
+										}
 										alt={event.title}
 										className="w-full h-auto object-cover block"
 									/>

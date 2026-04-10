@@ -56,10 +56,13 @@ export const AboutPage: React.FC = () => {
 								Who Are We?
 							</h1>
 							<p className="text-gray-300 text-lg md:text-xl leading-relaxed mb-6 font-medium">
-								We are a university-based student community that brings together individuals interested in technology, innovation, and personal development.
+								We are a university-based student community that brings together
+								individuals interested in technology, innovation, and personal
+								development.
 							</p>
 							<p className="text-gray-400 text-base md:text-lg leading-relaxed mb-10">
-								Our members come from different backgrounds, but we share a common goal: learning by doing and growing together.
+								Our members come from different backgrounds, but we share a
+								common goal: learning by doing and growing together.
 							</p>
 							<a
 								href="https://gdg.community.dev/gdg-on-campus-yasar-university-izmir-turkey/"
@@ -108,8 +111,9 @@ export const AboutPage: React.FC = () => {
 						What Do We Do?
 					</h2>
 					<p className="text-xl text-[#5f6368] max-w-4xl mx-auto px-6 leading-relaxed">
-						We are more than just a club; we are a community that bridges the gap between 
-						theory and practice. Check out our diverse domains where we learn, build, and grow together.
+						We are more than just a club; we are a community that bridges the
+						gap between theory and practice. Check out our diverse domains where
+						we learn, build, and grow together.
 					</p>
 				</div>
 
@@ -117,38 +121,102 @@ export const AboutPage: React.FC = () => {
 					{[
 						{
 							title: "Hands-on Workshops",
-							description: "We believe the best way to learn is by doing. We organize technical workshops ranging from Web and Mobile Development to AI and Cloud Computing. You bring your laptop, and we write code together, debug in real-time, and leave with a working project.",
+							description:
+								"We believe the best way to learn is by doing. We organize technical workshops ranging from Web and Mobile Development to AI and Cloud Computing. You bring your laptop, and we write code together, debug in real-time, and leave with a working project.",
 							color: "bg-[#4285F4]",
 							tag: "Learn By Doing",
-							icon: <svg className="w-10 h-10 text-[#4285F4]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+							icon: (
+								<svg
+									className="w-10 h-10 text-[#4285F4]"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+									/>
+								</svg>
+							),
 						},
 						{
 							title: "Tech Talks & Seminars",
-							description: "We host industry professionals, Google Developer Experts, and experienced alumni to share their knowledge, career journeys, and insights about the latest trends in the tech ecosystem. Getting direct experience from the experts is invaluable.",
+							description:
+								"We host industry professionals, Google Developer Experts, and experienced alumni to share their knowledge, career journeys, and insights about the latest trends in the tech ecosystem. Getting direct experience from the experts is invaluable.",
 							color: "bg-[#EA4335]",
 							tag: "Listen to Experts",
-							icon: <svg className="w-10 h-10 text-[#EA4335]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+							icon: (
+								<svg
+									className="w-10 h-10 text-[#EA4335]"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+									/>
+								</svg>
+							),
 						},
 						{
 							title: "Coffee Talks",
-							description: "Coffee Talks are post-event networking sessions designed to bring students together with guest speakers and professionals from the industry. Through these conversations, participants can gain practical insights, exchange ideas, and expand their professional network in a more personal and engaging environment.",
+							description:
+								"Coffee Talks are post-event networking sessions designed to bring students together with guest speakers and professionals from the industry. Through these conversations, participants can gain practical insights, exchange ideas, and expand their professional network in a more personal and engaging environment.",
 							color: "bg-[#FBBC04]",
 							tag: "Grow Together",
-							icon: <svg className="w-10 h-10 text-[#FBBC04]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>,
-							image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/events-picture/WhatsApp%20Image%202026-04-10%20at%2016.07.10.jpeg"
+							icon: (
+								<svg
+									className="w-10 h-10 text-[#FBBC04]"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+									/>
+								</svg>
+							),
+							image:
+								"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/events-picture/WhatsApp%20Image%202026-04-10%20at%2016.07.10.jpeg",
 						},
 						{
 							title: "Problem-Solving & Code Together",
-							description: "A session designed around collaboration, discussion, and live coding. Participants had the chance to think through challenges together with our guest speaker, exchange ideas, and experience what it feels like to solve problems and write code in an interactive environment.",
+							description:
+								"A session designed around collaboration, discussion, and live coding. Participants had the chance to think through challenges together with our guest speaker, exchange ideas, and experience what it feels like to solve problems and write code in an interactive environment.",
 							color: "bg-[#34A853]",
 							tag: "Build & Ship",
-							icon: <svg className="w-10 h-10 text-[#34A853]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>,
-							image: "https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/events-picture/WhatsApp%20Image%202026-02-05%20at%2023.47.20.jpeg"
-						}
+							icon: (
+								<svg
+									className="w-10 h-10 text-[#34A853]"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M13 10V3L4 14h7v7l9-11h-7z"
+									/>
+								</svg>
+							),
+							image:
+								"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/events-picture/WhatsApp%20Image%202026-02-05%20at%2023.47.20.jpeg",
+						},
 					].map((block, index) => {
 						const isEven = index % 2 === 0;
 						// Use gallery images to match the visual language of the page, bypassing index 0 since it's already at top
-						const imgUrl = block.image || GALLERY_IMAGES[(index + 1) % GALLERY_IMAGES.length].src;
+						const imgUrl =
+							block.image ||
+							GALLERY_IMAGES[(index + 1) % GALLERY_IMAGES.length].src;
 
 						return (
 							<div
@@ -158,10 +226,14 @@ export const AboutPage: React.FC = () => {
 								<div className="w-full lg:w-1/2 p-12 lg:p-20 flex flex-col justify-center">
 									<div className="w-full">
 										<div className="flex items-center gap-4 mb-8">
-											<div className={`w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center flex-shrink-0 shadow-sm border border-gray-100`}>
+											<div
+												className={`w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center flex-shrink-0 shadow-sm border border-gray-100`}
+											>
 												{block.icon}
 											</div>
-											<div className={`inline-block px-5 py-2 rounded-full text-sm font-bold tracking-widest uppercase ${block.color} text-white shadow-sm`}>
+											<div
+												className={`inline-block px-5 py-2 rounded-full text-sm font-bold tracking-widest uppercase ${block.color} text-white shadow-sm`}
+											>
 												{block.tag}
 											</div>
 										</div>
@@ -211,7 +283,7 @@ export const AboutPage: React.FC = () => {
 						/>
 					</div>
 				</section>
-				
+
 				<div className="border-t border-gray-100">
 					<Feedback className="bg-white py-24" />
 				</div>

@@ -130,7 +130,11 @@ export const UpcomingEventsPage: React.FC = () => {
 						<div className="flex flex-col gap-6">
 							{filteredEvents.length > 0 ? (
 								filteredEvents.map((event) => (
-									<EventCard key={event.id} event={event} isPast={isEventPast(event)} />
+									<EventCard
+										key={event.id}
+										event={event}
+										isPast={isEventPast(event)}
+									/>
 								))
 							) : searchQuery.trim() ? (
 								<div className="text-center py-16 px-8 text-[#5f6368] text-lg">
