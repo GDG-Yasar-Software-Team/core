@@ -1,5 +1,6 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.4.10/schema.json",
+	"root": false,
 
 	"vcs": {
 		"enabled": true,
@@ -8,7 +9,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "**/*.json"]
+		"includes": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "**/*.json"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -43,7 +44,7 @@
 	},
 	"overrides": [
 		{
-			"include": ["**/dist/**", "**/node_modules/**", "**/tsconfig*.json"],
+			"includes": ["**/dist/**", "**/node_modules/**", "**/tsconfig*.json"],
 			"linter": {
 				"enabled": false
 			},
