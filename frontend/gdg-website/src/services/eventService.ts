@@ -74,7 +74,7 @@ export async function fetchEvents(limit = 100, offset = 0): Promise<Event[]> {
  */
 export async function fetchEventById(eventId: string): Promise<Event> {
 	try {
-		const response = await fetch(`${API_BASE_URL}events/${eventId}`, {
+		const response = await fetch(`${API_BASE_URL}/events/${eventId}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
