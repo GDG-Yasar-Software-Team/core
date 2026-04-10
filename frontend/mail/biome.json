@@ -1,8 +1,16 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.4.6/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.4.11/schema.json",
 	"root": false,
-	"extends": ["../biome.json"],
+	"extends": ["../../biome.json"],
 	"files": {
 		"includes": ["**", "!!**/dist", "!!**/node_modules"]
+	},
+	"css": {
+		"parser": { "tailwindDirectives": true }
+	},
+	"linter": {
+		"rules": {
+			"suspicious": { "noUnknownAtRules": "off" }
+		}
 	}
 }

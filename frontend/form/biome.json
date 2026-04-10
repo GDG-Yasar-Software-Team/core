@@ -1,8 +1,26 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.4.6/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.4.11/schema.json",
 	"root": false,
-	"extends": ["../biome.json"],
+	"extends": ["../../biome.json"],
 	"files": {
 		"includes": ["**", "!!**/dist", "!!**/node_modules"]
+	},
+	"css": {
+		"formatter": { "enabled": false },
+		"parser": { "tailwindDirectives": true }
+	},
+	"linter": {
+		"rules": {
+			"a11y": {
+				"noSvgWithoutTitle": "off",
+				"noLabelWithoutControl": "off",
+				"useSemanticElements": "off"
+			},
+			"suspicious": {
+				"noArrayIndexKey": "off",
+				"noUnknownAtRules": "off"
+			},
+			"style": { "noNonNullAssertion": "off" }
+		}
 	}
 }

@@ -1,0 +1,37 @@
+/* Global Styles - GDG on Campus Yaşar University Website */
+/* Import design tokens */
+@import "./tokens.css";
+
+/* ========================================
+   Minimal Global Styles
+   Note: Most styles now handled by Tailwind
+   ======================================== */
+
+/* Font smoothing */
+html {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+}
+
+/* Body defaults */
+body {
+	font-family: var(--font-family);
+	min-height: 100vh;
+	margin: 0;
+	padding: 0;
+	overflow-x: hidden;
+}
+
+/* Accessibility - Screen reader only */
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border-width: 0;
+}

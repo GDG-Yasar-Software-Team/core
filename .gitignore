@@ -51,4 +51,4 @@ coverage/
 .coverage
 htmlcov/
 
-package-lock.json
+*.lock

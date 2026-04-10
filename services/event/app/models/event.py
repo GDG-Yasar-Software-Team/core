@@ -17,6 +17,9 @@ class EventCreate(BaseModel):
     date: datetime
     place: str = Field(min_length=1, max_length=200)
     speakers: list[Speaker] = Field(default_factory=list)
+    tags: list[str] = Field(default_factory=list)
+    event_type: str | None = None
+    registration_form_url: str | None = None
     image_url: str | None = None
     tags: list[str] = Field(default_factory=list)
     registration_form_url: str | None = None
@@ -38,6 +41,9 @@ class EventUpdate(BaseModel):
     date: datetime | None = None
     place: str | None = Field(default=None, min_length=1, max_length=200)
     speakers: list[Speaker] | None = None
+    tags: list[str] | None = None
+    event_type: str | None = None
+    registration_form_url: str | None = None
     image_url: str | None = None
     tags: list[str] = Field(default_factory=list)
     registration_form_url: str | None = None
@@ -62,6 +68,9 @@ class EventInDB(BaseModel):
     date: datetime
     place: str
     speakers: list[Speaker] = Field(default_factory=list)
+    tags: list[str] = Field(default_factory=list)
+    event_type: str | None = None
+    registration_form_url: str | None = None
     image_url: str | None = None
     tags: list[str] = Field(default_factory=list)
     registration_form_url: str | None = None
@@ -79,6 +88,9 @@ class EventResponse(BaseModel):
     date: datetime
     place: str
     speakers: list[Speaker]
+    tags: list[str]
+    event_type: str | None = None
+    registration_form_url: str | None = None
     image_url: str | None
     tags: list[str]
     registration_form_url: str | None
@@ -97,10 +109,10 @@ class EventResponse(BaseModel):
             date=event.date,
             place=event.place,
             speakers=event.speakers,
-            image_url=event.image_url,
             tags=event.tags,
-            registration_form_url=event.registration_form_url,
             event_type=event.event_type,
+            registration_form_url=event.registration_form_url,
+            image_url=event.image_url,
             created_at=event.created_at,
             updated_at=event.updated_at,
         )

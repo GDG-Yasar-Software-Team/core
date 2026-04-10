@@ -38,7 +38,7 @@ const AdminTokenGate = ({ children }: AdminTokenGateProps) => {
 			setIsVerifying(false);
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [isAuthorized, logout]);
 
 	const onUnlock = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();

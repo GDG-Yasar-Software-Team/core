@@ -30,10 +30,10 @@ class EventRepository:
             "date": event.date,
             "place": event.place,
             "speakers": [speaker.model_dump() for speaker in event.speakers],
-            "image_url": event.image_url,
             "tags": event.tags,
-            "registration_form_url": event.registration_form_url,
             "event_type": event.event_type,
+            "registration_form_url": event.registration_form_url,
+            "image_url": event.image_url,
             "created_at": datetime.now(timezone.utc),
             "updated_at": None,
         }
