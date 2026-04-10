@@ -1,6 +1,6 @@
-﻿import { motion } from "motion/react";
+﻿import { TeamScrollBackground } from "@/pages/Team/TeamScrollBackground";
+import { motion } from "motion/react";
 import type React from "react";
-import { TeamScrollBackground } from "@/pages/Team/TeamScrollBackground";
 import { OrganizerCard } from "../../components/features/OrganizerCard";
 import { TeamMemberCard } from "../../components/features/TeamMemberCard";
 import { Navigation } from "../../components/layout/Navigation";
@@ -77,7 +77,7 @@ export const TeamPage: React.FC = () => {
 							</motion.h2>
 						</div>
 
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 md:gap-16 max-w-[850px] mx-auto justify-items-center items-start px-2 sm:px-0">
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 md:gap-16 max-w-[850px] mx-auto justify-items-center items-start px-2 sm:px-0">
 							{leaders.map((member, i) => (
 								<OrganizerCard key={member.id} member={member} index={i} />
 							))}
