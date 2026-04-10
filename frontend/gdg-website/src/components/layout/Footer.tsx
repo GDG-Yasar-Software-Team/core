@@ -56,9 +56,9 @@ const socialLinks = [
 export const Footer: React.FC<FooterProps> = ({ className = "" }) => {
 	return (
 		<footer
-			className={`bg-[#f8f9fa] border-t border-[#dadce0] px-4 py-2 mt-8 ${className}`}
+			className={`bg-[#f8f9fa] border-t border-[#dadce0] px-4 py-2 mt-8 w-full max-w-full overflow-x-clip ${className}`}
 		>
-			<div className="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
+			<div className="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-between gap-2 w-full">
 				<div className="flex items-center gap-2 mb-2 md:mb-0">
 					<img
 						src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/core/refs/heads/main/frontend/form/public/gdg-logo.png"
@@ -70,7 +70,7 @@ export const Footer: React.FC<FooterProps> = ({ className = "" }) => {
 					</h3>
 				</div>
 
-				<div className="flex items-center scale-75 origin-center md:origin-right">
+				<div className="flex items-center scale-75 origin-center md:origin-right max-w-full overflow-x-auto md:overflow-visible">
 					<AnimatedSocialDock items={socialLinks} />
 				</div>
 			</div>

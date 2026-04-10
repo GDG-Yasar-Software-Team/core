@@ -41,14 +41,14 @@ export const TeamPage: React.FC = () => {
 
 			<Navigation />
 
-			<main className="flex-1 relative z-10 w-full">
+			<main className="flex-1 relative z-10 w-full overflow-x-hidden">
 				{/* Organizers Section */}
 				<section
 					className="min-h-[calc(100dvh-74px)] snap-start w-full flex items-center justify-center relative overflow-visible py-12 md:py-16"
 					data-team-tone="organizers"
 				>
 					<div className="max-w-[1240px] mx-auto px-4 sm:px-6 relative z-10 w-full">
-						<div className="flex flex-col items-center mb-20 text-center">
+						<div className="flex flex-col items-center mb-12 sm:mb-20 text-center px-2">
 							<motion.div
 								initial={{ opacity: 0, y: 50, scale: 0.8 }}
 								whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -71,13 +71,13 @@ export const TeamPage: React.FC = () => {
 									type: "spring",
 									bounce: 0.35,
 								}}
-								className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter text-white m-0 uppercase"
+								className="text-3xl sm:text-5xl md:text-7xl font-black tracking-tighter text-white m-0 uppercase break-words"
 							>
 								ORGANIZERS
 							</motion.h2>
 						</div>
 
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 max-w-[850px] mx-auto justify-items-center items-start">
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 md:gap-16 max-w-[850px] mx-auto justify-items-center items-start px-2 sm:px-0">
 							{leaders.map((member, i) => (
 								<OrganizerCard key={member.id} member={member} index={i} />
 							))}
@@ -97,7 +97,7 @@ export const TeamPage: React.FC = () => {
 							className="min-h-[calc(100dvh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-visible"
 							data-team-tone="organization"
 						>
-							<div className="flex flex-col items-center mb-8 md:mb-12 text-center relative z-[2]">
+							<div className="flex flex-col items-center mb-8 md:mb-12 text-center relative z-[2] px-2">
 								<motion.div
 									initial={{ opacity: 0, y: 50, scale: 0.8 }}
 									whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -120,12 +120,12 @@ export const TeamPage: React.FC = () => {
 										type: "spring",
 										bounce: 0.35,
 									}}
-									className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter text-white m-0 uppercase"
+									className="text-2xl sm:text-4xl md:text-6xl font-black tracking-tighter text-white m-0 uppercase break-words"
 								>
 									ORGANIZATION
 								</motion.h2>
 							</div>
-							<div className="flex-1 flex flex-col justify-center px-4 z-[2] max-w-7xl mx-auto w-full">
+							<div className="flex-1 flex flex-col justify-center px-3 sm:px-4 z-[2] max-w-7xl mx-auto w-full">
 								<div className="flex justify-center mb-6 md:mb-10 items-center justify-items-center">
 									{organizationTeam
 										.filter((m) => m.role === "team_lead")
@@ -137,13 +137,13 @@ export const TeamPage: React.FC = () => {
 											/>
 										))}
 								</div>
-								<div className="flex justify-center gap-4 md:gap-6 flex-wrap max-w-7xl mx-auto w-full px-2">
+								<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5 max-w-7xl mx-auto w-full">
 									{organizationTeam
 										.filter((m) => m.role === "member")
 										.map((member, idx) => (
 											<div
 												key={member.id}
-												className="w-[130px] sm:w-[150px] md:w-[160px] "
+												className="w-full max-w-[170px] justify-self-center"
 											>
 												<TeamMemberCard member={member} index={idx + 1} />
 											</div>
@@ -157,7 +157,7 @@ export const TeamPage: React.FC = () => {
 							className="min-h-[calc(100dvh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-visible"
 							data-team-tone="marketing"
 						>
-							<div className="flex flex-col items-center mb-8 md:mb-12 text-center relative z-[2]">
+							<div className="flex flex-col items-center mb-8 md:mb-12 text-center relative z-[2] px-2">
 								<motion.div
 									initial={{ opacity: 0, y: 50, scale: 0.8 }}
 									whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -180,12 +180,12 @@ export const TeamPage: React.FC = () => {
 										type: "spring",
 										bounce: 0.35,
 									}}
-									className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter text-white m-0 uppercase"
+									className="text-2xl sm:text-4xl md:text-6xl font-black tracking-tighter text-white m-0 uppercase break-words"
 								>
 									MARKETING
 								</motion.h2>
 							</div>
-							<div className="flex-1 flex flex-col justify-center px-4 z-[2] max-w-7xl mx-auto w-full">
+							<div className="flex-1 flex flex-col justify-center px-3 sm:px-4 z-[2] max-w-7xl mx-auto w-full">
 								<div className="flex justify-center mb-6 md:mb-10 items-center justify-items-center">
 									{marketingTeam
 										.filter((m) => m.role === "team_lead")
@@ -197,13 +197,13 @@ export const TeamPage: React.FC = () => {
 											/>
 										))}
 								</div>
-								<div className="flex justify-center gap-4 md:gap-6 flex-wrap max-w-7xl mx-auto w-full px-2">
+								<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5 max-w-7xl mx-auto w-full">
 									{marketingTeam
 										.filter((m) => m.role === "member")
 										.map((member, idx) => (
 											<div
 												key={member.id}
-												className="w-[130px] sm:w-[150px] md:w-[160px] "
+												className="w-full max-w-[170px] justify-self-center"
 											>
 												<TeamMemberCard member={member} index={idx + 1} />
 											</div>
@@ -217,7 +217,7 @@ export const TeamPage: React.FC = () => {
 							className="min-h-[calc(100dvh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-visible"
 							data-team-tone="sponsorship"
 						>
-							<div className="flex flex-col items-center mb-8 md:mb-12 text-center relative z-[2]">
+							<div className="flex flex-col items-center mb-8 md:mb-12 text-center relative z-[2] px-2">
 								<motion.div
 									initial={{ opacity: 0, y: 50, scale: 0.8 }}
 									whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -240,12 +240,12 @@ export const TeamPage: React.FC = () => {
 										type: "spring",
 										bounce: 0.35,
 									}}
-									className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter text-white m-0 uppercase"
+									className="text-2xl sm:text-4xl md:text-6xl font-black tracking-tighter text-white m-0 uppercase break-words"
 								>
 									SPONSORSHIP
 								</motion.h2>
 							</div>
-							<div className="flex-1 flex flex-col justify-center px-4 z-[2] max-w-7xl mx-auto w-full">
+							<div className="flex-1 flex flex-col justify-center px-3 sm:px-4 z-[2] max-w-7xl mx-auto w-full">
 								<div className="flex justify-center mb-6 md:mb-10 items-center justify-items-center">
 									{sponsorshipTeam
 										.filter((m) => m.role === "team_lead")
@@ -257,13 +257,13 @@ export const TeamPage: React.FC = () => {
 											/>
 										))}
 								</div>
-								<div className="flex justify-center gap-4 md:gap-6 flex-wrap max-w-7xl mx-auto w-full px-2">
+								<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5 max-w-7xl mx-auto w-full">
 									{sponsorshipTeam
 										.filter((m) => m.role === "member")
 										.map((member, idx) => (
 											<div
 												key={member.id}
-												className="w-[130px] sm:w-[150px] md:w-[160px] "
+												className="w-full max-w-[170px] justify-self-center"
 											>
 												<TeamMemberCard member={member} index={idx + 1} />
 											</div>
@@ -277,7 +277,7 @@ export const TeamPage: React.FC = () => {
 							className="min-h-[calc(100dvh-74px)] snap-start w-full flex flex-col py-12 md:py-16 hover-trigger relative bg-transparent overflow-visible"
 							data-team-tone="software"
 						>
-							<div className="flex flex-col items-center mb-8 md:mb-12 text-center relative z-[2]">
+							<div className="flex flex-col items-center mb-8 md:mb-12 text-center relative z-[2] px-2">
 								<motion.div
 									initial={{ opacity: 0, y: 50, scale: 0.8 }}
 									whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -300,12 +300,12 @@ export const TeamPage: React.FC = () => {
 										type: "spring",
 										bounce: 0.35,
 									}}
-									className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter text-white m-0 uppercase"
+									className="text-2xl sm:text-4xl md:text-6xl font-black tracking-tighter text-white m-0 uppercase break-words"
 								>
 									SOFTWARE
 								</motion.h2>
 							</div>
-							<div className="flex-1 flex flex-col justify-center px-4 z-[2] max-w-7xl mx-auto w-full">
+							<div className="flex-1 flex flex-col justify-center px-3 sm:px-4 z-[2] max-w-7xl mx-auto w-full">
 								<div className="flex justify-center mb-6 md:mb-10 items-center justify-items-center">
 									{softwareTeam
 										.filter((m) => m.role === "team_lead")
@@ -317,13 +317,13 @@ export const TeamPage: React.FC = () => {
 											/>
 										))}
 								</div>
-								<div className="flex justify-center gap-4 md:gap-6 flex-wrap max-w-7xl mx-auto w-full px-2">
+								<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5 max-w-7xl mx-auto w-full">
 									{softwareTeam
 										.filter((m) => m.role === "member")
 										.map((member, idx) => (
 											<div
 												key={member.id}
-												className="w-[130px] sm:w-[150px] md:w-[160px] "
+												className="w-full max-w-[170px] justify-self-center"
 											>
 												<TeamMemberCard member={member} index={idx + 1} />
 											</div>

@@ -34,10 +34,10 @@ export const OrganizerCard: React.FC<OrganizerCardProps> = ({
 			}}
 			className="flex flex-col items-center group w-full"
 		>
-			<div className="relative mb-8">
+			<div className="relative mb-5 sm:mb-8">
 				{/* Image Container with Glow */}
 				<div className="absolute -inset-4 bg-gradient-to-tr from-purple-500/20 to-blue-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-				<div className="w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-2 border-white/10 relative z-10 group-hover:border-white/30 transition-colors duration-300">
+				<div className="w-36 h-36 sm:w-48 sm:h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-2 border-white/10 relative z-10 group-hover:border-white/30 transition-colors duration-300">
 					<img
 						src={member.photoUrl}
 						alt={member.name}
@@ -47,12 +47,12 @@ export const OrganizerCard: React.FC<OrganizerCardProps> = ({
 				</div>
 			</div>
 
-			<div className="text-center space-y-1">
-				<h3 className="text-xl md:text-2xl font-bold tracking-tight text-gray-200 group-hover:text-white transition-colors">
+			<div className="text-center space-y-1 px-2">
+				<h3 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-gray-200 group-hover:text-white transition-colors break-words">
 					{member.name}
 				</h3>
 				{member.title && (
-					<p className="text-sm md:text-base text-gray-500 font-medium tracking-wide">
+					<p className="text-xs sm:text-sm md:text-base text-gray-500 font-medium tracking-wide">
 						{member.title}
 					</p>
 				)}
@@ -64,7 +64,7 @@ export const OrganizerCard: React.FC<OrganizerCardProps> = ({
 				rel="noopener noreferrer"
 				whileHover={{ scale: 1.1 }}
 				whileTap={{ scale: 0.9 }}
-				className="mt-6 p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 transition-all text-gray-400 hover:text-[#0077b5]"
+				className="mt-4 sm:mt-6 p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 transition-all text-gray-400 hover:text-[#0077b5]"
 				aria-label={`${member.name}'s LinkedIn`}
 			>
 				<LinkedinIcon />
