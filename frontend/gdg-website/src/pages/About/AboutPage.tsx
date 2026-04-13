@@ -125,6 +125,8 @@ export const AboutPage: React.FC = () => {
 								"We believe the best way to learn is by doing. We organize technical workshops ranging from Web and Mobile Development to AI and Cloud Computing. You bring your laptop, and we write code together, debug in real-time, and leave with a working project.",
 							color: "bg-[#4285F4]",
 							tag: "Learn By Doing",
+							image:
+								"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/events-picture/IMG_8489.jpg",
 							icon: (
 								<svg
 									className="w-10 h-10 text-[#4285F4]"
@@ -147,6 +149,8 @@ export const AboutPage: React.FC = () => {
 								"We host industry professionals, Google Developer Experts, and experienced alumni to share their knowledge, career journeys, and insights about the latest trends in the tech ecosystem. Getting direct experience from the experts is invaluable.",
 							color: "bg-[#EA4335]",
 							tag: "Listen to Experts",
+							image:
+								"https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/gdg-events/events-picture/IMG_7674.jpg",
 							icon: (
 								<svg
 									className="w-10 h-10 text-[#EA4335]"
