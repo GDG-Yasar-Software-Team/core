@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="color-scheme" content="light dark" />
+  <title>AI TALKS'26 - GDG on Campus Yaşar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* Palette (poster): bg #022a0c · accent #1dcc45 · green #19b238 */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', Arial, sans-serif;
+      background-color: #eef1ee;
+    }
+    table { border-spacing: 0; border-collapse: collapse; }
+    td { padding: 0; }
+    img { border: 0; }
+
+    .container { max-width: 600px; }
+
+    /* Hero: poster'deki matrix/neon başlık */
+    .hero {
+      background: radial-gradient(ellipse at 50% -20%, #0e5a24 0%, #022a0c 70%);
+      padding: 38px 30px 30px 30px;
+      text-align: center;
+    }
+    .hero-org {
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #a5d9b3;
+      margin: 0 0 14px 0;
+      font-weight: 600;
+    }
+    .hero-title {
+      margin: 0;
+      font-size: 44px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: #eafff0;
+      text-shadow: 0 0 18px rgba(29, 204, 69, 0.55);
+      line-height: 1.1;
+    }
+    .hero-title .accent { color: #1dcc45; }
+    .hero-sub {
+      margin: 14px 0 0 0;
+      font-size: 15px;
+      color: #a5d9b3;
+    }
+
+    /* Tarih/saat/yer şeridi */
+    .info-bar {
+      background-color: #022a0c;
+      padding: 0 24px 26px 24px;
+      text-align: center;
+    }
+    .info-bar-inner {
+      background-color: #063d17;
+      border: 1px solid #19b238;
+      border-radius: 12px;
+      padding: 12px 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #eafff0;
+      line-height: 24px;
+    }
+    .info-bar-inner .sep { color: #1dcc45; padding: 0 6px; }
+
+    .content { padding: 30px 34px 26px 34px; background-color: #052e12; }
+
+    .intro {
+      margin: 0 0 26px 0;
+      font-size: 16px;
+      line-height: 26px;
+      color: #d3ecd9;
+      text-align: center;
+    }
+
+    .section-title {
+      margin: 0 0 18px 0;
+      font-size: 20px;
+      font-weight: 700;
+      color: #1dcc45;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .details-box {
+      border: 1px solid #19b238;
+      background-color: #063d17;
+      border-radius: 14px;
+      margin-bottom: 28px;
+    }
+    .details-box td { font-size: 15px; color: #eafff0; line-height: 26px; }
+    .details-box .label { color: #1dcc45; font-weight: 700; }
+
+    /* Konuşmacı kartları */
+    .speaker-card {
+      border: 1px solid #19b238;
+      background-color: #063d17;
+      border-radius: 14px;
+      margin-bottom: 6px;
+    }
+    .speaker-photo {
+      display: block;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid #1dcc45;
+      object-fit: cover;
+    }
+    .speaker-name { font-size: 17px; font-weight: 700; color: #eafff0; line-height: 24px; }
+    .speaker-role { font-size: 13px; font-weight: 600; color: #1dcc45; line-height: 19px; }
+    .speaker-topic { font-size: 14px; color: #d3ecd9; line-height: 21px; padding-top: 6px; }
+    .time-chip {
+      display: inline-block;
+      background-color: #022a0c;
+      border: 1px solid #1dcc45;
+      color: #1dcc45;
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    .note-line {
+      font-size: 15px;
+      line-height: 24px;
+      color: #a5d9b3;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+      text-align: center;
+    }
+
+    .cta-wrap { text-align: center; padding: 22px 0 8px 0; }
+    .cta-btn {
+      display: inline-block;
+      padding: 16px 46px;
+      background-color: #1dcc45;
+      color: #022a0c !important;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 0 22px rgba(29, 204, 69, 0.4);
+    }
+
+    .footer {
+      padding: 30px 34px;
+      background-color: #021b09;
+      border-top: 2px solid #19b238;
+      text-align: center;
+    }
+    .footer p { margin: 0 0 10px 0; font-size: 14px; color: #a5d9b3; line-height: 22px; }
+    .footer a { color: #1dcc45; text-decoration: none; font-weight: 700; }
+
+    @media screen and (max-width: 600px) {
+      .container { width: 100% !important; border-radius: 0 !important; }
+      .content { padding: 24px 18px !important; }
+      .hero { padding: 30px 16px 24px 16px !important; }
+      .hero-title { font-size: 32px !important; }
+      .info-bar { padding: 0 16px 22px 16px !important; }
+      .info-bar-inner { font-size: 13px !important; }
+      .info-bar-inner .sep { display: block; padding: 0 !important; line-height: 10px; }
+      .speaker-photo { width: 64px !important; height: 64px !important; }
+    }
+
+    /* Light mode: koyu kart aynı kalır, sayfa zemini açılır */
+    @media (prefers-color-scheme: dark) {
+      body { background-color: #02150a !important; }
+    }
+  </style>
+</head>
+
+<body style="margin:0; padding:0; background-color:#eef1ee;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+    <tr>
+      <td align="center" style="padding:20px 10px;">
+
+        <table class="container" role="presentation" width="600" cellspacing="0" cellpadding="0" border="0"
+               style="background-color:#052e12; border-radius:14px; overflow:hidden; box-shadow:0 12px 36px rgba(2,42,12,0.45);">
+
+          <!-- HERO -->
+          <tr>
+            <td class="hero" style="background-color:#022a0c; background-image:radial-gradient(ellipse at 50% -20%, #0e5a24 0%, #022a0c 70%); padding:38px 30px 30px 30px; text-align:center;">
+              <p class="hero-org" style="margin:0 0 14px 0; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:#a5d9b3; font-weight:600;">
+                GDG on Campus · Yaşar University
+              </p>
+              <h1 class="hero-title" style="margin:0; font-size:44px; font-weight:800; letter-spacing:3px; color:#eafff0; line-height:1.1;">
+                AI TALKS<span class="accent" style="color:#1dcc45;">'26</span>
+              </h1>
+              <p class="hero-sub" style="margin:14px 0 0 0; font-size:15px; color:#a5d9b3;">
+                Yapay Zekâ ile Geleceği Yakala 🤖✨
+              </p>
+            </td>
+          </tr>
+
+          <!-- TARİH / SAAT / YER -->
+          <tr>
+            <td class="info-bar" style="background-color:#022a0c; padding:0 24px 26px 24px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td class="info-bar-inner" align="center" style="background-color:#063d17; border:1px solid #19b238; border-radius:12px; padding:12px 10px; font-size:14px; font-weight:600; color:#eafff0; line-height:24px;">
+                    📅 28 Kasım 2026<span class="sep" style="color:#1dcc45; padding:0 6px;">&nbsp;|&nbsp;</span>🕐 12:00–17:00<span class="sep" style="color:#1dcc45; padding:0 6px;">&nbsp;|&nbsp;</span>📍 Y-010
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="content" style="padding:30px 34px 26px 34px; background-color:#052e12;">
+
+              <p class="intro" style="margin:0 0 26px 0; font-size:16px; line-height:26px; color:#d3ecd9; text-align:center;">
+                Yapay zekanın kampüsten üretime uzanan yolculuğunu sektörün lider isimlerinden dinle.
+                Dört farklı oturumda AI kariyeri, üretim süreçleri, girişimcilik ve kurumsal dönüşüm konuşulacak.
+              </p>
+
+              <!-- KONUŞMACILAR -->
+              <p class="section-title" style="margin:0 0 18px 0; font-size:20px; font-weight:700; color:#1dcc45; letter-spacing:1px; text-transform:uppercase;">
+                🎤 Oturumlar &amp; Konuşmacılar
+              </p>
+
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" class="speaker-card" style="background-color:#063d17; border:1px solid #19b238; border-radius:14px; margin-bottom:6px;">
+                <tr>
+                  <td style="padding:20px 22px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td width="96" valign="top" style="padding-right:16px;">
+                          <img class="speaker-photo" src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/ai-talks-26/hunkar-gocen.jpg" width="80" height="80" alt="S. Hünkar Göçen" style="display:block; width:80px; height:80px; border-radius:50%; border:3px solid #1dcc45; object-fit:cover;" />
+                        </td>
+                        <td valign="middle">
+                          <span class="speaker-name" style="font-size:17px; font-weight:700; color:#eafff0; line-height:24px;">S. Hünkar Göçen</span><br />
+                          <span class="speaker-role" style="font-size:13px; font-weight:600; color:#1dcc45; line-height:19px;">Head of Data, Analytics &amp; AI, Director @EPAM Systems</span>
+                        </td>
+                      </tr>
+                    </table>
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td class="speaker-topic" style="font-size:14px; color:#d3ecd9; line-height:21px; padding-top:10px;">
+                          “Kampüsten Gerçek Dünyaya: Öğren. Geliştir. Hayata Geçir. Yapay Zekâ Odaklı Ol”
+                          <span style="color:#a5d9b3; font-size:12px;">· Campus to Production: Learn. Build. Ship. Go AI Native</span>
+                        </td>
+                        <td align="right" valign="middle" style="padding-top:10px; padding-left:12px;">
+                          <span class="time-chip" style="display:inline-block; background-color:#022a0c; border:1px solid #1dcc45; color:#1dcc45; border-radius:20px; padding:5px 14px; font-size:12px; font-weight:700; letter-spacing:1px; white-space:nowrap;">12:15–13:00</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" class="speaker-card" style="background-color:#063d17; border:1px solid #19b238; border-radius:14px; margin-bottom:6px;">
+                <tr>
+                  <td style="padding:20px 22px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td width="96" valign="top" style="padding-right:16px;">
+                          <img class="speaker-photo" src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/ai-talks-26/yunus-emre.png" width="80" height="80" alt="Yunus Emre" style="display:block; width:80px; height:80px; border-radius:50%; border:3px solid #1dcc45; object-fit:cover;" />
+                        </td>
+                        <td valign="middle">
+                          <span class="speaker-name" style="font-size:17px; font-weight:700; color:#eafff0; line-height:24px;">Yunus Emre</span><br />
+                          <span class="speaker-role" style="font-size:13px; font-weight:600; color:#1dcc45; line-height:19px;">Chief AI Officer @HubX</span>
+                        </td>
+                      </tr>
+                    </table>
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td class="speaker-topic" style="font-size:14px; color:#d3ecd9; line-height:21px; padding-top:10px;">
+                          “Teoriden Üretime: Yeni Medya Üretim Süreci”
+                          <span style="color:#a5d9b3; font-size:12px;">· Theory to Production: New Media Generation Flows</span>
+                        </td>
+                        <td align="right" valign="middle" style="padding-top:10px; padding-left:12px;">
+                          <span class="time-chip" style="display:inline-block; background-color:#022a0c; border:1px solid #1dcc45; color:#1dcc45; border-radius:20px; padding:5px 14px; font-size:12px; font-weight:700; letter-spacing:1px; white-space:nowrap;">13:15–14:00</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" class="speaker-card" style="background-color:#063d17; border:1px solid #19b238; border-radius:14px; margin-bottom:6px;">
+                <tr>
+                  <td style="padding:20px 22px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td width="96" valign="top" style="padding-right:16px;">
+                          <img class="speaker-photo" src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/ai-talks-26/goker-guner.jpg" width="80" height="80" alt="Göker Güner" style="display:block; width:80px; height:80px; border-radius:50%; border:3px solid #1dcc45; object-fit:cover;" />
+                        </td>
+                        <td valign="middle">
+                          <span class="speaker-name" style="font-size:17px; font-weight:700; color:#eafff0; line-height:24px;">Göker Güner</span><br />
+                          <span class="speaker-role" style="font-size:13px; font-weight:600; color:#1dcc45; line-height:19px;">Co-Founder &amp; CTO @Viza</span>
+                        </td>
+                      </tr>
+                    </table>
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td class="speaker-topic" style="font-size:14px; color:#d3ecd9; line-height:21px; padding-top:10px;">
+                          “Fikirden Girişime: Yapay Zekâ Çağında Kendini İnşa Etmek”
+                          <span style="color:#a5d9b3; font-size:12px;">· From Idea to Venture: Building Yourself in the Age of AI</span>
+                        </td>
+                        <td align="right" valign="middle" style="padding-top:10px; padding-left:12px;">
+                          <span class="time-chip" style="display:inline-block; background-color:#022a0c; border:1px solid #1dcc45; color:#1dcc45; border-radius:20px; padding:5px 14px; font-size:12px; font-weight:700; letter-spacing:1px; white-space:nowrap;">14:50–15:35</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" class="speaker-card" style="background-color:#063d17; border:1px solid #19b238; border-radius:14px;">
+                <tr>
+                  <td style="padding:20px 22px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td width="96" valign="top" style="padding-right:16px;">
+                          <img class="speaker-photo" src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/ai-talks-26/kaan-yildirim.jpg" width="80" height="80" alt="Kaan Yıldırım" style="display:block; width:80px; height:80px; border-radius:50%; border:3px solid #1dcc45; object-fit:cover;" />
+                        </td>
+                        <td valign="middle">
+                          <span class="speaker-name" style="font-size:17px; font-weight:700; color:#eafff0; line-height:24px;">Kaan Yıldırım</span><br />
+                          <span class="speaker-role" style="font-size:13px; font-weight:600; color:#1dcc45; line-height:19px;">Associate Director @Turkcell</span>
+                        </td>
+                      </tr>
+                    </table>
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td class="speaker-topic" style="font-size:14px; color:#d3ecd9; line-height:21px; padding-top:10px;">
+                          “Büyük Şirketlerde AI'ı Hayata Geçirmek: Pilot Projeden Günlük Kullanıma”
+                          <span style="color:#a5d9b3; font-size:12px;">· Bringing AI to Life in Large Enterprises: From Pilot Projects to Everyday Use</span>
+                        </td>
+                        <td align="right" valign="middle" style="padding-top:10px; padding-left:12px;">
+                          <span class="time-chip" style="display:inline-block; background-color:#022a0c; border:1px solid #1dcc45; color:#1dcc45; border-radius:20px; padding:5px 14px; font-size:12px; font-weight:700; letter-spacing:1px; white-space:nowrap;">15:50–16:35</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- NOTLAR -->
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:24px;">
+                <tr>
+                  <td class="note-line" style="font-size:15px; line-height:24px; color:#a5d9b3; font-weight:600; margin:0 0 8px 0; text-align:center;">
+                    🌐 Etkinlik dili Türkçedir.
+                  </td>
+                </tr>
+              </table>
+
+              <!-- CTA -->
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" class="cta-wrap">
+                <tr>
+                  <td align="center" style="padding:22px 0 8px 0;">
+                    <a href="https://forms.gle/Ri9Z3g5snMNGMMiPA" class="cta-btn"
+                       style="display:inline-block; padding:16px 46px; background-color:#1dcc45; color:#022a0c; text-decoration:none; border-radius:10px; font-size:16px; font-weight:800; text-transform:uppercase; letter-spacing:1px;">
+                      Hemen Kayıt Ol
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td class="footer" style="padding:30px 34px; background-color:#021b09; border-top:2px solid #19b238; text-align:center;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 14px auto;">
+                <tr>
+                  <td align="center">
+                    <a href="https://instagram.com/yu.gdgoncampus" style="text-decoration:none;">
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" width="32" height="32" style="display:block; border:0;" />
+                    </a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0 0 10px 0; font-size:14px; color:#a5d9b3; line-height:22px;">GDG on Campus · Yaşar University</p>
+              <p style="margin:0; font-size:14px; color:#a5d9b3; line-height:22px;">
+                İletişim: <a href="mailto:gdgoncampus.yu@gmail.com" style="color:#1dcc45; text-decoration:none; font-weight:700;">gdgoncampus.yu@gmail.com</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
