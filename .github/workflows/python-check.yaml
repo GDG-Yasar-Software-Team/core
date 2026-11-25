@@ -25,7 +25,8 @@ jobs:
         run: uv python install 3.14
 
       - name: Install Ruff
-        run: uv tool install ruff
+        # Pinned: newer ruff versions expand default rules and fail the repo
+        run: uv tool install ruff==0.15.0
 
       - name: Run Ruff Linter
         run: ruff check services/ scripts/ --output-format=github

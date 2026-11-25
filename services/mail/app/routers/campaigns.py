@@ -8,6 +8,7 @@ from fastapi import (
     Form,
     Header,
     HTTPException,
+    Path,
     Query,
     Request,
     UploadFile,
@@ -16,6 +17,8 @@ from pydantic import ValidationError
 
 from app.config import settings
 from app.models.campaign import (
+    BatchPlanResponse,
+    BatchTriggerStartResponse,
     CampaignCreate,
     CampaignListItem,
     CampaignResponse,
@@ -34,6 +37,11 @@ from app.clients.user_client import (
     UserServiceTimeoutError,
 )
 from app.repositories.campaign_repository import CampaignNotFoundError
+from app.services.batch_plan_service import (
+    BatchNotFoundError,
+    BatchPlanNotFoundError,
+    BatchPlanService,
+)
 from app.services.campaign_service import CampaignConflictError, CampaignService
 from app.services.email_service import EmailService
 
@@ -178,6 +186,46 @@ async def get_recipient_preview() -> RecipientPreviewResponse:
         return await CampaignService.get_recipient_preview()
     except UserServiceError as e:
         raise _http_from_user_service(e) from e
+
+
+@router.post("/{campaign_id}/batch-plans", status_code=201)
+async def create_batch_plan(campaign_id: str) -> BatchPlanResponse:
+    """Create a batch plan: snapshot the audience, split it into balanced batches."""
+    try:
+        return await BatchPlanService.create_plan(campaign_id)
+    except CampaignNotFoundError:
+        raise HTTPException(status_code=404, detail="Campaign not found")
+    except UserServiceError as e:
+        raise _http_from_user_service(e) from e
+
+
+@router.get("/{campaign_id}/batch-plans/{plan_id}")
+async def get_batch_plan(campaign_id: str, plan_id: str) -> BatchPlanResponse:
+    """Get a batch plan with per-batch states, progress and results."""
+    try:
+        return await BatchPlanService.get_plan(campaign_id, plan_id)
+    except CampaignNotFoundError, BatchPlanNotFoundError:
+        raise HTTPException(status_code=404, detail="Batch plan not found")
+
+
+@router.post(
+    "/{campaign_id}/batch-plans/{plan_id}/batches/{batch_number}/trigger",
+    status_code=202,
+)
+async def trigger_batch(
+    campaign_id: str,
+    plan_id: str,
+    batch_number: Annotated[int, Path(ge=1)],
+) -> BatchTriggerStartResponse:
+    """Trigger a single batch. Execution runs in background."""
+    try:
+        return await BatchPlanService.trigger_batch(
+            campaign_id=campaign_id, plan_id=plan_id, batch_number=batch_number
+        )
+    except CampaignNotFoundError, BatchPlanNotFoundError, BatchNotFoundError:
+        raise HTTPException(status_code=404, detail="Batch not found")
+    except CampaignConflictError as e:
+        raise HTTPException(status_code=409, detail=str(e))
 
 
 @router.get("/{campaign_id}/progress")

@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     MONGODB_URI: str = "mongodb://localhost:27017"
     DATABASE_NAME: str = "gdg_db"
     CAMPAIGNS_COLLECTION: str = "mails"
+    BATCH_PLANS_COLLECTION: str = "batch_plans"
     HOST: str = "0.0.0.0"
     PORT: int = 8000
 
@@ -41,6 +42,9 @@ class Settings(BaseSettings):
 
     # Reset campaigns stuck in in_progress (0 disables)
     STALE_IN_PROGRESS_MINUTES: int = 120
+
+    # Max recipients per batch plan batch
+    MAX_BATCH_SIZE: int = 500
 
     # CORS
     ALLOWED_ORIGINS: list[str] = ["http://localhost:3001"]
