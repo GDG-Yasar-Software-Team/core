@@ -19,11 +19,10 @@
 
     .page-bg { background-color: #f5f7f5; }
     .email-shell { width: 100%; max-width: 600px; background-color: #ffffff; border: 1px solid #e1e8e2; }
-    .hero { padding: 36px 40px 30px; border-top: 5px solid #022a0c; background-color: #ffffff; }
-    .eyebrow { margin: 0 0 12px; color: #3d7048; font-size: 11px; font-weight: 700; letter-spacing: 1.7px; line-height: 18px; text-transform: uppercase; }
-    .hero-title { margin: 0; color: #17211b; font-size: 40px; font-weight: 700; letter-spacing: 1px; line-height: 1.15; }
-    .hero-title .accent { color: #19b238; }
-    .hero-copy { margin: 10px 0 0; color: #53645a; font-size: 15px; line-height: 23px; }
+    .banner-wrap { background-color: #022a0c; font-size: 0; line-height: 0; }
+    .banner-image { display: block; width: 100%; max-width: 600px; height: auto; margin: 0 auto; }
+    .hero-copy-wrap { padding: 16px 40px 24px; border-bottom: 1px solid #e1e8e2; background-color: #ffffff; text-align: center; }
+    .hero-copy { margin: 0; color: #53645a; font-size: 14px; font-weight: 500; line-height: 22px; }
 
     .facts-wrap { padding: 0 40px 28px; background-color: #ffffff; }
     .facts { width: 100%; background-color: #f5f7f5; border-top: 1px solid #e1e8e2; border-bottom: 1px solid #e1e8e2; }
@@ -57,8 +56,7 @@
 
     @media only screen and (max-width: 600px) {
       .email-shell { width: 100% !important; max-width: 100% !important; border: 0 !important; }
-      .hero { padding: 28px 22px 24px !important; }
-      .hero-title { font-size: 34px !important; }
+      .hero-copy-wrap { padding: 14px 22px 20px !important; }
       .facts-wrap { padding: 0 18px 24px !important; }
       .fact-cell { display: block !important; width: auto !important; padding: 10px 14px !important; border-right: 0 !important; border-bottom: 1px solid #e1e8e2 !important; }
       .fact-cell:last-child { border-bottom: 0 !important; }
@@ -70,11 +68,11 @@
 
     @media (prefers-color-scheme: dark) {
       body, .page-bg { background-color: #101712 !important; }
-      .email-shell, .hero, .facts-wrap, .content { background-color: #141d17 !important; }
+      .email-shell, .hero-copy-wrap, .facts-wrap, .content { background-color: #141d17 !important; }
       .email-shell { border-color: #29372d !important; }
-      .hero { border-top-color: #19b238 !important; }
-      .eyebrow, .speaker-time, .footer-link { color: #75d88a !important; }
-      .hero-title, .fact-value, .section-title, .speaker-name { color: #edf3ee !important; }
+      .hero-copy-wrap { border-bottom-color: #29372d !important; }
+      .speaker-time, .footer-link { color: #75d88a !important; }
+      .fact-value, .section-title, .speaker-name { color: #edf3ee !important; }
       .hero-copy, .intro, .speaker-role, .language-note, .footer-copy { color: #b7c4ba !important; }
       .facts { background-color: #18221b !important; border-color: #314137 !important; }
       .fact-cell { border-color: #314137 !important; }
@@ -88,8 +86,9 @@
     }
 
     [data-ogsc] body, [data-ogsc] .page-bg { background-color: #101712 !important; }
-    [data-ogsc] .email-shell, [data-ogsc] .hero, [data-ogsc] .facts-wrap, [data-ogsc] .content { background-color: #141d17 !important; }
-    [data-ogsc] .hero-title, [data-ogsc] .fact-value, [data-ogsc] .section-title, [data-ogsc] .speaker-name { color: #edf3ee !important; }
+    [data-ogsc] .email-shell, [data-ogsc] .hero-copy-wrap, [data-ogsc] .facts-wrap, [data-ogsc] .content { background-color: #141d17 !important; }
+    [data-ogsc] .hero-copy-wrap { border-bottom-color: #29372d !important; }
+    [data-ogsc] .fact-value, [data-ogsc] .section-title, [data-ogsc] .speaker-name { color: #edf3ee !important; }
     [data-ogsc] .hero-copy, [data-ogsc] .intro, [data-ogsc] .speaker-role, [data-ogsc] .language-note, [data-ogsc] .footer-copy { color: #b7c4ba !important; }
     [data-ogsc] .facts { background-color: #18221b !important; border-color: #314137 !important; }
     [data-ogsc] .speaker-cell { border-bottom-color: #314137 !important; }
@@ -104,10 +103,13 @@
       <td align="center" style="padding:20px 10px;">
         <table role="presentation" class="email-shell" width="600" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="width:100%; max-width:600px; background-color:#ffffff; border:1px solid #e1e8e2;">
           <tr>
-            <td class="hero" bgcolor="#ffffff" style="padding:36px 40px 30px; border-top:5px solid #022a0c; background-color:#ffffff;">
-              <p class="eyebrow" style="margin:0 0 12px; color:#3d7048; font-size:11px; font-weight:700; letter-spacing:1.7px; line-height:18px; text-transform:uppercase;">GDG on Campus · Yaşar University</p>
-              <h1 class="hero-title" style="margin:0; color:#17211b; font-size:40px; font-weight:700; letter-spacing:1px; line-height:1.15;">AI TALKS<span class="accent" style="color:#19b238;">'26</span></h1>
-              <p class="hero-copy" style="margin:10px 0 0; color:#53645a; font-size:15px; line-height:23px;">Yapay Zekâ ile Geleceği Yakala</p>
+            <td class="banner-wrap" bgcolor="#022a0c" style="background-color:#022a0c; font-size:0; line-height:0;">
+              <img class="banner-image" src="https://raw.githubusercontent.com/GDG-Yasar-Software-Team/mail-assets/main/ai-talks-26/ai-talks-26-email-banner.png" width="600" alt="Yaşar Üniversitesi · AI TALKS'26" style="display:block; width:100%; max-width:600px; height:auto; margin:0 auto; border:0;" />
+            </td>
+          </tr>
+          <tr>
+            <td class="hero-copy-wrap" bgcolor="#ffffff" style="padding:16px 40px 24px; border-bottom:1px solid #e1e8e2; background-color:#ffffff; text-align:center;">
+              <p class="hero-copy" style="margin:0; color:#53645a; font-size:14px; font-weight:500; line-height:22px;">Yapay Zekâ ile Geleceği Yakala</p>
             </td>
           </tr>
 
