@@ -7,6 +7,42 @@ from unittest.mock import patch
 from app.services.email_service import EmailService
 
 
+class TestSendBulkResultCallback:
+    """Tests for the per-recipient result_callback."""
+
+    async def test_result_callback_called_for_each_result(self, mock_smtp):
+        """Should invoke result_callback once per recipient with its outcome."""
+        seen: list[tuple[str, bool]] = []
+
+        async def on_result(result):
+            seen.append((result.email, result.success))
+
+        results = await EmailService.send_bulk(
+            recipients=["user1@example.com", "user2@example.com"],
+            subject="Test",
+            body_html="<p>Hello</p>",
+            unsubscribe_url_base="http://test.com/unsubscribe",
+            generate_token_func=lambda email: f"token-{email}",
+            rate_limit_delay=(0.01, 0.02),
+            result_callback=on_result,
+        )
+
+        assert seen == [(r.email, r.success) for r in results]
+
+    async def test_result_callback_not_required(self, mock_smtp):
+        """Should work without result_callback (existing behavior)."""
+        results = await EmailService.send_bulk(
+            recipients=["user1@example.com"],
+            subject="Test",
+            body_html="<p>Hello</p>",
+            unsubscribe_url_base="http://test.com/unsubscribe",
+            generate_token_func=lambda email: f"token-{email}",
+            rate_limit_delay=(0.01, 0.02),
+        )
+
+        assert results[0].success is True
+
+
 class TestSendBulk:
     """Tests for send_bulk method."""
 

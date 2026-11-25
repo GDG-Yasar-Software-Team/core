@@ -48,7 +48,15 @@ def mock_settings():
                                     "app.services.campaign_service.settings",
                                     test_settings,
                                 ):
-                                    yield test_settings
+                                    with patch(
+                                        "app.repositories.batch_plan_repository.settings",
+                                        test_settings,
+                                    ):
+                                        with patch(
+                                            "app.services.batch_plan_service.settings",
+                                            test_settings,
+                                        ):
+                                            yield test_settings
 
 
 @pytest.fixture
@@ -62,9 +70,14 @@ def mock_mongodb():
     campaigns_collection.update_one = AsyncMock()
 
     mock_db = MagicMock()
+    batch_plans_collection = MagicMock()
+    batch_plans_collection.find_one = AsyncMock()
+    batch_plans_collection.insert_one = AsyncMock()
+    batch_plans_collection.update_one = AsyncMock()
     mock_db.__getitem__ = MagicMock(
         side_effect=lambda x: {
             "test_mails": campaigns_collection,
+            "batch_plans": batch_plans_collection,
         }.get(x, MagicMock())
     )
 
@@ -76,6 +89,7 @@ def mock_mongodb():
             yield {
                 "db": mock_db,
                 "campaigns": campaigns_collection,
+                "batch_plans": batch_plans_collection,
             }
 
 

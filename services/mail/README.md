@@ -9,6 +9,7 @@ Email campaign microservice for the GDG Core platform. Handles bulk email sendin
 - Automatic unsubscribe link injection
 - Rate-limited bulk email sending
 - Campaign execution history tracking
+- Recipient batch plans for splitting large manual sends
 - Token-based unsubscribe flow
 
 ## Setup
@@ -39,6 +40,8 @@ cp .env.example .env
 | `DATABASE_NAME`                    | Database name                  | `gdg_db`                    |
 | `USERS_COLLECTION`                 | Users collection name          | `users`                     |
 | `CAMPAIGNS_COLLECTION`             | Campaigns collection name      | `mails`                     |
+| `BATCH_PLANS_COLLECTION`           | Batch plans collection name    | `batch_plans`               |
+| `MAX_BATCH_SIZE`                   | Max recipients per batch       | `500`                       |
 | `HOST`                             | Bind host                      | `0.0.0.0`                   |
 | `PORT`                             | Service port                   | `8000`                      |
 | `SMTP_SERVER`                      | SMTP server hostname           | `smtp.gmail.com`            |
@@ -101,13 +104,16 @@ app/
 
 ### Campaigns
 
-| Method | Endpoint                  | Description                  |
-| ------ | ------------------------- | ---------------------------- |
-| `POST` | `/campaigns/`             | Create a new campaign        |
-| `PUT`  | `/campaigns/{id}`         | Update campaign              |
-| `GET`  | `/campaigns/{id}`         | Get campaign details         |
-| `GET`  | `/campaigns/`             | List recent campaigns        |
-| `POST` | `/campaigns/{id}/trigger` | Trigger campaign immediately |
+| Method | Endpoint                                    | Description                            |
+| ------ | ------------------------------------------- | -------------------------------------- |
+| `POST` | `/campaigns/`                               | Create a new campaign                  |
+| `PUT`  | `/campaigns/{id}`                           | Update campaign                        |
+| `GET`  | `/campaigns/{id}`                           | Get campaign details                   |
+| `GET`  | `/campaigns/`                               | List recent campaigns                  |
+| `POST` | `/campaigns/{id}/trigger`                   | Trigger campaign immediately (send all)|
+| `POST` | `/campaigns/{id}/batch-plans`               | Create a batch plan (audience snapshot)|
+| `GET`  | `/campaigns/{id}/batch-plans/{planId}`      | Get batch plan states and results      |
+| `POST` | `/campaigns/{id}/batch-plans/{planId}/batches/{batchNumber}/trigger` | Trigger one batch |
 
 ### Unsubscribe
 
@@ -154,6 +160,34 @@ curl -X POST http://localhost:8000/campaigns/ \
 ```bash
 curl -X POST http://localhost:8000/campaigns/{campaign_id}/trigger
 ```
+
+### Batch Plans (Manual Sends in Groups)
+
+Create a plan to snapshot the current audience and split it into the fewest
+balanced batches that fit `MAX_BATCH_SIZE`. Nothing is sent automatically —
+trigger each batch when ready.
+
+```bash
+# Create a plan
+curl -X POST http://localhost:8000/campaigns/{campaign_id}/batch-plans
+
+# Inspect batch states, progress and results
+curl http://localhost:8000/campaigns/{campaign_id}/batch-plans/{plan_id}
+
+# Trigger batch 1 (run in background; other batches stay pending)
+curl -X POST http://localhost:8000/campaigns/{campaign_id}/batch-plans/{plan_id}/batches/1/trigger
+```
+
+Behavior notes:
+
+- The plan's audience is frozen at creation; later signups are never added.
+- Before each run, subscription status is re-checked: unsubscribed recipients
+  in the batch are skipped.
+- Retrying a batch targets only recipients that previously failed and are
+  still subscribed; successes are never resent.
+- Completed batches cannot be triggered again; concurrent triggers of the
+  same campaign are rejected with `409`.
+- Scheduled sends are unaffected by batch plans.
 
 ### CLI Usage
 
@@ -224,6 +258,33 @@ uv run ruff check --fix .
     }
   ],
   "executed_times": ["datetime"],
+  "created_at": "datetime",
+  "updated_at": "datetime|null"
+}
+```
+
+### Batch Plans Collection (`batch_plans`)
+
+```json
+{
+  "_id": "ObjectId",
+  "campaign_id": "ObjectId",
+  "batch_size": "int",
+  "audience": ["string"],
+  "batches": [
+    {
+      "number": "int",
+      "start": "int",
+      "end": "int",
+      "recipient_count": "int",
+      "status": "pending|in_progress|completed|partially_failed|failed",
+      "sent_emails": ["string"],
+      "failed_emails": ["string"],
+      "attempts": "int",
+      "current_progress": "object|null",
+      "last_error": "string|null"
+    }
+  ],
   "created_at": "datetime",
   "updated_at": "datetime|null"
 }

@@ -230,3 +230,115 @@ class TestMailResponse(BaseModel):
     results: list[TestMailResult]
     sent_count: int
     failed_count: int
+
+
+class BatchStatus(str, Enum):
+    """Lifecycle of a single batch within a batch plan."""
+
+    PENDING = "pending"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+    PARTIALLY_FAILED = "partially_failed"
+    FAILED = "failed"
+
+
+class BatchInfo(BaseModel):
+    """A persisted batch: fixed range + accumulated send outcomes."""
+
+    number: int = Field(ge=1)
+    start: int = Field(ge=1)
+    end: int = Field(ge=1)
+    recipient_count: int = Field(ge=0)
+    status: BatchStatus = BatchStatus.PENDING
+    sent_emails: list[str] = Field(default_factory=list)
+    failed_emails: list[str] = Field(default_factory=list)
+    attempts: int = 0
+    current_progress: ExecutionProgress | None = None
+    last_error: str | None = None
+
+
+class BatchPlanInDB(BaseModel):
+    """Database model for a persisted batch plan (frozen audience snapshot)."""
+
+    id: PyObjectId = Field(alias="_id")
+    campaign_id: PyObjectId
+    batch_size: int = Field(ge=1)
+    audience: list[str]
+    batches: list[BatchInfo] = Field(default_factory=list)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime | None = None
+
+    model_config = {"populate_by_name": True, "arbitrary_types_allowed": True}
+
+    @field_validator("created_at", "updated_at")
+    @classmethod
+    def normalize_batch_plan_datetimes_to_utc(
+        cls, value: datetime | None
+    ) -> datetime | None:
+        if value is None:
+            return None
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+        return value.astimezone(timezone.utc)
+
+
+class BatchSummary(BaseModel):
+    """API view of a single batch with derived counts."""
+
+    number: int
+    start: int
+    end: int
+    recipient_count: int
+    status: BatchStatus
+    sent_count: int
+    failed_count: int
+    remaining_count: int
+    attempts: int
+    current_progress: ExecutionProgress | None = None
+    last_error: str | None = None
+
+
+class BatchPlanResponse(BaseModel):
+    """API response model for a batch plan."""
+
+    id: str
+    campaign_id: str
+    batch_size: int
+    total_recipients: int
+    batches: list[BatchSummary]
+
+    @classmethod
+    def from_db(cls, plan: BatchPlanInDB) -> "BatchPlanResponse":
+        summaries = [
+            BatchSummary(
+                number=b.number,
+                start=b.start,
+                end=b.end,
+                recipient_count=b.recipient_count,
+                status=b.status,
+                sent_count=len(b.sent_emails),
+                failed_count=len(b.failed_emails),
+                remaining_count=b.recipient_count - len(b.sent_emails),
+                attempts=b.attempts,
+                current_progress=b.current_progress,
+                last_error=b.last_error,
+            )
+            for b in plan.batches
+        ]
+        return cls(
+            id=str(plan.id),
+            campaign_id=str(plan.campaign_id),
+            batch_size=plan.batch_size,
+            total_recipients=len(plan.audience),
+            batches=summaries,
+        )
+
+
+class BatchTriggerStartResponse(BaseModel):
+    """Immediate response when a batch trigger is accepted."""
+
+    plan_id: str
+    campaign_id: str
+    batch_number: int
+    recipient_count: int
+    status: str

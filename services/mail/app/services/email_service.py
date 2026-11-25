@@ -43,6 +43,7 @@ class EmailService:
         generate_token_func: Callable[[str], str],
         rate_limit_delay: tuple[float, float] | None = None,
         progress_callback: Callable[[int, int], Awaitable[None]] | None = None,
+        result_callback: Callable[[SendResult], Awaitable[None]] | None = None,
     ) -> list[SendResult]:
         """
         Send emails to all recipients with rate limiting.
@@ -57,6 +58,8 @@ class EmailService:
                               Defaults to settings values if None.
             progress_callback: Optional async callback(sent_count, failed_count)
                                called after each email for progress tracking.
+            result_callback: Optional async callback(SendResult) called after
+                             each email with its per-recipient outcome.
 
         Returns:
             List of SendResult for each recipient
@@ -161,6 +164,8 @@ class EmailService:
 
                 if progress_callback:
                     await progress_callback(sent_so_far, failed_so_far)
+                if result_callback:
+                    await result_callback(results[-1])
 
                 if i < len(recipients) - 1:
                     delay = random.uniform(*rate_limit_delay)
